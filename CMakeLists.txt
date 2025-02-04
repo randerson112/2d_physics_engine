@@ -1,13 +1,16 @@
+#For building the demo project
+
 cmake_minimum_required(VERSION 3.10)
 
-project(engine)
+project(engineDemo)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include_directories(include)
+find_package(SFML 3 REQUIRED COMPONENTS Graphics Window System)
 
-add_executable(engine src/main.cpp)
+add_executable(${PROJECT_NAME} demo/main.cpp)
 
-find_package(SFML 2.6 COMPONENTS graphics window system REQUIRED)
+target_include_directories(${PROJECT_NAME} PRIVATE include)
 
-target_link_libraries(engine sfml-graphics sfml-window sfml-system)
+target_link_libraries(${PROJECT_NAME} PRIVATE SFML::Graphics SFML::Window SFML::System)
