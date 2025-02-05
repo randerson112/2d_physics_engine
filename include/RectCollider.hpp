@@ -6,9 +6,27 @@
 
 #include "Collider.hpp"
 
-class RectCollider : Collider
+class RectCollider : public Collider
 {
+private:
+    //Width and height of rectangle collision area
+    float width;
+    float height;
 
+public:
+    //Constructor to set positon, offset, and dimensions
+    RectCollider(Vector2 initialPosition, Vector2 offset, float width, float height);
+
+    //Checks for collision with another collider
+    PhysicsBody* checkCollision(Collider& otherCollider) override;
+
+    //Getters for member variables
+    float getWidth();
+    float getHeight();
+
+    //Setters for member variables
+    void setWidth(float newWidth);
+    void setHeight(float newHeight);
 };
 
 #endif
