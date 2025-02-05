@@ -9,7 +9,7 @@
 
 class PhysicsBody
 {
-private:
+protected:
     //Position of body in the world
     Vector2 position;
 
