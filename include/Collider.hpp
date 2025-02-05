@@ -15,6 +15,8 @@ enum class ColliderShape
     Circle
 };
 
+class PhysicsBody;
+
 class Collider
 {
 protected:
@@ -31,7 +33,7 @@ protected:
     ColliderShape shape;
 
 public:
-    Collider(Vector2 initialPosition = {0, 0}, Vector2 offset = {0, 0}, ColliderShape shapeType);
+    Collider(Vector2 initialPosition, Vector2 offset, ColliderShape shapeType);
 
     virtual ~Collider() = default;
 

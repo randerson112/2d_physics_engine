@@ -8,22 +8,20 @@ Engine::Engine() {};
 Engine::~Engine() {};
 
 //Adds a physics body to the world
-void Engine::addBody(std::unique_ptr<PhysicsBody> body)
+void Engine::addBody(PhysicsBody* body)
 {
     physicsBodies.push_back(body);
 }
 
 //Removes a physics body from the world
-void Engine::removeBody(std::unique_ptr<PhysicsBody> body)
+void Engine::removeBody(PhysicsBody* body)
 {
-    auto it = std::find_if(physicsBodies.begin(), physicsBodies.end(),
-        [&body](const std::unique_ptr<PhysicsBody>& b) {
-            return b.get() == body.get();  // Compare the raw pointers
-        });
-
+    auto it = std::find(physicsBodies.begin(), physicsBodies.end(), body);
     if (it != physicsBodies.end())
     {
-        physicsBodies.erase(it); //remove the physics body from list
+        delete *it;
+        *it = nullptr;
+        physicsBodies.erase(it);
     }
 }
 

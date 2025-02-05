@@ -8,7 +8,12 @@
 
 #include "Vector2.hpp"
 #include "Collider.hpp"
+#include "RectCollider.hpp"
+#include "CircleCollider.hpp"
 #include "PhysicsBody.hpp"
+#include "StaticBody.hpp"
+#include "DynamicBody.hpp"
+#include "ControllableBody.hpp"
 
 #include <memory>
 #include <vector>
@@ -21,10 +26,10 @@ public:
     ~Engine();
 
     //Adds a physics body to the world
-    void addBody(std::unique_ptr<PhysicsBody> body);
+    void addBody(PhysicsBody* body);
 
     //Removes a physics body from the world
-    void removeBody(std::unique_ptr<PhysicsBody> body);
+    void removeBody(PhysicsBody* body);
 
     //Updates physics bodies in the world, processes physics, and handles collisions
     //Parameter: time since last update call
@@ -46,7 +51,7 @@ private:
     bool physicsProcess = true;
 
     //List of all physics bodies in the world
-    std::vector<std::unique_ptr<PhysicsBody>> physicsBodies;
+    std::vector<PhysicsBody*> physicsBodies;
 };
 
 #endif

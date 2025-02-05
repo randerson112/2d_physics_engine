@@ -6,6 +6,10 @@
 #define PHYSICS_BODY_HPP
 
 #include "Vector2.hpp"
+#include "Collider.hpp"
+#include <memory>
+
+class Collider;
 
 class PhysicsBody
 {
@@ -21,6 +25,9 @@ protected:
 
     //Mass of the body (weight)
     float mass;
+
+    //Collider for detecting collisions
+    Collider* collider;
 
 public:
     //Constructors and deconstructors
@@ -42,12 +49,14 @@ public:
     Vector2 getVelocity();
     Vector2 getAcceleration();
     float getMass();
+    Collider* getCollider();
 
     //Setters for member variables
     void setPosition(Vector2 newPosition);
     void setVelocity(Vector2 newVelocity);
     void setAcceleration(Vector2 newAcceleration);
     void setMass(float newMass);
+    void setCollider(Collider* newCollider);
 };
 
 #endif

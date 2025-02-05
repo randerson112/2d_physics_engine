@@ -4,7 +4,7 @@
 
 //Constructor
 PhysicsBody::PhysicsBody(Vector2 initialPosition, Vector2 initialVelocity, Vector2 initialAcceleration, float mass)
-: position(initialPosition), velocity(initialVelocity), acceleration(initialAcceleration), mass(mass) {}
+: position(initialPosition), velocity(initialVelocity), acceleration(initialAcceleration), mass(mass), collider(nullptr){}
 
 //Getters for member variables
 Vector2 PhysicsBody::getPosition()
@@ -49,4 +49,9 @@ void PhysicsBody::setMass(float newMass)
     {
         mass = newMass;
     }
+}
+
+void PhysicsBody::setCollider(Collider* newCollider)
+{
+    collider = newCollider;
 }
