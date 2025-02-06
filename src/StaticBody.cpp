@@ -4,7 +4,7 @@
 
 //Sets position and collider
 StaticBody::StaticBody(Vector2 initialPosition, Collider* colliderInstance)
-    : PhysicsBody(initialPosition, colliderInstance) {}
+    : PhysicsBody(initialPosition, colliderInstance, BodyType::StaticBody) {}
 
 void StaticBody::update(float deltaTime)
 {

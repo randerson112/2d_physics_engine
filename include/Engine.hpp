@@ -38,6 +38,9 @@ public:
     //Applies force of gravity on a body
     void applyGravity(DynamicBody* body);
 
+    //Resolve a collision between two bodies
+    void resolveCollision(PhysicsBody* bodyA, PhysicsBody* bodyB);
+
     //Enables or disables physics
     //Paramter: true to enable, false to disable
     void setPhysicsProcess(bool boolValue);

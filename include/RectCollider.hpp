@@ -18,7 +18,7 @@ public:
     RectCollider(float width, float height);
 
     //Checks for collision with another collider
-    PhysicsBody* checkCollision(Collider& otherCollider) override;
+    bool checkCollision(Collider* otherCollider) override;
 
     //Getters for member variables
     float getWidth();

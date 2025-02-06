@@ -3,8 +3,8 @@
 #include "PhysicsBody.hpp"
 
 //Constructor
-PhysicsBody::PhysicsBody(Vector2 initialPosition, Collider* colliderInstance)
-    : position(initialPosition), collider(colliderInstance)
+PhysicsBody::PhysicsBody(Vector2 initialPosition, Collider* colliderInstance, BodyType bodyType)
+    : position(initialPosition), collider(colliderInstance), type(bodyType)
     {
         collider->setParent(this); //Attach the collider to body
         collider->setPosition(position + collider->getOffset()); //Set the position of the collider to body position
@@ -25,6 +25,11 @@ Vector2 PhysicsBody::getPosition() const
 Collider* PhysicsBody::getCollider() const
 {
     return collider;
+}
+
+BodyType PhysicsBody::getType() const
+{
+    return type;
 }
 
 //Setters for member variables

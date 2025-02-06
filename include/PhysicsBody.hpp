@@ -9,6 +9,13 @@
 #include "Collider.hpp"
 #include <memory>
 
+enum class BodyType
+{
+    StaticBody,
+    DynamicBody,
+    ControllableBody
+};
+
 class Collider;
 
 class PhysicsBody
@@ -20,9 +27,12 @@ protected:
     //Collider for detecting collisions
     Collider* collider;
 
+    //Type of the body (static, dynamic...)
+    BodyType type;
+
 public:
     //Constructor
-    PhysicsBody(Vector2 initialPosition, Collider* colliderInstance);
+    PhysicsBody(Vector2 initialPosition, Collider* colliderInstance, BodyType bodyType);
 
     //Destructor
     virtual ~PhysicsBody();
@@ -33,6 +43,7 @@ public:
     //Getters for member variables
     Vector2 getPosition() const;
     Collider* getCollider() const;
+    BodyType getType() const;
 
     //Setters for member variables
     void setPosition(Vector2 newPosition);

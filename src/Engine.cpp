@@ -50,11 +50,19 @@ void Engine::update(float deltaTime)
 
         for (size_t i = 0; i < physicsBodies.size(); i++)
         {
+            PhysicsBody* bodyA = physicsBodies[i];
+
             for (size_t j = i + 1; j < physicsBodies.size(); j++)
             {
-                //check if physicsBodies[i] and physicsBodies[j] are colliding
-                //this will check every body for if it is colliding with any other body
-                //physicsBodies[i]->checkCollision(physicsBodies[j]) Something like this
+                PhysicsBody* bodyB = physicsBodies[j];
+
+                Collider* colliderA = bodyA->getCollider();
+                Collider* colliderB = bodyB->getCollider();
+
+                if (colliderA->checkCollision(colliderB))
+                {
+                    resolveCollision(bodyA, bodyB);
+                }
             }
         }
     }
@@ -63,6 +71,24 @@ void Engine::update(float deltaTime)
 void Engine::applyGravity(DynamicBody* body)
 {
     body->applyForce(gravity * gravityScale * body->getMass());
+}
+
+void Engine::resolveCollision(PhysicsBody* bodyA, PhysicsBody* bodyB)
+{
+    //Simple collision resolution for now, just adjusting positions
+    Vector2 overlap = bodyA->getPosition() - bodyB->getPosition();
+
+    //Resolve overlap by moving them apart
+    if (overlap.x > 0) {
+        bodyA->setPosition(bodyA->getPosition() + Vector2(overlap.x / 2, 0));
+        bodyB->setPosition(bodyB->getPosition() - Vector2(overlap.x / 2, 0));
+    }
+    if (overlap.y > 0) {
+        bodyA->setPosition(bodyA->getPosition() + Vector2(0, overlap.y / 2));
+        bodyB->setPosition(bodyB->getPosition() - Vector2(0, overlap.y / 2));
+    }
+
+    // Apply more complex resolution logic here, like adjusting velocities or applying forces
 }
 
 //Pauses or resumes the physics processing

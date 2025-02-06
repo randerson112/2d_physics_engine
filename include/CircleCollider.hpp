@@ -17,7 +17,7 @@ public:
     CircleCollider(float initialRadius);
 
     //Checks for collision with another collider
-    PhysicsBody* checkCollision(Collider& otherCollider) override;
+    bool checkCollision(Collider* otherCollider) override;
 
     //Getters for member variables
     float getRadius();
