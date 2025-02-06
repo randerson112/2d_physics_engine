@@ -13,12 +13,8 @@
 class StaticBody : public PhysicsBody
 {
 public:
-    //Constructor to set position in world
-    StaticBody(Vector2 initialPosition);
-
-    //Static body not affected by force and physics
-    void applyForce(Vector2 force) override;
-    void update(float deltaTime) override;
+    //Constructor to set position in world and attach collider
+    StaticBody(Vector2 initialPosition, Collider* colliderInstance);
 };
 
 #endif

@@ -17,45 +17,24 @@ protected:
     //Position of body in the world
     Vector2 position;
 
-    //Current velocity of body (how fast it is moving)
-    Vector2 velocity;
-
-    //Acceleration factor of the body
-    Vector2 acceleration;
-
-    //Mass of the body (weight)
-    float mass;
-
     //Collider for detecting collisions
     Collider* collider;
 
 public:
-    //Constructors and deconstructors
-    PhysicsBody(Vector2 initialPosition = {0, 0},
-    Vector2 initialVelocity = {0, 0},
-    Vector2 initialAcceleration = {0, 0},
-    float mass = 1.0f);
+    //Constructor and deconstructor
+    PhysicsBody(Vector2 initialPosition, Collider* colliderInstance);
 
-    virtual ~PhysicsBody() = default;
+    virtual ~PhysicsBody();
 
-    //Applies a force to the body
-    virtual void applyForce(Vector2 force) = 0;
-
-    //Updates the physics of the body in the world
+    //Updates the physics of the body in the world (implemented in derived classes)
     virtual void update(float deltaTime) = 0;
 
     //Getters for member variables
-    Vector2 getPosition();
-    Vector2 getVelocity();
-    Vector2 getAcceleration();
-    float getMass();
-    Collider* getCollider();
+    Vector2 getPosition() const;
+    Collider* getCollider() const;
 
     //Setters for member variables
     void setPosition(Vector2 newPosition);
-    void setVelocity(Vector2 newVelocity);
-    void setAcceleration(Vector2 newAcceleration);
-    void setMass(float newMass);
     void setCollider(Collider* newCollider);
 };
 
