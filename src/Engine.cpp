@@ -36,23 +36,26 @@ void Engine::removeBody(PhysicsBody* body)
 //Updates physics bodies and checks for collisions
 void Engine::update(float deltaTime)
 {
-    for (auto& body : physicsBodies)
+    if (physicsProcess)
     {
-        if (DynamicBody* dynamicBody = dynamic_cast<DynamicBody*>(body))
+        for (auto& body : physicsBodies)
         {
-            applyGravity(dynamicBody); //Apply gravity to dynamic bodies
+            if (DynamicBody* dynamicBody = dynamic_cast<DynamicBody*>(body))
+            {
+                applyGravity(dynamicBody); //Apply gravity to dynamic bodies
+            }
+
+            body->update(deltaTime); //Update all bodies
         }
 
-        body->update(deltaTime); //Update all bodies
-    }
-
-    for (size_t i = 0; i < physicsBodies.size(); i++)
-    {
-        for (size_t j = i + 1; j < physicsBodies.size(); j++)
+        for (size_t i = 0; i < physicsBodies.size(); i++)
         {
-            //check if physicsBodies[i] and physicsBodies[j] are colliding
-            //this will check every body for if it is colliding with any other body
-            //physicsBodies[i]->checkCollision(physicsBodies[j]) Something like this
+            for (size_t j = i + 1; j < physicsBodies.size(); j++)
+            {
+                //check if physicsBodies[i] and physicsBodies[j] are colliding
+                //this will check every body for if it is colliding with any other body
+                //physicsBodies[i]->checkCollision(physicsBodies[j]) Something like this
+            }
         }
     }
 }

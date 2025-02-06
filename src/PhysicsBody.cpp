@@ -7,7 +7,7 @@ PhysicsBody::PhysicsBody(Vector2 initialPosition, Collider* colliderInstance)
     : position(initialPosition), collider(colliderInstance)
     {
         collider->setParent(this); //Attach the collider to body
-        collider->setPosition(position); //Set the position of the collider to body position
+        collider->setPosition(position + collider->getOffset()); //Set the position of the collider to body position
     }
 
 //Destructor

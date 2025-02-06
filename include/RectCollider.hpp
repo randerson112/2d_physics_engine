@@ -14,7 +14,7 @@ private:
     float height;
 
 public:
-    //Constructor to set positon, offset, and dimensions
+    //Constructor to set dimensions
     RectCollider(float width, float height);
 
     //Checks for collision with another collider

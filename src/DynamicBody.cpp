@@ -8,8 +8,7 @@ Collider* colliderInstance,
 Vector2 initialVelocity,
 Vector2 initialAcceleration,
 float initialMass)
-: PhysicsBody(initialPosition,
-colliderInstance),
+: PhysicsBody(initialPosition, colliderInstance),
 velocity(initialVelocity),
 acceleration(initialAcceleration),
 mass(initialMass) {}

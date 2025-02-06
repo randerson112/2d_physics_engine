@@ -6,9 +6,24 @@
 
 #include "Collider.hpp"
 
-class CircleCollider : Collider
+class CircleCollider : public Collider
 {
+private:
+    //Radius of the circle
+    float radius;
 
+public:
+    //Constructor to set radius
+    CircleCollider(float initialRadius);
+
+    //Checks for collision with another collider
+    PhysicsBody* checkCollision(Collider& otherCollider) override;
+
+    //Getters for member variables
+    float getRadius();
+
+    //Setters for member variables
+    void setRadius(float newRadius);
 };
 
 #endif
