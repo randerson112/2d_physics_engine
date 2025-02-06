@@ -35,6 +35,9 @@ public:
     //Parameter: time since last update call
     void update(float deltaTime);
 
+    //Applies force of gravity on a body
+    void applyGravity(DynamicBody* body);
+
     //Enables or disables physics
     //Paramter: true to enable, false to disable
     void setPhysicsProcess(bool boolValue);
@@ -44,6 +47,8 @@ public:
     void setGravityScale(float scaleValue);
 
 private:
+    Vector2 gravity = {0.0f, 980.0f};
+
     //Gravity scale of the world
     float gravityScale;
 

@@ -8,11 +8,11 @@ Engine::Engine() : gravityScale(1.0f), physicsProcess(true) {}
 //Destructor to delete all physics bodies
 Engine::~Engine()
 {
-    for (auto body: physicsBodies)
+    for (auto& body: physicsBodies)
     {
         delete body;
     }
-    
+
     physicsBodies.clear();
 }
 
@@ -38,7 +38,12 @@ void Engine::update(float deltaTime)
 {
     for (auto& body : physicsBodies)
     {
-        //body->update(deltaTime)
+        if (DynamicBody* dynamicBody = dynamic_cast<DynamicBody*>(body))
+        {
+            applyGravity(dynamicBody); //Apply gravity to dynamic bodies
+        }
+
+        body->update(deltaTime); //Update all bodies
     }
 
     for (size_t i = 0; i < physicsBodies.size(); i++)
@@ -50,6 +55,11 @@ void Engine::update(float deltaTime)
             //physicsBodies[i]->checkCollision(physicsBodies[j]) Something like this
         }
     }
+}
+
+void Engine::applyGravity(DynamicBody* body)
+{
+    body->applyForce(gravity * gravityScale * body->getMass());
 }
 
 //Pauses or resumes the physics processing

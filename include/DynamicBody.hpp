@@ -35,6 +35,16 @@ public:
 
     //Update the physics of the body in the world
     void update(float deltaTime) override;
+
+    //Getters for member variables
+    Vector2 getVelocity();
+    Vector2 getAcceleration();
+    float getMass();
+
+    //Setters for member variables
+    void setVelocity(Vector2 newVelocity);
+    void setAcceleration(Vector2 newAcceleration);
+    void setMass(float newMass);
 };
 
 #endif
