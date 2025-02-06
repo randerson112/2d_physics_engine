@@ -45,10 +45,10 @@ public:
 
 private:
     //Gravity scale of the world
-    float gravityScale = 1;
+    float gravityScale;
 
     //Boolean to control whether physics is processed
-    bool physicsProcess = true;
+    bool physicsProcess;
 
     //List of all physics bodies in the world
     std::vector<PhysicsBody*> physicsBodies;

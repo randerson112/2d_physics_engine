@@ -20,7 +20,7 @@ class PhysicsBody;
 class Collider
 {
 protected:
-    //Position of collider in world
+    //position of the collider in the world
     Vector2 position;
 
     //position relative to parent body, default no offset
@@ -33,7 +33,7 @@ protected:
     ColliderShape shape;
 
 public:
-    Collider(Vector2 initialPosition, Vector2 offset, ColliderShape shapeType);
+    Collider(ColliderShape shapeType);
 
     virtual ~Collider() = default;
 

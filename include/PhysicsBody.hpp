@@ -21,9 +21,10 @@ protected:
     Collider* collider;
 
 public:
-    //Constructor and deconstructor
+    //Constructor
     PhysicsBody(Vector2 initialPosition, Collider* colliderInstance);
 
+    //Destructor
     virtual ~PhysicsBody();
 
     //Updates the physics of the body in the world (implemented in derived classes)

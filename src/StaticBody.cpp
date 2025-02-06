@@ -6,4 +6,7 @@
 StaticBody::StaticBody(Vector2 initialPosition, Collider* colliderInstance)
     : PhysicsBody(initialPosition, colliderInstance) {}
 
-//Static body does not need update method since it is not affected by physics
+void StaticBody::update(float deltaTime)
+{
+    //Not updated by physics
+}

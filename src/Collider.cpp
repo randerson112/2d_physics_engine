@@ -3,8 +3,8 @@
 #include "Collider.hpp"
 
 //Constructor to set position and offset
-Collider::Collider(Vector2 initialPosition, Vector2 offset, ColliderShape shapeType)
-: position(initialPosition), offset(offset), parent(nullptr), shape(shapeType) {}
+Collider::Collider(ColliderShape shapeType)
+: parent(nullptr), position({0, 0}), offset({0, 0}), shape(shapeType) {}
 
 //Getters for member variables
 Vector2 Collider::getPosition()
@@ -40,4 +40,5 @@ void Collider::setOffset(Vector2 newOffest)
 void Collider::setParent(PhysicsBody* newParent)
 {
     parent = newParent;
+    //Destroy old parent?
 }

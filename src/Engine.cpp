@@ -2,10 +2,19 @@
 
 #include "Engine.hpp"
 
-//Constructors and deconstructors
-Engine::Engine() {};
+//Constructor to set default gravity scale and enable physics
+Engine::Engine() : gravityScale(1.0f), physicsProcess(true) {}
 
-Engine::~Engine() {};
+//Destructor to delete all physics bodies
+Engine::~Engine()
+{
+    for (auto body: physicsBodies)
+    {
+        delete body;
+    }
+    
+    physicsBodies.clear();
+}
 
 //Adds a physics body to the world
 void Engine::addBody(PhysicsBody* body)
@@ -20,7 +29,6 @@ void Engine::removeBody(PhysicsBody* body)
     if (it != physicsBodies.end())
     {
         delete *it;
-        *it = nullptr;
         physicsBodies.erase(it);
     }
 }

@@ -15,7 +15,7 @@ private:
 
 public:
     //Constructor to set positon, offset, and dimensions
-    RectCollider(Vector2 initialPosition, Vector2 offset, float width, float height);
+    RectCollider(float width, float height);
 
     //Checks for collision with another collider
     PhysicsBody* checkCollision(Collider& otherCollider) override;

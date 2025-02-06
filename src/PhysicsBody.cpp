@@ -2,16 +2,18 @@
 
 #include "PhysicsBody.hpp"
 
-//Constructor and deconstructor
+//Constructor
 PhysicsBody::PhysicsBody(Vector2 initialPosition, Collider* colliderInstance)
     : position(initialPosition), collider(colliderInstance)
     {
+        collider->setParent(this); //Attach the collider to body
         collider->setPosition(position); //Set the position of the collider to body position
     }
 
+//Destructor
 PhysicsBody::~PhysicsBody()
 {
-    delete collider;
+    delete collider; 
 }
 
 //Getters for member variables

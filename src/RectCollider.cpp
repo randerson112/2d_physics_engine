@@ -2,8 +2,9 @@
 
 #include "RectCollider.hpp"
 
-RectCollider::RectCollider(Vector2 initialPosition, Vector2 offset, float width, float height)
-: Collider(initialPosition, offset, ColliderShape::Rectangle), width(width), height(height) {}
+//Constructor to set width and height of collider
+RectCollider::RectCollider(float width, float height)
+    : Collider(ColliderShape::Rectangle), width(width), height(height) {}
 
 //Checks for collision with another collider
 PhysicsBody* RectCollider::checkCollision(Collider& otherCollider)
