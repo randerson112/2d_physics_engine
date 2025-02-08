@@ -24,17 +24,13 @@ bool CircleCollider::checkCollision(Collider* otherCollider)
         float thisRadius = getRadius();
         float otherRadius = other->getRadius();
 
-        //Calculate distance to other circle
-        float distanceX = otherPos.x - thisPos.x;
-        float distanceY = otherPos.y - thisPos.y;
-        float distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+        //Calculate distance squared to other circle
+        Vector2 distanceBetweenCenters = thisPos.getDistanceTo(otherPos);
+        float distanceSquared = distanceBetweenCenters.getSquare();
 
-        //Check if distance is less than sum of radii
+        //Check if distance squared is less than sum of radii squared
         float sumRadii = thisRadius + otherRadius;
-        if (distanceSquared <= (sumRadii * sumRadii))
-        {
-            return true;
-        }
+        return (distanceSquared <= (sumRadii * sumRadii));
     }
 
     //Check collision with a rectangle
@@ -52,17 +48,14 @@ bool CircleCollider::checkCollision(Collider* otherCollider)
         //Find closest point on the rectangle to the circle
         float closestX = std::max(otherPos.x - other->getWidth() / 2, std::min(thisPos.x, otherPos.x + other->getWidth() / 2));
         float closestY = std::max(otherPos.y - other->getHeight() / 2, std::min(thisPos.y, otherPos.y + other->getHeight() / 2));
+        Vector2 closestPoint = {closestX, closestY};
 
         //Calculate the distance between the closest point and the circle center
-        float distanceX = thisPos.x - closestX;
-        float distanceY = thisPos.y - closestY;
-        float distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+        Vector2 distance = closestPoint.getDistanceTo(thisPos);
+        float distanceSquared = distance.getSquare();
 
         //Compare with the squared radius
-        if (distanceSquared <= (thisRadius * thisRadius))
-        {
-            return true;
-        }
+        return (distanceSquared <= (thisRadius * thisRadius));
     }
 }
 

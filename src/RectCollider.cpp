@@ -32,10 +32,7 @@ bool RectCollider::checkCollision(Collider* otherCollider)
         float otherBottom = otherPos.y + height / 2;
 
         //Check for overlap
-        if (thisRight > otherLeft && thisLeft < otherRight && thisBottom > otherTop && thisTop < otherBottom)
-        {
-            return true;
-        }
+        return (thisRight > otherLeft && thisLeft < otherRight && thisBottom > otherTop && thisTop < otherBottom);
     }
 
     //Check collision with a circle
@@ -53,17 +50,14 @@ bool RectCollider::checkCollision(Collider* otherCollider)
         //Find closest point on the rectangle to the circle
         float closestX = std::max(thisPos.x - width / 2, std::min(otherPos.x, thisPos.x + width / 2));
         float closestY = std::max(thisPos.y - height / 2, std::min(otherPos.y, thisPos.y + height / 2));
+        Vector2 closestPoint = {closestX, closestY};
 
         //Calculate the distance between the closest point and the circle center
-        float distanceX = otherPos.x - closestX;
-        float distanceY = otherPos.y - closestY;
-        float distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+        Vector2 distance = closestPoint.getDistanceTo(otherPos);
+        float distanceSquared = distance.getSquare();
 
         //Compare with the squared radius
-        if (distanceSquared < (otherRadius * otherRadius))
-        {
-            return true;
-        }
+        return (distanceSquared < (otherRadius * otherRadius));
     }
 }
 

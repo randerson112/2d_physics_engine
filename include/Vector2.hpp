@@ -1,5 +1,6 @@
 //Class defentions for 2D vectors
 //Stores an x and y value
+//Methods for normalizing, finding distance
 
 #ifndef Vector2_HPP
 #define Vector2_HPP
@@ -9,60 +10,39 @@
 class Vector2
 {
 public:
+    //coordinates of the vector
     float x;
     float y;
 
-    Vector2(float x, float y) : x(x), y(y) {}
+    //Default constructor
+    Vector2();
 
-    Vector2 operator+(Vector2 other)
-    {
-        return {x + other.x, y + other.y};
-    }
+    //Constructor with x and y parameters
+    Vector2(float x, float y);
 
-    void operator+=(Vector2 other)
-    {
-        x += other.x;
-        y += other.y;
-    }
+    //Basic operator overloads
+    Vector2 operator+(Vector2 other);
+    Vector2 operator-(Vector2 other);
+    Vector2 operator*(float scalar);
+    Vector2 operator/(float divisor);
 
-    Vector2 operator-(Vector2 other)
-    {
-        return {x - other.x, y - other.y};
-    }
+    //Basic assignment operator overloads
+    void operator+=(Vector2 other);
+    void operator-=(Vector2 other);
+    void operator*=(float scalar);
+    void operator/=(float divisor);
 
-    void operator-=(Vector2 other)
-    {
-        x -= other.x;
-        y -= other.y;
-    }
+    //Gets the normal of the vector, length of 1
+    Vector2 getNormal();
 
-    Vector2 operator*(float scalar)
-    {
-        return {x * scalar, y * scalar};
-    }
+    //Gets the distance to another vector
+    Vector2 getDistanceTo(Vector2 other);
 
-    void operator*=(float scalar)
-    {
-        x *= scalar;
-        y *= scalar;
-    }
+    //Gets the direction with length of 1 to another vector
+    Vector2 getDirectionTo(Vector2 other);
 
-    Vector2 operator/(float divisor)
-    {
-        return {x / divisor, y / divisor};
-    }
-
-    void operator/=(float divisor)
-    {
-        x /= divisor;
-        y /= divisor;
-    }
-
-    Vector2 normalized()
-    {
-        float length = sqrt(x * x + y * y);
-        return {x / length, y / length};
-    }
+    //Return the square of the vector
+    float getSquare();
 };
 
 #endif
