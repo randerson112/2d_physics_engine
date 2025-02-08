@@ -16,9 +16,6 @@ public:
     //Constructor to set radius
     CircleCollider(float initialRadius);
 
-    //Checks for collision with another collider
-    bool checkCollision(Collider* otherCollider) override;
-
     //Getters for member variables
     float getRadius();
 

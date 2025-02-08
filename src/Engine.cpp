@@ -59,7 +59,7 @@ void Engine::update(float deltaTime)
                 Collider* colliderA = bodyA->getCollider();
                 Collider* colliderB = bodyB->getCollider();
 
-                if (colliderA->checkCollision(colliderB))
+                if (CollisionDetection::checkCollision(colliderA, colliderB))
                 {
                     resolveCollision(bodyA, bodyB);
                 }

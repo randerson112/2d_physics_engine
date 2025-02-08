@@ -37,9 +37,6 @@ public:
 
     virtual ~Collider() = default;
 
-    //Checks for collision with another collider
-    virtual bool checkCollision(Collider* otherCollider) = 0;
-
     //Getters for member variables
     Vector2 getPosition();
     Vector2 getOffset();

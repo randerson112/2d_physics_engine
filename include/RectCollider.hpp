@@ -17,9 +17,6 @@ public:
     //Constructor to set dimensions
     RectCollider(float width, float height);
 
-    //Checks for collision with another collider
-    bool checkCollision(Collider* otherCollider) override;
-
     //Getters for member variables
     float getWidth();
     float getHeight();

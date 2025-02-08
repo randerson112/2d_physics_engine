@@ -14,6 +14,7 @@
 #include "StaticBody.hpp"
 #include "DynamicBody.hpp"
 #include "ControllableBody.hpp"
+#include "CollisionDetection.hpp"
 
 #include <memory>
 #include <vector>
