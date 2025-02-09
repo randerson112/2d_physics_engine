@@ -3,7 +3,7 @@
 #include "Engine.hpp"
 
 //Constructor to set default gravity scale and enable physics
-Engine::Engine() : gravityScale(1.0f), physicsProcess(true) {}
+Engine::Engine() : gravityScale(1.0f), physicsProcess(true), collisionsProcess(true) {}
 
 //Destructor to delete all physics bodies
 Engine::~Engine()
@@ -48,20 +48,23 @@ void Engine::update(float deltaTime)
             body->update(deltaTime); //Update all bodies
         }
 
-        for (size_t i = 0; i < physicsBodies.size(); i++)
+        if (collisionsProcess)
         {
-            PhysicsBody* bodyA = physicsBodies[i];
-
-            for (size_t j = i + 1; j < physicsBodies.size(); j++)
+            for (size_t i = 0; i < physicsBodies.size(); i++)
             {
-                PhysicsBody* bodyB = physicsBodies[j];
+                PhysicsBody* bodyA = physicsBodies[i];
 
-                Collider* colliderA = bodyA->getCollider();
-                Collider* colliderB = bodyB->getCollider();
-
-                if (CollisionDetection::checkCollision(colliderA, colliderB))
+                for (size_t j = i + 1; j < physicsBodies.size(); j++)
                 {
-                    resolveCollision(bodyA, bodyB);
+                    PhysicsBody* bodyB = physicsBodies[j];
+
+                    Collider* colliderA = bodyA->getCollider();
+                    Collider* colliderB = bodyB->getCollider();
+
+                    if (CollisionDetection::checkCollision(colliderA, colliderB))
+                    {
+                        resolveCollision(bodyA, bodyB);
+                    }
                 }
             }
         }
@@ -92,9 +95,15 @@ void Engine::resolveCollision(PhysicsBody* bodyA, PhysicsBody* bodyB)
 }
 
 //Pauses or resumes the physics processing
-void Engine::setPhysicsProcess(bool boolValue)
+void Engine::setPhysicsProcess(bool processPhysics)
 {
-    physicsProcess = boolValue;
+    physicsProcess = processPhysics;
+}
+
+//Pauses or resumes the collision detection
+void Engine::setCollisionProcess(bool processCollisions)
+{
+    collisionsProcess = processCollisions;
 }
 
 //Sets the gravity scale of the world

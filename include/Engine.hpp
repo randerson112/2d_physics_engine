@@ -13,7 +13,6 @@
 #include "PhysicsBody.hpp"
 #include "StaticBody.hpp"
 #include "DynamicBody.hpp"
-#include "ControllableBody.hpp"
 #include "CollisionDetection.hpp"
 
 #include <memory>
@@ -21,6 +20,21 @@
 
 class Engine
 {
+private:
+    Vector2 gravity = {0.0f, -9.81f};
+
+    //Gravity scale of the world
+    float gravityScale;
+
+    //Boolean to control whether physics is processed
+    bool physicsProcess;
+
+    //Boolean to control whether collisions are detected
+    bool collisionsProcess;
+
+    //List of all physics bodies in the world
+    std::vector<PhysicsBody*> physicsBodies;
+
 public:
     //Constructors and deconstructors
     Engine();
@@ -43,24 +57,16 @@ public:
     void resolveCollision(PhysicsBody* bodyA, PhysicsBody* bodyB);
 
     //Enables or disables physics
-    //Paramter: true to enable, false to disable
-    void setPhysicsProcess(bool boolValue);
+    //Parameter: true to enable, false to disable
+    void setPhysicsProcess(bool processPhysics);
+
+    //Enables or disables collision detection
+    //Parameter: true to enable, false to disable
+    void setCollisionProcess(bool processCollisions);
 
     //Sets the gravity scale of the world
-    //Paramter: a non-negative scale factor
+    //Parameter: a non-negative scale factor
     void setGravityScale(float scaleValue);
-
-private:
-    Vector2 gravity = {0.0f, 980.0f};
-
-    //Gravity scale of the world
-    float gravityScale;
-
-    //Boolean to control whether physics is processed
-    bool physicsProcess;
-
-    //List of all physics bodies in the world
-    std::vector<PhysicsBody*> physicsBodies;
 };
 
 #endif
