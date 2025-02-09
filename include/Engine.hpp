@@ -14,6 +14,7 @@
 #include "StaticBody.hpp"
 #include "DynamicBody.hpp"
 #include "CollisionDetection.hpp"
+#include "WorldBoundary.hpp"
 
 #include <memory>
 #include <vector>
@@ -21,6 +22,10 @@
 class Engine
 {
 private:
+    //World boundaries for physics bodies, default no boundaries
+    WorldBoundary* boundary;
+
+    //Gravity force vector
     Vector2 gravity = {0.0f, -9.81f};
 
     //Gravity scale of the world
@@ -39,6 +44,12 @@ public:
     //Constructors and deconstructors
     Engine();
     ~Engine();
+
+    //Sets world boundary dimensions for the world
+    void setWorldBoundaries(float newWidth, float newHeight);
+
+    //Removes boundaries from world
+    void removeWorldBoundaries();
 
     //Adds a physics body to the world
     void addBody(PhysicsBody* body);

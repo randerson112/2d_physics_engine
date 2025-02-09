@@ -3,11 +3,14 @@
 #include "Engine.hpp"
 
 //Constructor to set default gravity scale and enable physics
-Engine::Engine() : gravityScale(1.0f), physicsProcess(true), collisionsProcess(true) {}
+Engine::Engine()
+    : boundary(nullptr), gravityScale(1.0f), physicsProcess(true), collisionsProcess(true) {}
 
-//Destructor to delete all physics bodies
+//Destructor to delete all physics bodies and world boundary
 Engine::~Engine()
 {
+    delete boundary;
+
     for (auto& body: physicsBodies)
     {
         delete body;
@@ -16,10 +19,33 @@ Engine::~Engine()
     physicsBodies.clear();
 }
 
+//Sets boundary dimensions for the world
+void Engine::setWorldBoundaries(float newWidth, float newHeight)
+{
+    //Create new boundary if no boundaries are active
+    if (boundary == nullptr)
+    {
+        boundary = new WorldBoundary(newWidth, newHeight);
+        return;
+    }
+
+    //Resize active boundary
+    boundary->setDimensions(newWidth, newHeight);
+}
+
+//Removes boundaries from world
+void Engine::removeWorldBoundaries()
+{
+    delete boundary;
+    boundary = nullptr;
+}
+
 //Adds a physics body to the world
 void Engine::addBody(PhysicsBody* body)
 {
     physicsBodies.push_back(body);
+
+    boundary->placementEnforce(body); //Keeps body within boundaries when added
 }
 
 //Removes a physics body from the world
@@ -28,9 +54,10 @@ void Engine::removeBody(PhysicsBody* body)
     auto it = std::find(physicsBodies.begin(), physicsBodies.end(), body);
     if (it != physicsBodies.end())
     {
-        delete *it;
         physicsBodies.erase(it);
     }
+
+    delete body;
 }
 
 //Updates physics bodies and checks for collisions
@@ -42,10 +69,13 @@ void Engine::update(float deltaTime)
         {
             if (DynamicBody* dynamicBody = dynamic_cast<DynamicBody*>(body))
             {
-                applyGravity(dynamicBody); //Apply gravity to dynamic bodies
+                applyGravity(dynamicBody); //Apply gravity to dynamic body
+
+                if (boundary != nullptr)
+                    boundary->dynamicEnforce(dynamicBody); //Keep dynamic body within world boundaries
             }
 
-            body->update(deltaTime); //Update all bodies
+            body->update(deltaTime); //Update body physics
         }
 
         if (collisionsProcess)
