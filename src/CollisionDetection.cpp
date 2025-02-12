@@ -103,12 +103,13 @@ bool CollisionDetection::checkCircleCircleCollision(CircleCollider* circleA, Cir
     float circleARadius = circleA->getRadius();
     float circleBRadius = circleB->getRadius();
 
+    float sumRadii = circleARadius + circleBRadius;
+
     //Calculate distance squared between circles
-    Vector2 distanceBetweenCenters = circleAPos.getDistanceTo(circleBPos);
-    float distanceSquared = distanceBetweenCenters.getSquare();
+    Vector2 vectorBetweenCenters = circleAPos.getVectorTo(circleBPos);
+    float distanceSquared = vectorBetweenCenters.getSquare();
 
     //Check if distance squared is less than sum of radii squared
-    float sumRadii = circleARadius + circleBRadius;
     return (distanceSquared <= (sumRadii * sumRadii));
 }
 
@@ -132,8 +133,8 @@ bool CollisionDetection::checkRectCircleCollision(RectCollider* rect, CircleColl
     Vector2 closestPoint = {closestX, closestY};
 
     //Calculate the distance between the closest point and the circle center
-    Vector2 distance = closestPoint.getDistanceTo(circlePos);
-    float distanceSquared = distance.getSquare();
+    Vector2 vectorBetween = closestPoint.getVectorTo(circlePos);
+    float distanceSquared = vectorBetween.getSquare();
 
     //Compare with the squared radius
     return (distanceSquared < (circleRadius * circleRadius));

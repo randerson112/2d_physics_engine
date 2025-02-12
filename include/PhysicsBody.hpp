@@ -40,6 +40,9 @@ public:
     //Updates the physics of the body in the world (implemented in derived classes)
     virtual void update(float deltaTime) = 0;
 
+    //Moves a body by a relative amount
+    void move(Vector2 amountToMove);
+
     //Getters for member variables
     Vector2 getPosition() const;
     Collider* getCollider() const;

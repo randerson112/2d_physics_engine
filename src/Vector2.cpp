@@ -60,15 +60,27 @@ void Vector2::operator/=(float divisor)
     y /= divisor;
 }
 
+//Negative operator for getting the inverse
+Vector2 Vector2::operator-()
+{
+    return {-x, -y};
+}
+
 //Gets the normal of a vector, length 1
 Vector2 Vector2::getNormal()
 {
-    float length = sqrt(x * x + y * y);
+    float length = getLength();
     return {x / length, y / length};
 }
 
-//Gets the distance to another vector
-Vector2 Vector2::getDistanceTo(Vector2 other)
+//Returns the magnitude or length of a vector
+float Vector2::getLength()
+{
+    return sqrt((x * x) + (y * y));
+}
+
+//Gets the vector pointing to another vector
+Vector2 Vector2::getVectorTo(Vector2 other)
 {
     return {other.x - x, other.y - y};
 }
@@ -76,11 +88,17 @@ Vector2 Vector2::getDistanceTo(Vector2 other)
 //Gets the direction to another vector, length of 1
 Vector2 Vector2::getDirectionTo(Vector2 other)
 {
-    return getDistanceTo(other).getNormal();
+    return getVectorTo(other).getNormal();
 }
 
+//Squares each position in the vector
 float Vector2::getSquare()
 {
     return (x * x) + (y * y);
 }
 
+//How much of the vector lies on the other vector when projected
+float Vector2::projectOntoAxis(Vector2 axis)
+{
+    return (x * axis.x) + (y * axis.y);
+}

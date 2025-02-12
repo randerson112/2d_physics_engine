@@ -1,5 +1,5 @@
 //Namespace for all collision detection functions
-//Resolve collision method sorts into respective method
+//Check collision method sorts into respective method
 
 #ifndef COLLISION_DETECTION_HPP
 #define COLLISION_DETECTION_HPP

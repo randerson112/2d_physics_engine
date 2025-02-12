@@ -32,17 +32,26 @@ public:
     void operator*=(float scalar);
     void operator/=(float divisor);
 
+    //Negative operator overload for getting the inverse
+    Vector2 operator-();
+
     //Gets the normal of the vector, length of 1
     Vector2 getNormal();
 
-    //Gets the distance to another vector
-    Vector2 getDistanceTo(Vector2 other);
+    //Returns the magnitude or length of a vector
+    float getLength();
+
+    //Gets the vector pointing to another vector
+    Vector2 getVectorTo(Vector2 other);
 
     //Gets the direction with length of 1 to another vector
     Vector2 getDirectionTo(Vector2 other);
 
     //Return the square of the vector
     float getSquare();
+
+    //How much of the vector lies on the other vector when projected
+    float projectOntoAxis(Vector2 axis);
 };
 
 #endif

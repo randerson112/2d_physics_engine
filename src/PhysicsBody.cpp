@@ -16,6 +16,12 @@ PhysicsBody::~PhysicsBody()
     delete collider; 
 }
 
+//Moves a body by a relative amount
+void PhysicsBody::move(Vector2 amountToMove)
+{
+    setPosition({position.x + amountToMove.x, position.y + amountToMove.y});
+}
+
 //Getters for member variables
 Vector2 PhysicsBody::getPosition() const
 {

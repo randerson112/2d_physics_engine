@@ -15,6 +15,7 @@
 #include "DynamicBody.hpp"
 #include "CollisionDetection.hpp"
 #include "WorldBoundary.hpp"
+#include "CollisionSolver.hpp"
 
 #include <memory>
 #include <vector>
@@ -36,6 +37,9 @@ private:
 
     //Boolean to control whether collisions are detected
     bool collisionsProcess;
+
+    //Keeps track of collision instances and resolves them
+    CollisionSolver* collisionSolver;
 
     //List of all physics bodies in the world
     std::vector<PhysicsBody*> physicsBodies;
@@ -63,9 +67,6 @@ public:
 
     //Applies force of gravity on a body
     void applyGravity(DynamicBody* body);
-
-    //Resolve a collision between two bodies
-    void resolveCollision(PhysicsBody* bodyA, PhysicsBody* bodyB);
 
     //Enables or disables physics
     //Parameter: true to enable, false to disable

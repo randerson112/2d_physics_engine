@@ -4,7 +4,10 @@
 
 //Constructor to set default gravity scale and enable physics
 Engine::Engine()
-    : boundary(nullptr), gravityScale(1.0f), physicsProcess(true), collisionsProcess(true) {}
+    : boundary(nullptr), gravityScale(1.0f), physicsProcess(true), collisionsProcess(true)
+    {
+        collisionSolver = new CollisionSolver();
+    }
 
 //Destructor to delete all physics bodies and world boundary
 Engine::~Engine()
@@ -93,10 +96,12 @@ void Engine::update(float deltaTime)
 
                     if (CollisionDetection::checkCollision(colliderA, colliderB))
                     {
-                        resolveCollision(bodyA, bodyB);
+                        collisionSolver->addCollision(new Collision(bodyA, bodyB));
                     }
                 }
             }
+
+            collisionSolver->resolveCollisions();
         }
     }
 }
@@ -104,24 +109,6 @@ void Engine::update(float deltaTime)
 void Engine::applyGravity(DynamicBody* body)
 {
     body->applyForce(gravity * gravityScale * body->getMass());
-}
-
-void Engine::resolveCollision(PhysicsBody* bodyA, PhysicsBody* bodyB)
-{
-    //Simple collision resolution for now, just adjusting positions
-    Vector2 overlap = bodyA->getPosition() - bodyB->getPosition();
-
-    //Resolve overlap by moving them apart
-    if (overlap.x > 0) {
-        bodyA->setPosition(bodyA->getPosition() + Vector2(overlap.x / 2, 0));
-        bodyB->setPosition(bodyB->getPosition() - Vector2(overlap.x / 2, 0));
-    }
-    if (overlap.y > 0) {
-        bodyA->setPosition(bodyA->getPosition() + Vector2(0, overlap.y / 2));
-        bodyB->setPosition(bodyB->getPosition() - Vector2(0, overlap.y / 2));
-    }
-
-    // Apply more complex resolution logic here, like adjusting velocities or applying forces
 }
 
 //Pauses or resumes the physics processing
