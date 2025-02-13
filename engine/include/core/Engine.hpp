@@ -6,16 +6,16 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
-#include "Vector2.hpp"
-#include "Collider.hpp"
-#include "RectCollider.hpp"
-#include "CircleCollider.hpp"
-#include "PhysicsBody.hpp"
-#include "StaticBody.hpp"
-#include "DynamicBody.hpp"
-#include "CollisionDetection.hpp"
-#include "WorldBoundary.hpp"
-#include "CollisionSolver.hpp"
+#include "core/Vector2.hpp"
+#include "core/WorldBoundary.hpp"
+#include "collisions/Collider.hpp"
+#include "collisions/RectCollider.hpp"
+#include "collisions/CircleCollider.hpp"
+#include "collisions/CollisionDetection.hpp"
+#include "physics/PhysicsBody.hpp"
+#include "physics/StaticBody.hpp"
+#include "physics/DynamicBody.hpp"
+#include "physics/CollisionSolver.hpp"
 
 #include <memory>
 #include <vector>

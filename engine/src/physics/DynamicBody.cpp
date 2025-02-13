@@ -1,6 +1,6 @@
 //Class implementation for dynamic physics bodies
 
-#include "DynamicBody.hpp"
+#include "physics/DynamicBody.hpp"
 
 //Constructor to set members
 DynamicBody::DynamicBody(Vector2 initialPosition, Collider* colliderInstance)

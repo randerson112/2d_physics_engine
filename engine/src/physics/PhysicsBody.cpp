@@ -1,6 +1,6 @@
 //Base class implementation for physics bodies
 
-#include "PhysicsBody.hpp"
+#include "physics/PhysicsBody.hpp"
 
 //Constructor
 PhysicsBody::PhysicsBody(Vector2 initialPosition, Collider* colliderInstance, BodyType bodyType)

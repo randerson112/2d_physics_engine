@@ -1,6 +1,6 @@
 //Class defenition for a collision resolver to resolve collisions between physics bodies
 
-#include "PhysicsBody.hpp"
+#include "physics/PhysicsBody.hpp"
 #include <vector>
 
 //Collision struct that stores pointers to two colliding bodies

@@ -1,6 +1,6 @@
 //Base class implementation for colliders
 
-#include "Collider.hpp"
+#include "collisions/Collider.hpp"
 
 //Constructor to set position and offset
 Collider::Collider(ColliderShape shapeType)

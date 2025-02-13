@@ -1,6 +1,6 @@
 //Implementation of engine class: manages and updates physics bodies
 
-#include "Engine.hpp"
+#include "core/Engine.hpp"
 
 //Constructor to set default gravity scale and enable physics
 Engine::Engine()

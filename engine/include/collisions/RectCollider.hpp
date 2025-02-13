@@ -4,7 +4,7 @@
 #ifndef RECT_COLLIDER_HPP
 #define RECT_COLLIDER_HPP
 
-#include "Collider.hpp"
+#include "collisions/Collider.hpp"
 
 class RectCollider : public Collider
 {

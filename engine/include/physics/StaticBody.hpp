@@ -7,8 +7,8 @@
 #ifndef STATIC_BODY_HPP
 #define STATIC_BODY_HPP
 
-#include "PhysicsBody.hpp"
-#include "Vector2.hpp"
+#include "physics/PhysicsBody.hpp"
+#include "core/Vector2.hpp"
 
 class StaticBody : public PhysicsBody
 {

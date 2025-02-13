@@ -5,8 +5,8 @@
 #ifndef PHYSICS_BODY_HPP
 #define PHYSICS_BODY_HPP
 
-#include "Vector2.hpp"
-#include "Collider.hpp"
+#include "core/Vector2.hpp"
+#include "collisions/Collider.hpp"
 #include <memory>
 
 enum class BodyType

@@ -1,6 +1,6 @@
 //Class implementation for 2D vectors
 
-#include "Vector2.hpp"
+#include "core/Vector2.hpp"
 
 //Default constructor
 Vector2::Vector2() : x(0), y(0) {}

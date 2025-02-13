@@ -1,6 +1,6 @@
 //Class implementation for rectangle shape colliders
 
-#include "RectCollider.hpp"
+#include "collisions/RectCollider.hpp"
 
 //Constructor to set width and height of collider
 RectCollider::RectCollider(float width, float height)

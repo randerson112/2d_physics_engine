@@ -1,6 +1,6 @@
 //Class implementation for static physics bodies
 
-#include "StaticBody.hpp"
+#include "physics/StaticBody.hpp"
 
 //Sets position and collider
 StaticBody::StaticBody(Vector2 initialPosition, Collider* colliderInstance)

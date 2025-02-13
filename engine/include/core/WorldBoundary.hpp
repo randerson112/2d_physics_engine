@@ -1,7 +1,7 @@
 //Class defenition for world boundary to keep physics bodies within constraints
 
-#include "StaticBody.hpp"
-#include "DynamicBody.hpp"
+#include "physics/StaticBody.hpp"
+#include "physics/DynamicBody.hpp"
 
 class WorldBoundary
 {

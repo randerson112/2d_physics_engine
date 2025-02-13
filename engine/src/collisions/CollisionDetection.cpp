@@ -1,7 +1,7 @@
 //Implementaion of collision detection functions
 
-#include "CollisionDetection.hpp"
-#include "Vector2.hpp"
+#include "collisions/CollisionDetection.hpp"
+#include "core/Vector2.hpp"
 #include <algorithm>
 
 //Sorts into respective function based on body shapes

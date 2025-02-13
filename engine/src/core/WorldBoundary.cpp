@@ -1,8 +1,8 @@
 //Implementation of WorldBoundary class
 
-#include "WorldBoundary.hpp"
-#include "RectCollider.hpp"
-#include "CircleCollider.hpp"
+#include "core/WorldBoundary.hpp"
+#include "collisions/RectCollider.hpp"
+#include "collisions/CircleCollider.hpp"
 
 WorldBoundary::WorldBoundary(float width, float height)
     : worldWidth(width), worldHeight(height)

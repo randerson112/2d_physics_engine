@@ -1,11 +1,11 @@
 //Implementation of CollisionSolver class to resolve collisions
 
-#include "CollisionSolver.hpp"
-#include "Vector2.hpp"
-#include "RectCollider.hpp"
-#include "CircleCollider.hpp"
-#include "StaticBody.hpp"
-#include "DynamicBody.hpp"
+#include "physics/CollisionSolver.hpp"
+#include "core/Vector2.hpp"
+#include "collisions/RectCollider.hpp"
+#include "collisions/CircleCollider.hpp"
+#include "physics/StaticBody.hpp"
+#include "physics/DynamicBody.hpp"
 
 //Constructor needs no paramters
 CollisionSolver::CollisionSolver() {}

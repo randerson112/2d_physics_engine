@@ -1,6 +1,6 @@
 //Class implementation for circle shape colliders
 
-#include "CircleCollider.hpp"
+#include "collisions/CircleCollider.hpp"
 
 //Constructor to set radius
 CircleCollider::CircleCollider(float initialRadius)

@@ -4,8 +4,8 @@
 #ifndef COLLISION_DETECTION_HPP
 #define COLLISION_DETECTION_HPP
 
-#include "RectCollider.hpp"
-#include "CircleCollider.hpp"
+#include "collisions/RectCollider.hpp"
+#include "collisions/CircleCollider.hpp"
 
 namespace CollisionDetection
 {

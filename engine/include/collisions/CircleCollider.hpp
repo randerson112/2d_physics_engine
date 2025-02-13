@@ -4,7 +4,7 @@
 #ifndef CIRCLE_COLLIDER_HPP
 #define CIRCLE_COLLIDER_HPP
 
-#include "Collider.hpp"
+#include "collisions/Collider.hpp"
 
 class CircleCollider : public Collider
 {
