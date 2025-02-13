@@ -90,6 +90,9 @@ void WorldBoundary::dynamicEnforce(DynamicBody* body) const
     //Get body center position
     Vector2 bodyPos = body->getPosition();
 
+    //Get the body restitution
+    float bodyRestitution = body->getRestitution();
+
     //For storing new position after calculations
     Vector2 newBodyPos = bodyPos;
 
@@ -109,28 +112,28 @@ void WorldBoundary::dynamicEnforce(DynamicBody* body) const
         if (bodyPos.x - halfBodyWidth < -halfWorldWidth)
         {
             newBodyPos.x = -halfWorldWidth + halfBodyWidth;
-            newVelocity.x = 0;
+            newVelocity.x = -newVelocity.x * bodyRestitution;
         }
 
         //Right boundary
         if (bodyPos.x + halfBodyWidth > halfWorldWidth)
         {
             newBodyPos.x = halfWorldWidth - halfBodyWidth;
-            newVelocity.x = 0;
+            newVelocity.x = -newVelocity.x * bodyRestitution;
         }
 
         //Bottom boundary
         if (bodyPos.y - halfBodyHeight < -halfWorldHeight)
         {
             newBodyPos.y = -halfWorldHeight + halfBodyHeight;
-            newVelocity.y = 0;
+            newVelocity.y = -newVelocity.y * bodyRestitution;
         }
 
         //Top boundary
         if (bodyPos.y + halfBodyHeight > halfWorldHeight)
         {
             newBodyPos.y = halfWorldHeight - halfBodyHeight;
-            newVelocity.y = 0;
+            newVelocity.y = -newVelocity.y * bodyRestitution;
         }
     }
 
@@ -146,28 +149,28 @@ void WorldBoundary::dynamicEnforce(DynamicBody* body) const
         if (bodyPos.x - bodyRadius < -halfWorldWidth)
         {
             newBodyPos.x = -halfWorldWidth + bodyRadius;
-            newVelocity.x = 0;
+            newVelocity.x = -newVelocity.x * bodyRestitution;
         }
 
         //Right boundary
         if (bodyPos.x + bodyRadius > halfWorldWidth)
         {
             newBodyPos.x = halfWorldWidth - bodyRadius;
-            newVelocity.x = 0;
+            newVelocity.x = -newVelocity.x * bodyRestitution;
         }
 
         //Bottom boundary
         if (bodyPos.y - bodyRadius < -halfWorldHeight)
         {
             newBodyPos.y = -halfWorldHeight + bodyRadius;
-            newVelocity.y = 0;
+            newVelocity.y = -newVelocity.y * bodyRestitution;
         }
 
         //Top boundary
         if (bodyPos.y + bodyRadius > halfWorldHeight)
         {
             newBodyPos.y = halfWorldHeight - bodyRadius;
-            newVelocity.y = 0;
+            newVelocity.y = -newVelocity.y * bodyRestitution;
         }
     }
 

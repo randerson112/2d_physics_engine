@@ -96,40 +96,40 @@ void CollisionSolver::resolveCircleCircleCollision(PhysicsBody* circleA, Physics
     {
         DynamicBody* dynamicCircleA = static_cast<DynamicBody*>(circleA);
 
-        //Get velocity and mass
+        //Get velocity, restitution, and mass
         Vector2 velocityA = dynamicCircleA->getVelocity();
+        float restitutionA = dynamicCircleA->getRestitution();
         float massA = dynamicCircleA->getMass();
 
         //Move along the inverse normal by half the penetration depth
         dynamicCircleA->move(-normal * penDepth / 2);
         
-        //Poject velocity onto normal and tangent axes
-        float vNormalA = velocityA.projectOntoAxis(normal);
-        float vTangentA = velocityA.projectOntoAxis(tangent);
-
         //If second circle is also a dynamic physics body
         if (typeB == BodyType::DynamicBody)
         {
             DynamicBody* dynamicCircleB = static_cast<DynamicBody*>(circleB);
 
-            //Get velocity and mass
+            //Get velocity, restitution, and mass
             Vector2 velocityB = dynamicCircleB->getVelocity();
+            float restitutionB = dynamicCircleB->getRestitution();
             float massB = dynamicCircleB->getMass();
 
             //Move along the normal by half the penetration depth
             dynamicCircleB->move(normal * penDepth / 2);
-            
-            //Poject velocity onto normal and tangent axes
-            float vNormalB = velocityA.projectOntoAxis(normal);
-            float vTangentB = velocityA.projectOntoAxis(tangent);
-            
-            //Compute new normal velocities using conservation of momentum
-            float vNormalFinalA = ((massA - massB) * vNormalA + 2 * massB * vNormalB) / (massA + massB);
-            float vNormalFinalB = ((massB - massA) * vNormalB + 2 * massA * vNormalA) / (massA + massB);
 
-            //Convert final normal and unchanged tangential components back to vector form
-            dynamicCircleA->setVelocity(normal * vNormalFinalA + tangent * vTangentA);
-            dynamicCircleB->setVelocity(normal * vNormalFinalB + tangent * vTangentB);
+            //Get relative velocity
+            Vector2 relVelocity = velocityB - velocityA;
+
+            //Get minimum restitution
+            float e = std::min(restitutionA, restitutionB);
+
+            //Get the impulse magnitude
+            float j = -(1 + e) * relVelocity.projectOntoAxis(normal);
+            j /= (1 / massA) + (1 / massB);
+
+            //Calculate and set new velocities
+            dynamicCircleA->setVelocity(dynamicCircleA->getVelocity() - normal * j / massA);
+            dynamicCircleB->setVelocity(dynamicCircleB->getVelocity() + normal * j / massB);
         }
     }
 }
