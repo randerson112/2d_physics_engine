@@ -10,6 +10,17 @@
 //Constructor needs no paramters
 CollisionSolver::CollisionSolver() {}
 
+//Destructor to delete lingering collision objects
+CollisionSolver::~CollisionSolver()
+{
+    for (Collision* collision : collisions)
+    {
+        delete collision;
+    }
+
+    collisions.clear();
+}
+
 //Adds a collision instance to the vector, called from the engine
 void CollisionSolver::addCollision(Collision* newCollision)
 {

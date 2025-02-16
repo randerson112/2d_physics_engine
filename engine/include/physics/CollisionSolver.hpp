@@ -32,6 +32,9 @@ public:
     //Constructor needs no paramters
     CollisionSolver();
 
+    //Destructor to delete collision objects
+    ~CollisionSolver();
+
     //Loops through collisions vector and sort collisions to respective solvers
     void resolveCollisions();
 

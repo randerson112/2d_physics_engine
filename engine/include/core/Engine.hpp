@@ -17,7 +17,6 @@
 #include "physics/DynamicBody.hpp"
 #include "physics/CollisionSolver.hpp"
 
-#include <memory>
 #include <vector>
 
 class Engine

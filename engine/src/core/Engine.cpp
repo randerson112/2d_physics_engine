@@ -2,19 +2,20 @@
 
 #include "core/Engine.hpp"
 
-//Constructor to set default gravity scale and enable physics
+//Constructor to set default engine settings
 Engine::Engine()
     : boundary(nullptr), gravityScale(1.0f), physicsProcess(true), collisionsProcess(true)
     {
         collisionSolver = new CollisionSolver();
     }
 
-//Destructor to delete all physics bodies and world boundary
+//Destructor to delete all dynamically allocated objects
 Engine::~Engine()
 {
+    delete collisionSolver;
     delete boundary;
 
-    for (auto& body: physicsBodies)
+    for (PhysicsBody* body: physicsBodies)
     {
         delete body;
     }
@@ -26,7 +27,7 @@ Engine::~Engine()
 void Engine::setWorldBoundaries(float newWidth, float newHeight)
 {
     //Create new boundary if no boundaries are active
-    if (boundary == nullptr)
+    if (!boundary)
     {
         boundary = new WorldBoundary(newWidth, newHeight);
         return;
@@ -39,8 +40,11 @@ void Engine::setWorldBoundaries(float newWidth, float newHeight)
 //Removes boundaries from world
 void Engine::removeWorldBoundaries()
 {
-    delete boundary;
-    boundary = nullptr;
+    if (boundary)
+    {
+        delete boundary;
+        boundary = nullptr;
+    }
 }
 
 //Adds a physics body to the world
@@ -48,7 +52,8 @@ void Engine::addBody(PhysicsBody* body)
 {
     physicsBodies.push_back(body);
 
-    boundary->placementEnforce(body); //Keeps body within boundaries when added
+    if (boundary)
+        boundary->placementEnforce(body); //Keeps body within boundaries when added
 }
 
 //Removes a physics body from the world
@@ -57,55 +62,62 @@ void Engine::removeBody(PhysicsBody* body)
     auto it = std::find(physicsBodies.begin(), physicsBodies.end(), body);
     if (it != physicsBodies.end())
     {
+        delete *it;
         physicsBodies.erase(it);
     }
-
-    delete body;
 }
 
 //Updates physics bodies and checks for collisions
 void Engine::update(float deltaTime)
 {
-    if (physicsProcess)
+    //If physics processing is disabled, return early
+    if (!physicsProcess) return;
+
+    //Loop through all physics bodies
+    for (auto& body : physicsBodies)
     {
-        for (auto& body : physicsBodies)
+        //Extra logic for dynamic bodies
+        if (body->getType() == BodyType::DynamicBody)
         {
-            if (DynamicBody* dynamicBody = dynamic_cast<DynamicBody*>(body))
-            {
-                applyGravity(dynamicBody); //Apply gravity to dynamic body
+            DynamicBody* dynamicBody = static_cast<DynamicBody*>(body);
 
-                if (boundary != nullptr)
-                    boundary->dynamicEnforce(dynamicBody); //Keep dynamic body within world boundaries
-            }
+            applyGravity(dynamicBody); //Apply gravity to dynamic bodies
 
-            body->update(deltaTime); //Update body physics
+            if (boundary)
+                boundary->dynamicEnforce(dynamicBody); //Keep dynamic bodies within world boundaries
         }
 
-        if (collisionsProcess)
+        body->update(deltaTime); //Update all bodies
+    }
+
+    //If collisions processing is disabled, return early
+    if (!collisionsProcess) return;
+
+    //Nested for loop to check every body against every other body
+    for (size_t i = 0; i < physicsBodies.size(); i++)
+    {
+        PhysicsBody* bodyA = physicsBodies[i];
+
+        for (size_t j = i + 1; j < physicsBodies.size(); j++)
         {
-            for (size_t i = 0; i < physicsBodies.size(); i++)
+            PhysicsBody* bodyB = physicsBodies[j];
+
+            //Get the colliders of the bodies
+            Collider* colliderA = bodyA->getCollider();
+            Collider* colliderB = bodyB->getCollider();
+
+            //If a collision is detected between the colliders, pass bodies to collision solver
+            if (CollisionDetection::checkCollision(colliderA, colliderB))
             {
-                PhysicsBody* bodyA = physicsBodies[i];
-
-                for (size_t j = i + 1; j < physicsBodies.size(); j++)
-                {
-                    PhysicsBody* bodyB = physicsBodies[j];
-
-                    Collider* colliderA = bodyA->getCollider();
-                    Collider* colliderB = bodyB->getCollider();
-
-                    if (CollisionDetection::checkCollision(colliderA, colliderB))
-                    {
-                        collisionSolver->addCollision(new Collision(bodyA, bodyB));
-                    }
-                }
+                collisionSolver->addCollision(new Collision(bodyA, bodyB));
             }
-
-            collisionSolver->resolveCollisions();
         }
     }
+
+    collisionSolver->resolveCollisions(); //Collision solver resolves all collisions detected this frame
 }
 
+//Applies the force of gravity to a dynamic body
 void Engine::applyGravity(DynamicBody* body)
 {
     body->applyForce(gravity * gravityScale * body->getMass());

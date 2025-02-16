@@ -2,7 +2,7 @@
 
 #include "physics/PhysicsBody.hpp"
 
-//Constructor
+//Constructor to set position, collider, and body type
 PhysicsBody::PhysicsBody(Vector2 initialPosition, Collider* colliderInstance, BodyType bodyType)
     : position(initialPosition), collider(colliderInstance), type(bodyType)
     {
@@ -10,7 +10,7 @@ PhysicsBody::PhysicsBody(Vector2 initialPosition, Collider* colliderInstance, Bo
         collider->setPosition(position + collider->getOffset()); //Set the position of the collider to body position
     }
 
-//Destructor
+//Destructor to delete collider memory
 PhysicsBody::~PhysicsBody()
 {
     delete collider; 
@@ -47,7 +47,7 @@ void PhysicsBody::setPosition(Vector2 newPosition)
 
 void PhysicsBody::setCollider(Collider* newCollider)
 {
-    if (collider != nullptr) //If there is an active collider already
+    if (collider) //If there is an active collider already
     {
         delete collider; //Delete current collider
     }
