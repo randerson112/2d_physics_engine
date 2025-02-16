@@ -77,6 +77,12 @@ void CollisionSolver::resolveRectRectCollision(PhysicsBody* rectA, PhysicsBody* 
 //Resolve a collision with two circles
 void CollisionSolver::resolveCircleCircleCollision(PhysicsBody* circleA, PhysicsBody* circleB)
 {
+    // Ensure circleA is always the dynamic body
+    if (circleA->getType() == BodyType::StaticBody && circleB->getType() == BodyType::DynamicBody)
+    {
+        std::swap(circleA, circleB);
+    }
+    
     //Get body types
     BodyType typeA = circleA->getType();
     BodyType typeB = circleB->getType();
@@ -111,9 +117,6 @@ void CollisionSolver::resolveCircleCircleCollision(PhysicsBody* circleA, Physics
         Vector2 velocityA = dynamicCircleA->getVelocity();
         float restitutionA = dynamicCircleA->getRestitution();
         float massA = dynamicCircleA->getMass();
-
-        //Move along the inverse normal by half the penetration depth
-        dynamicCircleA->move(-normal * penDepth / 2);
         
         //If second circle is also a dynamic physics body
         if (typeB == BodyType::DynamicBody)
@@ -125,7 +128,8 @@ void CollisionSolver::resolveCircleCircleCollision(PhysicsBody* circleA, Physics
             float restitutionB = dynamicCircleB->getRestitution();
             float massB = dynamicCircleB->getMass();
 
-            //Move along the normal by half the penetration depth
+            //Move circles along the normal by half the penetration depth
+            dynamicCircleA->move(-normal * penDepth / 2);
             dynamicCircleB->move(normal * penDepth / 2);
 
             //Get relative velocity
@@ -141,6 +145,18 @@ void CollisionSolver::resolveCircleCircleCollision(PhysicsBody* circleA, Physics
             //Calculate and set new velocities
             dynamicCircleA->setVelocity(dynamicCircleA->getVelocity() - normal * j / massA);
             dynamicCircleB->setVelocity(dynamicCircleB->getVelocity() + normal * j / massB);
+        }
+
+        if (typeB == BodyType::StaticBody)
+        {
+            StaticBody* staticCircleB = static_cast<StaticBody*>(circleB);
+
+            //Move dynamic circle along normal by the full penetration depth
+            dynamicCircleA->move(-normal * penDepth);
+
+            //Reflect the dynamic circle velocity along the normal
+            Vector2 reflectedVelocity = velocityA - normal * (1 + restitutionA) * velocityA.projectOntoAxis(normal);
+            dynamicCircleA->setVelocity(reflectedVelocity);
         }
     }
 }

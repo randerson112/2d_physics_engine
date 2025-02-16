@@ -106,6 +106,14 @@ void Engine::update(float deltaTime)
             Collider* colliderA = bodyA->getCollider();
             Collider* colliderB = bodyB->getCollider();
 
+            //Get the body types
+            BodyType typeA = bodyA->getType();
+            BodyType typeB = bodyB->getType();
+
+            //If both are static bodies, no need to check for a collision
+            if (typeA == BodyType::StaticBody && typeB == BodyType::StaticBody)
+                continue;
+
             //If a collision is detected between the colliders, pass bodies to collision solver
             if (CollisionDetection::checkCollision(colliderA, colliderB))
             {
