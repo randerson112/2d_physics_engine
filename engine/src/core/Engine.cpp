@@ -115,9 +115,10 @@ void Engine::update(float deltaTime)
                 continue;
 
             //If a collision is detected between the colliders, pass bodies to collision solver
-            if (CollisionDetection::checkCollision(colliderA, colliderB))
+            Collision* collision = CollisionDetection::checkCollision(bodyA, bodyB);
+            if (collision)
             {
-                collisionSolver->addCollision(new Collision(bodyA, bodyB));
+                collisionSolver->addCollision(collision);
             }
         }
     }

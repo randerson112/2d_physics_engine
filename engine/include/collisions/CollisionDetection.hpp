@@ -6,20 +6,21 @@
 
 #include "collisions/RectCollider.hpp"
 #include "collisions/CircleCollider.hpp"
+#include "collisions/Collision.hpp"
 
 namespace CollisionDetection
 {
     //Sorts into respective function based on body shapes
-    bool checkCollision(Collider* colliderA, Collider* colliderB);
+    Collision* checkCollision(PhysicsBody* bodyA, PhysicsBody* bodyB);
 
     //Calculate collision between two rectangle colliders
-    bool checkRectRectCollision(RectCollider* rectA, RectCollider* rectB);
+    Collision* checkRectRectCollision(RectCollider* rectA, RectCollider* rectB);
 
     //Calculate collision between two circle colliders
-    bool checkCircleCircleCollision(CircleCollider* circleA, CircleCollider* circleB);
+    Collision* checkCircleCircleCollision(CircleCollider* circleA, CircleCollider* circleB);
 
     //Calculate collision between a rectangle and a circle collider
-    bool checkRectCircleCollision(RectCollider* rect, CircleCollider* circle);
+    Collision* checkRectCircleCollision(RectCollider* rect, CircleCollider* circle);
 }
 
 #endif

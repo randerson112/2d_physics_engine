@@ -1,17 +1,8 @@
 //Class defenition for a collision resolver to resolve collisions between physics bodies
 
 #include "physics/PhysicsBody.hpp"
+#include "collisions/Collision.hpp"
 #include <vector>
-
-//Collision struct that stores pointers to two colliding bodies
-struct Collision
-{
-    PhysicsBody* bodyA;
-    PhysicsBody* bodyB;
-
-    Collision(PhysicsBody* bodyA, PhysicsBody* bodyB)
-        : bodyA(bodyA), bodyB(bodyB) {}
-};
 
 class CollisionSolver
 {
@@ -20,13 +11,13 @@ private:
     std::vector<Collision*> collisions;
 
     //Resolve a collision with two rectangles
-    void resolveRectRectCollision(PhysicsBody* rectA, PhysicsBody* rectB);
+    void resolveRectRectCollision(PhysicsBody* rectA, PhysicsBody* rectB, Vector2 normal, float penDepth);
 
     //Resolve a collision with two circles
-    void resolveCircleCircleCollision(PhysicsBody* circleA, PhysicsBody* circleB);
+    void resolveCircleCircleCollision(PhysicsBody* circleA, PhysicsBody* circleB, Vector2 normal, float penDepth);
 
     //Resolve a collision with a rectangle and a circle
-    void resolveRectCircleCollision(PhysicsBody* rect, PhysicsBody* circle);
+    void resolveRectCircleCollision(PhysicsBody* rect, PhysicsBody* circle, Vector2 normal, float penDepth);
 
 public:
     //Constructor needs no paramters

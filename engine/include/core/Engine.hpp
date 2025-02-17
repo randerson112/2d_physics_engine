@@ -12,6 +12,7 @@
 #include "collisions/RectCollider.hpp"
 #include "collisions/CircleCollider.hpp"
 #include "collisions/CollisionDetection.hpp"
+#include "collisions/Collision.hpp"
 #include "physics/PhysicsBody.hpp"
 #include "physics/StaticBody.hpp"
 #include "physics/DynamicBody.hpp"

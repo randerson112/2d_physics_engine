@@ -4,9 +4,15 @@
 #include "core/Vector2.hpp"
 #include <algorithm>
 
+struct Collision;
+
 //Sorts into respective function based on body shapes
-bool CollisionDetection::checkCollision(Collider* colliderA, Collider* colliderB)
+Collision* CollisionDetection::checkCollision(PhysicsBody* bodyA, PhysicsBody* bodyB)
 {
+    //Get colliders
+    Collider* colliderA = bodyA->getCollider();
+    Collider* colliderB = bodyB->getCollider();
+
     //Get collider shapes
     ColliderShape shapeA = colliderA->getShape();
     ColliderShape shapeB = colliderB->getShape();
@@ -61,7 +67,7 @@ bool CollisionDetection::checkCollision(Collider* colliderA, Collider* colliderB
 }
 
 //Calculate collision between two rectangle colliders
-bool CollisionDetection::checkRectRectCollision(RectCollider* rectA, RectCollider* rectB)
+Collision* CollisionDetection::checkRectRectCollision(RectCollider* rectA, RectCollider* rectB)
 {
     //Get positions of centers
     Vector2 rectAPos = rectA->getPosition();
@@ -86,14 +92,40 @@ bool CollisionDetection::checkRectRectCollision(RectCollider* rectA, RectCollide
     float rectBBottom = rectBPos.y + rectBHeight / 2;
 
     //Check for overlap
-    return (rectARight > rectBLeft &&
-            rectALeft < rectBRight &&
-            rectABottom > rectBTop &&
-            rectATop < rectBBottom);
+    if (rectARight > rectBLeft && rectALeft < rectBRight && rectABottom > rectBTop && rectATop < rectBBottom)
+    {
+        // Compute penetration depth on both axes
+        float xOverlap = std::min(rectARight - rectBLeft, rectBRight - rectALeft);
+        float yOverlap = std::min(rectABottom - rectBTop, rectBBottom - rectATop);
+
+        //Declare variables for normal and penetration depth
+        Vector2 normal;
+        float penDepth;
+
+        //Horizontal collision
+        if (xOverlap <= yOverlap)
+        {
+            normal = (rectAPos.x < rectBPos.x) ? Vector2(-1, 0) : Vector2(1, 0);
+            penDepth = xOverlap;
+        }
+
+        //Vertical collision
+        else
+        {
+            normal = (rectAPos.y < rectBPos.y) ? Vector2(0, -1) : Vector2(0, 1);
+            penDepth = yOverlap;
+        }
+
+        //Return a collision object
+        return new Collision(rectA->getParent(), rectB->getParent(), normal, penDepth);
+    }
+
+    //If no collision is detected
+    return nullptr;
 }
 
 //Calculate collision between two circle colliders
-bool CollisionDetection::checkCircleCircleCollision(CircleCollider* circleA, CircleCollider* circleB)
+Collision* CollisionDetection::checkCircleCircleCollision(CircleCollider* circleA, CircleCollider* circleB)
 {
     //Get positions of centers
     Vector2 circleAPos = circleA->getPosition();
@@ -110,11 +142,22 @@ bool CollisionDetection::checkCircleCircleCollision(CircleCollider* circleA, Cir
     float distanceSquared = vectorBetweenCenters.getSquare();
 
     //Check if distance squared is less than sum of radii squared
-    return (distanceSquared <= (sumRadii * sumRadii));
+    if (distanceSquared <= (sumRadii * sumRadii))
+    {
+        //Get the normal and penetration depth of the collision
+        Vector2 normal = circleAPos.getDirectionTo(circleBPos);
+        float penDepth = sumRadii - (circleAPos.getVectorTo(circleBPos)).getLength();
+
+        //Return a collision object
+        return new Collision(circleA->getParent(), circleB->getParent(), normal, penDepth);
+    }
+
+    //If no collision is detected
+    return nullptr;
 }
 
 //Calculate collision between a rectangle and a circle collider
-bool CollisionDetection::checkRectCircleCollision(RectCollider* rect, CircleCollider* circle)
+Collision* CollisionDetection::checkRectCircleCollision(RectCollider* rect, CircleCollider* circle)
 {
     //Get the rectangle center position
     Vector2 rectPos = rect->getPosition();
@@ -136,6 +179,20 @@ bool CollisionDetection::checkRectCircleCollision(RectCollider* rect, CircleColl
     Vector2 vectorBetween = closestPoint.getVectorTo(circlePos);
     float distanceSquared = vectorBetween.getSquare();
 
-    //Compare with the squared radius
-    return (distanceSquared < (circleRadius * circleRadius));
+    //Get radius squared
+    float circleRadiusSquared = circleRadius * circleRadius;
+
+    //Compare distance squared with the squared radius
+    if (distanceSquared < circleRadiusSquared)
+    {
+        //Get the normal and penetration depth of the collision
+        Vector2 normal = closestPoint.getDirectionTo(circlePos);
+        float penDepth = circleRadius - sqrt(distanceSquared);
+
+        //Return a collision object
+        return new Collision(rect->getParent(), circle->getParent(), normal, penDepth);
+    }
+
+    //If no collision is detected
+    return nullptr;
 }
