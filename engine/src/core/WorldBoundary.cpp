@@ -4,9 +4,11 @@
 #include "collisions/RectCollider.hpp"
 #include "collisions/CircleCollider.hpp"
 
-WorldBoundary::WorldBoundary(float width, float height)
-    : worldWidth(width), worldHeight(height)
+//Constructor to set dimensions and boundary type
+WorldBoundary::WorldBoundary(float width, float height, BoundaryType type)
+    : worldWidth(width), worldHeight(height), type(type)
     {
+        //Check if dimensions are not less than minimums
         if (worldWidth < MIN_WORLD_WIDTH)
             worldWidth = MIN_WORLD_WIDTH;
 
@@ -14,8 +16,9 @@ WorldBoundary::WorldBoundary(float width, float height)
             worldHeight = MIN_WORLD_HEIGHT;
     }
 
-//Keeps a body within world bounds when it is first placed or moved
-void WorldBoundary::placementEnforce(PhysicsBody* body) const
+//Enforce boundaries on a body when it is first placed or moved
+//Returns true if body has gone beyond the boundary so the engine knows to delete it
+bool WorldBoundary::placementEnforce(PhysicsBody* body) const
 {
     //Get world half dimensions
     float halfWorldWidth = worldWidth / 2;
@@ -39,17 +42,40 @@ void WorldBoundary::placementEnforce(PhysicsBody* body) const
         float halfBodyWidth = bodyCollider->getWidth() / 2;
         float halfBodyHeight = bodyCollider->getHeight() / 2;
 
-        //Left boundary
-        if (bodyPos.x - halfBodyWidth < -halfWorldWidth) newBodyPos.x = -halfWorldWidth + halfBodyWidth;
+        //if we want the body to stay inside the boundary
+        if (type == BoundaryType::Collidable)
+        {
+            //Left boundary
+            if (bodyPos.x - halfBodyWidth < -halfWorldWidth) newBodyPos.x = -halfWorldWidth + halfBodyWidth;
 
-        //Right boundary
-        if (bodyPos.x + halfBodyWidth > halfWorldWidth) newBodyPos.x = halfWorldWidth - halfBodyWidth;
+            //Right boundary
+            if (bodyPos.x + halfBodyWidth > halfWorldWidth) newBodyPos.x = halfWorldWidth - halfBodyWidth;
 
-        //Bottom boundary
-        if (bodyPos.y - halfBodyHeight < -halfWorldHeight) newBodyPos.y = -halfWorldHeight + halfBodyHeight;
+            //Bottom boundary
+            if (bodyPos.y - halfBodyHeight < -halfWorldHeight) newBodyPos.y = -halfWorldHeight + halfBodyHeight;
 
-        //Top boundary
-        if (bodyPos.y + halfBodyHeight > halfWorldHeight) newBodyPos.y = halfWorldHeight - halfBodyHeight;
+            //Top boundary
+            if (bodyPos.y + halfBodyHeight > halfWorldHeight) newBodyPos.y = halfWorldHeight - halfBodyHeight;
+        }
+
+        //If we want to delete the body if it is beyond the boundary
+        if (type == BoundaryType::Delete)
+        {
+            //Left boundary
+            if (bodyPos.x + halfBodyWidth < -halfWorldWidth) return true;
+
+            //Right boundary
+            if (bodyPos.x - halfBodyWidth > halfWorldWidth) return true;
+
+            //Bottom boundary
+            if (bodyPos.y + halfBodyHeight < -halfWorldHeight) return true;
+
+            //Top boundary
+            if (bodyPos.y - halfBodyHeight > halfWorldHeight) return true;
+
+            //Body is still within boundaries, do not delete
+            return false;
+        }
     }
 
     //If body is a circle
@@ -60,25 +86,51 @@ void WorldBoundary::placementEnforce(PhysicsBody* body) const
         //Get the radius
         float bodyRadius = bodyCollider->getRadius();
 
-        //Left boundary
-        if (bodyPos.x - bodyRadius < -halfWorldWidth) newBodyPos.x = -halfWorldWidth + bodyRadius;
+        //if we want the body to stay inside the boundary
+        if (type == BoundaryType::Collidable)
+        {
+            //Left boundary
+            if (bodyPos.x - bodyRadius < -halfWorldWidth) newBodyPos.x = -halfWorldWidth + bodyRadius;
 
-        //Right boundary
-        if (bodyPos.x + bodyRadius > halfWorldWidth) newBodyPos.x = halfWorldWidth - bodyRadius;
+            //Right boundary
+            if (bodyPos.x + bodyRadius > halfWorldWidth) newBodyPos.x = halfWorldWidth - bodyRadius;
 
-        //Bottom boundary
-        if (bodyPos.y - bodyRadius < -halfWorldHeight) newBodyPos.y = -halfWorldHeight + bodyRadius;
+            //Bottom boundary
+            if (bodyPos.y - bodyRadius < -halfWorldHeight) newBodyPos.y = -halfWorldHeight + bodyRadius;
 
-        //Top boundary
-        if (bodyPos.y + bodyRadius > halfWorldHeight) newBodyPos.y = halfWorldHeight - bodyRadius;
+            //Top boundary
+            if (bodyPos.y + bodyRadius > halfWorldHeight) newBodyPos.y = halfWorldHeight - bodyRadius;
+        }
+
+        //If we want to delete the body if it is beyond the boundary
+        if (type == BoundaryType::Delete)
+        {
+            //Left boundary
+            if (bodyPos.x + bodyRadius < -halfWorldWidth) return true;
+
+            //Right boundary
+            if (bodyPos.x - bodyRadius > halfWorldWidth) return true;
+
+            //Bottom boundary
+            if (bodyPos.y + bodyRadius < -halfWorldHeight) return true;
+
+            //Top boundary
+            if (bodyPos.y - bodyRadius > halfWorldHeight) return true;
+
+            //Body is still within boundaries, do not delete
+            return false;
+        }
     }
 
     //Update the body position to stay within bounds
     body->setPosition(newBodyPos);
+
+    //Return false because body type is not delete and calculations already made
+    return false;
 }
 
-//Keeps a dynamic body within world boundaries every frame
-void WorldBoundary::dynamicEnforce(DynamicBody* body) const
+//Enforce boundaries on a dynamic body every frame
+bool WorldBoundary::dynamicEnforce(DynamicBody* body) const
 {
     //Get world half dimensions
     float halfWorldWidth = worldWidth / 2;
@@ -108,32 +160,55 @@ void WorldBoundary::dynamicEnforce(DynamicBody* body) const
         float halfBodyWidth = bodyCollider->getWidth() / 2;
         float halfBodyHeight = bodyCollider->getHeight() / 2;
 
-        //Left boundary
-        if (bodyPos.x - halfBodyWidth < -halfWorldWidth)
+        //If we want the dynamic body to collide with the boundary
+        if (type == BoundaryType::Collidable)
         {
-            newBodyPos.x = -halfWorldWidth + halfBodyWidth;
-            newVelocity.x = -newVelocity.x * bodyRestitution;
+            //Left boundary
+            if (bodyPos.x - halfBodyWidth < -halfWorldWidth)
+            {
+                newBodyPos.x = -halfWorldWidth + halfBodyWidth;
+                newVelocity.x = -newVelocity.x * bodyRestitution;
+            }
+
+            //Right boundary
+            if (bodyPos.x + halfBodyWidth > halfWorldWidth)
+            {
+                newBodyPos.x = halfWorldWidth - halfBodyWidth;
+                newVelocity.x = -newVelocity.x * bodyRestitution;
+            }
+
+            //Bottom boundary
+            if (bodyPos.y - halfBodyHeight < -halfWorldHeight)
+            {
+                newBodyPos.y = -halfWorldHeight + halfBodyHeight;
+                newVelocity.y = -newVelocity.y * bodyRestitution;
+            }
+
+            //Top boundary
+            if (bodyPos.y + halfBodyHeight > halfWorldHeight)
+            {
+                newBodyPos.y = halfWorldHeight - halfBodyHeight;
+                newVelocity.y = -newVelocity.y * bodyRestitution;
+            }
         }
 
-        //Right boundary
-        if (bodyPos.x + halfBodyWidth > halfWorldWidth)
+        //If we want the dynamic body to be deleted if it goes beyond the boundary
+        if (type == BoundaryType::Delete)
         {
-            newBodyPos.x = halfWorldWidth - halfBodyWidth;
-            newVelocity.x = -newVelocity.x * bodyRestitution;
-        }
+            //Left boundary
+            if (bodyPos.x + halfBodyWidth < -halfWorldWidth) return true;
 
-        //Bottom boundary
-        if (bodyPos.y - halfBodyHeight < -halfWorldHeight)
-        {
-            newBodyPos.y = -halfWorldHeight + halfBodyHeight;
-            newVelocity.y = -newVelocity.y * bodyRestitution;
-        }
+            //Right boundary
+            if (bodyPos.x - halfBodyWidth > halfWorldWidth) return true;
 
-        //Top boundary
-        if (bodyPos.y + halfBodyHeight > halfWorldHeight)
-        {
-            newBodyPos.y = halfWorldHeight - halfBodyHeight;
-            newVelocity.y = -newVelocity.y * bodyRestitution;
+            //Bottom boundary
+            if (bodyPos.y + halfBodyHeight < -halfWorldHeight) return true;
+
+            //Top boundary
+            if (bodyPos.y - halfBodyHeight > halfWorldHeight) return true;
+
+            //Body is still within boundaries, do not delete
+            return false;
         }
     }
 
@@ -145,32 +220,55 @@ void WorldBoundary::dynamicEnforce(DynamicBody* body) const
         //Get circle radius
         float bodyRadius = bodyCollider->getRadius();
 
-        //Left boundary
-        if (bodyPos.x - bodyRadius < -halfWorldWidth)
+        //If we want the dynamic body to collide with the boundary
+        if (type == BoundaryType::Collidable)
         {
-            newBodyPos.x = -halfWorldWidth + bodyRadius;
-            newVelocity.x = -newVelocity.x * bodyRestitution;
+            //Left boundary
+            if (bodyPos.x - bodyRadius < -halfWorldWidth)
+            {
+                newBodyPos.x = -halfWorldWidth + bodyRadius;
+                newVelocity.x = -newVelocity.x * bodyRestitution;
+            }
+
+            //Right boundary
+            if (bodyPos.x + bodyRadius > halfWorldWidth)
+            {
+                newBodyPos.x = halfWorldWidth - bodyRadius;
+                newVelocity.x = -newVelocity.x * bodyRestitution;
+            }
+
+            //Bottom boundary
+            if (bodyPos.y - bodyRadius < -halfWorldHeight)
+            {
+                newBodyPos.y = -halfWorldHeight + bodyRadius;
+                newVelocity.y = -newVelocity.y * bodyRestitution;
+            }
+
+            //Top boundary
+            if (bodyPos.y + bodyRadius > halfWorldHeight)
+            {
+                newBodyPos.y = halfWorldHeight - bodyRadius;
+                newVelocity.y = -newVelocity.y * bodyRestitution;
+            }
         }
 
-        //Right boundary
-        if (bodyPos.x + bodyRadius > halfWorldWidth)
+        //If we want the dynamic body to be deleted if it goes beyond the boundary
+        if (type == BoundaryType::Delete)
         {
-            newBodyPos.x = halfWorldWidth - bodyRadius;
-            newVelocity.x = -newVelocity.x * bodyRestitution;
-        }
+            //Left boundary
+            if (bodyPos.x + bodyRadius < -halfWorldWidth) return true;
 
-        //Bottom boundary
-        if (bodyPos.y - bodyRadius < -halfWorldHeight)
-        {
-            newBodyPos.y = -halfWorldHeight + bodyRadius;
-            newVelocity.y = -newVelocity.y * bodyRestitution;
-        }
+            //Right boundary
+            if (bodyPos.x - bodyRadius > halfWorldWidth) return true;
 
-        //Top boundary
-        if (bodyPos.y + bodyRadius > halfWorldHeight)
-        {
-            newBodyPos.y = halfWorldHeight - bodyRadius;
-            newVelocity.y = -newVelocity.y * bodyRestitution;
+            //Bottom boundary
+            if (bodyPos.y + bodyRadius < -halfWorldHeight) return true;
+
+            //Top boundary
+            if (bodyPos.y - bodyRadius > halfWorldHeight) return true;
+
+            //Body is still within boundaries, do not delete
+            return false;
         }
     }
 
@@ -179,6 +277,9 @@ void WorldBoundary::dynamicEnforce(DynamicBody* body) const
 
     //Update the body velocity when boundaries are hit
     body->setVelocity(newVelocity);
+
+    //Return false because body type is not delete and calculations already made
+    return false;
 }
 
 //Getters for member variables
@@ -200,4 +301,10 @@ void WorldBoundary::setDimensions(float newWidth, float newHeight)
 
     if (newHeight >= MIN_WORLD_HEIGHT)
         worldHeight = newHeight;
+}
+
+//Set a new boundary type
+void WorldBoundary::setType(BoundaryType newType)
+{
+    type = newType;
 }

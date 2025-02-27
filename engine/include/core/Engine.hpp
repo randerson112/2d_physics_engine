@@ -49,8 +49,8 @@ public:
     Engine();
     ~Engine();
 
-    //Sets world boundary dimensions for the world
-    void setWorldBoundaries(float newWidth, float newHeight);
+    //Sets world boundary dimensions and type
+    void setWorldBoundaries(float newWidth, float newHeight, BoundaryType type);
 
     //Removes boundaries from world
     void removeWorldBoundaries();
@@ -79,6 +79,9 @@ public:
     //Sets the gravity scale of the world
     //Parameter: a non-negative scale factor
     void setGravityScale(float scaleValue);
+
+    //Returns the vector of physics bodies in the world
+    std::vector<PhysicsBody*> getBodies();
 };
 
 #endif

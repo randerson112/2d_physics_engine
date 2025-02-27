@@ -23,18 +23,21 @@ Engine::~Engine()
     physicsBodies.clear();
 }
 
-//Sets boundary dimensions for the world
-void Engine::setWorldBoundaries(float newWidth, float newHeight)
+//Sets world boundary dimensions and type
+void Engine::setWorldBoundaries(float newWidth, float newHeight, BoundaryType type)
 {
     //Create new boundary if no boundaries are active
     if (!boundary)
     {
-        boundary = new WorldBoundary(newWidth, newHeight);
+        boundary = new WorldBoundary(newWidth, newHeight, type);
         return;
     }
 
     //Resize active boundary
     boundary->setDimensions(newWidth, newHeight);
+
+    //Set type
+    boundary->setType(type);
 }
 
 //Removes boundaries from world
@@ -53,7 +56,8 @@ void Engine::addBody(PhysicsBody* body)
     physicsBodies.push_back(body);
 
     if (boundary)
-        boundary->placementEnforce(body); //Keeps body within boundaries when added
+        if (boundary->placementEnforce(body)) //Enforce world boundary on body when added
+            removeBody(body); //Delete the body if boundary type is delete and beyond boundary
 }
 
 //Removes a physics body from the world
@@ -74,8 +78,10 @@ void Engine::update(float deltaTime)
     if (!physicsProcess) return;
 
     //Loop through all physics bodies
-    for (auto& body : physicsBodies)
+    for (size_t i = 0; i < physicsBodies.size();)
     {
+        PhysicsBody* body = physicsBodies[i];
+
         //Extra logic for dynamic bodies
         if (body->getType() == BodyType::DynamicBody)
         {
@@ -83,11 +89,16 @@ void Engine::update(float deltaTime)
 
             applyGravity(dynamicBody); //Apply gravity to dynamic bodies
 
-            if (boundary)
-                boundary->dynamicEnforce(dynamicBody); //Keep dynamic bodies within world boundaries
+            //Enforce boundaries on dynamic body
+            if (boundary && boundary->dynamicEnforce(dynamicBody))
+            {
+                removeBody(dynamicBody); //Delete the body if boundary type is delete and beyond boundary
+                continue; //Do not increment index since body was deleted
+            }
         }
 
         body->update(deltaTime); //Update all bodies
+        i++; //Increment index
     }
 
     //If collisions processing is disabled, return early
@@ -151,4 +162,10 @@ void Engine::setGravityScale(float scaleValue)
     {
         gravityScale = scaleValue;
     }
+}
+
+//Returns the vector of physics bodies in the world
+std::vector<PhysicsBody*> Engine::getBodies()
+{
+    return physicsBodies;
 }
