@@ -64,6 +64,8 @@ Collision* CollisionDetection::checkCollision(PhysicsBody* bodyA, PhysicsBody* b
             return checkRectCircleCollision(rectB, circleA);
         }
     }
+
+    return nullptr;
 }
 
 //Calculate collision between two rectangle colliders
@@ -105,14 +107,14 @@ Collision* CollisionDetection::checkRectRectCollision(RectCollider* rectA, RectC
         //Horizontal collision
         if (xOverlap <= yOverlap)
         {
-            normal = (rectAPos.x < rectBPos.x) ? Vector2(-1, 0) : Vector2(1, 0);
+            normal = (rectAPos.x < rectBPos.x) ? Vector2(1, 0) : Vector2(-1, 0);
             penDepth = xOverlap;
         }
 
         //Vertical collision
         else
         {
-            normal = (rectAPos.y < rectBPos.y) ? Vector2(0, -1) : Vector2(0, 1);
+            normal = (rectAPos.y < rectBPos.y) ? Vector2(0, 1) : Vector2(0, -1);
             penDepth = yOverlap;
         }
 
