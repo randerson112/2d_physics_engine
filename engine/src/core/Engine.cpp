@@ -4,15 +4,11 @@
 
 //Constructor to set default engine settings
 Engine::Engine()
-    : boundary(nullptr), gravityScale(1.0f), physicsProcess(true), collisionsProcess(true)
-    {
-        collisionSolver = new CollisionSolver();
-    }
+    : boundary(nullptr), gravityScale(1.0f), physicsProcess(true), collisionsProcess(true) {}
 
 //Destructor to delete all dynamically allocated objects
 Engine::~Engine()
 {
-    delete collisionSolver;
     delete boundary;
 
     for (PhysicsBody* body: physicsBodies)
@@ -129,12 +125,12 @@ void Engine::update(float deltaTime)
             Collision* collision = CollisionDetection::checkCollision(bodyA, bodyB);
             if (collision)
             {
-                collisionSolver->addCollision(collision);
+                collisionSolver.addCollision(collision);
             }
         }
     }
 
-    collisionSolver->resolveCollisions(); //Collision solver resolves all collisions detected this frame
+    collisionSolver.resolveCollisions(); //Collision solver resolves all collisions detected this frame
 }
 
 //Applies the force of gravity to a dynamic body
