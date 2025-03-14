@@ -100,37 +100,43 @@ void Engine::update(float deltaTime)
     //If collisions processing is disabled, return early
     if (!collisionsProcess) return;
 
-    //Nested for loop to check every body against every other body
-    for (size_t i = 0; i < physicsBodies.size(); i++)
+    //Iterate many times to resolve deep interpenetration
+    const int ITERATIONS = 10;
+
+    for (int i = 0; i < ITERATIONS; i++)
     {
-        PhysicsBody* bodyA = physicsBodies[i];
-
-        for (size_t j = i + 1; j < physicsBodies.size(); j++)
+        //Nested for loop to check every body against every other body
+        for (size_t i = 0; i < physicsBodies.size(); i++)
         {
-            PhysicsBody* bodyB = physicsBodies[j];
+            PhysicsBody* bodyA = physicsBodies[i];
 
-            //Get the colliders of the bodies
-            Collider* colliderA = bodyA->getCollider();
-            Collider* colliderB = bodyB->getCollider();
-
-            //Get the body types
-            BodyType typeA = bodyA->getType();
-            BodyType typeB = bodyB->getType();
-
-            //If both are static bodies, no need to check for a collision
-            if (typeA == BodyType::StaticBody && typeB == BodyType::StaticBody)
-                continue;
-
-            //If a collision is detected between the colliders, pass bodies to collision solver
-            Collision* collision = CollisionDetection::checkCollision(bodyA, bodyB);
-            if (collision)
+            for (size_t j = i + 1; j < physicsBodies.size(); j++)
             {
-                collisionSolver.addCollision(collision);
+                PhysicsBody* bodyB = physicsBodies[j];
+
+                //Get the colliders of the bodies
+                Collider* colliderA = bodyA->getCollider();
+                Collider* colliderB = bodyB->getCollider();
+
+                //Get the body types
+                BodyType typeA = bodyA->getType();
+                BodyType typeB = bodyB->getType();
+
+                //If both are static bodies, no need to check for a collision
+                if (typeA == BodyType::StaticBody && typeB == BodyType::StaticBody)
+                    continue;
+
+                //If a collision is detected between the colliders, pass bodies to collision solver
+                Collision* collision = CollisionDetection::checkCollision(bodyA, bodyB);
+                if (collision)
+                {
+                    collisionSolver.addCollision(collision);
+                }
             }
         }
-    }
 
-    collisionSolver.resolveCollisions(); //Collision solver resolves all collisions detected this frame
+        collisionSolver.resolveCollisions(); //Collision solver resolves all collisions detected this iteration
+    }
 }
 
 //Applies the force of gravity to a dynamic body

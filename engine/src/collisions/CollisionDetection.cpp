@@ -181,6 +181,22 @@ Collision* CollisionDetection::checkRectCircleCollision(RectCollider* rect, Circ
     Vector2 vectorBetween = closestPoint.getVectorTo(circlePos);
     float distanceSquared = vectorBetween.getSquare();
 
+    //Check if circle center is inside the rectangle
+    if (closestX == circlePos.x && closestY == circlePos.y)
+    {
+        // Circle is inside the rectangle, push it outward
+        Vector2 rectCenterToCircle = rectPos.getDirectionTo(circlePos);
+        
+        // Avoid zero-length normal
+        if (rectCenterToCircle.x == 0 && rectCenterToCircle.y == 0)
+        {
+            rectCenterToCircle = Vector2(1, 0); // Arbitrary normal
+        }
+
+        //Return a collision object
+        return new Collision(rect->getParent(), circle->getParent(), rectCenterToCircle, circleRadius);
+    }
+
     //Get radius squared
     float circleRadiusSquared = circleRadius * circleRadius;
 
