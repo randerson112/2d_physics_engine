@@ -1,11 +1,6 @@
 //Implementation of CollisionSolver class to resolve collisions
 
 #include "physics/CollisionSolver.hpp"
-#include "core/Vector2.hpp"
-#include "collisions/RectCollider.hpp"
-#include "collisions/CircleCollider.hpp"
-#include "physics/StaticBody.hpp"
-#include "physics/DynamicBody.hpp"
 
 //Constructor needs no paramters
 CollisionSolver::CollisionSolver() {}
@@ -30,34 +25,51 @@ void CollisionSolver::addCollision(Collision* newCollision)
 //Loops through collisions vector and sort collisions to respective solvers
 void CollisionSolver::resolveCollisions()
 {
-    for (auto& collision : collisions)
+    //Loop through collision objects
+    for (const auto& collision : collisions)
     {
-        //Get collider shapes
-        ColliderShape shapeA = collision->bodyA->getCollider()->getShape();
-        ColliderShape shapeB = collision->bodyB->getCollider()->getShape();
+        //Get body types
+        BodyType typeA = collision->bodyA->getType();
+        BodyType typeB = collision->bodyB->getType();
 
-        //If first body is a rectangle
-        if (shapeA == ColliderShape::Rectangle)
+        //If the first body is dynamic
+        if (typeA == BodyType::DynamicBody)
         {
-            //If second body is also a rectangle
-            if (shapeB == ColliderShape::Rectangle)
-                resolveRectRectCollision(collision->bodyA, collision->bodyB, collision->normal, collision->penDepth);
+            DynamicBody* dynamicBodyA = static_cast<DynamicBody*>(collision->bodyA);
 
-            //If second body is a circle
-            if (shapeB == ColliderShape::Circle)
-                resolveRectCircleCollision(collision->bodyA, collision->bodyB, collision->normal, collision->penDepth);
+            //If the second body is also dynamic
+            if (typeB == BodyType::DynamicBody)
+            {
+                DynamicBody* dynamicBodyB = static_cast<DynamicBody*>(collision->bodyB);
+
+                //Resolve collision between two dynamic bodies
+                resolveDynamicCollision(dynamicBodyA, dynamicBodyB, collision->normal, collision->penDepth);
+            }
+
+            //If second body is a static body
+            else if (typeB == BodyType::StaticBody)
+            {
+                StaticBody* staticBodyB = static_cast<StaticBody*>(collision->bodyB);
+
+                //Resolve collision between a dynamic body and a static body
+                resolveDynamicStaticCollision(dynamicBodyA, staticBodyB, collision->normal, collision->penDepth);
+            }
         }
 
-        //If first body is a circle
-        if (shapeA == ColliderShape::Circle)
+        //If the first body is a static body
+        else if (typeA == BodyType::StaticBody)
         {
-            //If second body is also a circle
-            if (shapeB == ColliderShape::Circle)
-                resolveCircleCircleCollision(collision->bodyA, collision->bodyB, collision->normal, collision->penDepth);
+            StaticBody* staticBodyA = static_cast<StaticBody*>(collision->bodyA);
 
-            //If second body is a rectangle
-            if (shapeB == ColliderShape::Rectangle)
-                resolveRectCircleCollision(collision->bodyB, collision->bodyA, collision->normal, collision->penDepth);
+            //If the second body is a dynamic body
+            if (typeB == BodyType::DynamicBody)
+            {
+                DynamicBody* dynamicBodyB = static_cast<DynamicBody*>(collision->bodyB);
+
+                //Resolve collision between a dynamic body and a static body
+                //Flip the normal since we switched the order of bodies
+                resolveDynamicStaticCollision(dynamicBodyB, staticBodyA, -collision->normal, collision->penDepth);
+            }
         }
 
         //Delete the collision object from memory after resolution
@@ -68,269 +80,50 @@ void CollisionSolver::resolveCollisions()
     collisions.clear();
 }
 
-//Resolve a collision with two rectangles
-void CollisionSolver::resolveRectRectCollision(PhysicsBody* rectA, PhysicsBody* rectB, const Vector2& normal, float penDepth)
+//Resolve a collision between a dynamic body and a static body
+void CollisionSolver::resolveDynamicStaticCollision(DynamicBody* dynamicBody, StaticBody* staticBody, const Vector2& normal, float penDepth)
 {
-    //Get body types
-    BodyType typeA = rectA->getType();
-    BodyType typeB = rectB->getType();
+    //Get velocity, restitution, and mass of dynamic body
+    Vector2 velocity = dynamicBody->getVelocity();
+    float restitution = dynamicBody->getRestitution();
+    float mass = dynamicBody->getMass();
 
-    //Get colliders
-    RectCollider* colliderA = static_cast<RectCollider*>(rectA->getCollider());
-    RectCollider* colliderB = static_cast<RectCollider*>(rectB->getCollider());
+    //Move dynamic body along normal by the full penetration depth
+    dynamicBody->move(-normal * penDepth);
 
-    //Get positions of centers
-    Vector2 posA = rectA->getPosition();
-    Vector2 posB = rectB->getPosition();
-
-    //If the first rectangle is a dynamic physics body
-    if (typeA == BodyType::DynamicBody)
-    {
-        DynamicBody* dynamicRectA = static_cast<DynamicBody*>(rectA);
-
-        //Get velocity, restitution, and mass
-        Vector2 velocityA = dynamicRectA->getVelocity();
-        float restitutionA = dynamicRectA->getRestitution();
-        float massA = dynamicRectA->getMass();
-
-        //If second rectangle is also a dynamic physics body
-        if (typeB == BodyType::DynamicBody)
-        {
-            DynamicBody* dynamicRectB = static_cast<DynamicBody*>(rectB);
-
-            //Get velocity, restitution, and mass
-            Vector2 velocityB = dynamicRectB->getVelocity();
-            float restitutionB = dynamicRectB->getRestitution();
-            float massB = dynamicRectB->getMass();
-
-            //Move rectangles along the normal by half the penetration depth
-            dynamicRectA->move(-normal * penDepth / 2);
-            dynamicRectB->move(normal * penDepth / 2);
-
-            //Get relative velocity
-            Vector2 relVelocity = velocityB - velocityA;
-
-            //Get minimum restitution
-            float e = std::min(restitutionA, restitutionB);
-
-            //Get the impulse magnitude
-            float j = -(1 + e) * relVelocity.projectOntoAxis(normal);
-            j /= (1 / massA) + (1 / massB);
-
-            //Calculate and set new velocities
-            dynamicRectA->setVelocity(dynamicRectA->getVelocity() - normal * j / massA);
-            dynamicRectB->setVelocity(dynamicRectB->getVelocity() + normal * j / massB);
-        }
-
-        //If second rectangle is a static physics body
-        if (typeB == BodyType::StaticBody)
-        {
-            //Move dynamic rectangle along normal by the full penetration depth
-            dynamicRectA->move(-normal * penDepth);
-
-            //Reflect the dynamic rectangle velocity along the normal
-            Vector2 reflectedVelocity = velocityA - normal * (1 + restitutionA) * velocityA.projectOntoAxis(normal);
-            dynamicRectA->setVelocity(reflectedVelocity);
-        }
-    }
-
-    //If the first rectangle is a static physics body
-    if (typeA == BodyType::StaticBody)
-    {
-        //If the second rectangle is a dynamic body
-        if (typeB == BodyType::DynamicBody)
-        {
-            DynamicBody* dynamicRectB = static_cast<DynamicBody*>(rectB);
-
-            //Get velocity, restitution, and mass
-            Vector2 velocityB = dynamicRectB->getVelocity();
-            float restitutionB = dynamicRectB->getRestitution();
-            float massB = dynamicRectB->getMass();
-
-            //Move dynamic rectangle along normal by the full penetration depth
-            dynamicRectB->move(normal * penDepth);
-
-            //Reflect the dynamic rectangle velocity along the normal
-            Vector2 reflectedVelocity = velocityB - normal * (1 + restitutionB) * velocityB.projectOntoAxis(normal);
-            dynamicRectB->setVelocity(reflectedVelocity);
-        }
-    }
+    //Reflect the dynamic body velocity along the normal
+    Vector2 reflectedVelocity = velocity - normal * (1 + restitution) * velocity.projectOntoAxis(normal);
+    dynamicBody->setVelocity(reflectedVelocity);
 }
 
-//Resolve a collision with two circles
-void CollisionSolver::resolveCircleCircleCollision(PhysicsBody* circleA, PhysicsBody* circleB, const Vector2& normal, float penDepth)
+//Resolve a collision between two dynamic bodies
+void CollisionSolver::resolveDynamicCollision(DynamicBody* bodyA, DynamicBody* bodyB, const Vector2& normal, float penDepth)
 {
-    //Get body types
-    BodyType typeA = circleA->getType();
-    BodyType typeB = circleB->getType();
+    //get velocities, restitutions, and masses of both bodies
+    Vector2 velocityA = bodyA->getVelocity();
+    Vector2 velocityB = bodyB->getVelocity();
 
-    //Get colliders
-    CircleCollider* colliderA = static_cast<CircleCollider*>(circleA->getCollider());
-    CircleCollider* colliderB = static_cast<CircleCollider*>(circleB->getCollider());
+    float restitutionA = bodyA->getRestitution();
+    float restitutionB = bodyB->getRestitution();
 
-    //Get positions of centers
-    Vector2 posA = circleA->getPosition();
-    Vector2 posB = circleB->getPosition();
+    float massA = bodyA->getMass();
+    float massB = bodyB->getMass();
 
-    //If the first circle is a dynamic physics body
-    if (typeA == BodyType::DynamicBody)
-    {
-        DynamicBody* dynamicCircleA = static_cast<DynamicBody*>(circleA);
+    //Move bodies along the normal by half the penetration depth
+    bodyA->move(-normal * penDepth / 2);
+    bodyB->move(normal * penDepth / 2);
 
-        //Get velocity, restitution, and mass
-        Vector2 velocityA = dynamicCircleA->getVelocity();
-        float restitutionA = dynamicCircleA->getRestitution();
-        float massA = dynamicCircleA->getMass();
+    //Get relative velocity
+    Vector2 relVelocity = velocityB - velocityA;
 
-        //If second circle is also a dynamic physics body
-        if (typeB == BodyType::DynamicBody)
-        {
-            DynamicBody* dynamicCircleB = static_cast<DynamicBody*>(circleB);
+    //Get minimum restitution
+    float e = std::min(restitutionA, restitutionB);
 
-            //Get velocity, restitution, and mass
-            Vector2 velocityB = dynamicCircleB->getVelocity();
-            float restitutionB = dynamicCircleB->getRestitution();
-            float massB = dynamicCircleB->getMass();
+    //Get the impulse magnitude
+    float j = -(1 + e) * relVelocity.projectOntoAxis(normal);
+    j /= (1 / massA) + (1 / massB);
 
-            //Move circles along the normal by half the penetration depth
-            dynamicCircleA->move(-normal * penDepth / 2);
-            dynamicCircleB->move(normal * penDepth / 2);
-
-            //Get relative velocity
-            Vector2 relVelocity = velocityB - velocityA;
-
-            //Get minimum restitution
-            float e = std::min(restitutionA, restitutionB);
-
-            //Get the impulse magnitude
-            float j = -(1 + e) * relVelocity.projectOntoAxis(normal);
-            j /= (1 / massA) + (1 / massB);
-
-            //Calculate and set new velocities
-            dynamicCircleA->setVelocity(dynamicCircleA->getVelocity() - normal * j / massA);
-            dynamicCircleB->setVelocity(dynamicCircleB->getVelocity() + normal * j / massB);
-        }
-
-        //If second circle is a static physics body
-        if (typeB == BodyType::StaticBody)
-        {
-            //Move dynamic circle along normal by the full penetration depth
-            dynamicCircleA->move(-normal * penDepth);
-
-            //Reflect the dynamic circle velocity along the normal
-            Vector2 reflectedVelocity = velocityA - normal * (1 + restitutionA) * velocityA.projectOntoAxis(normal);
-            dynamicCircleA->setVelocity(reflectedVelocity);
-        }
-    }
-
-    //If the first circle is a static physics body
-    if (typeA == BodyType::StaticBody)
-    {
-        //If the second circle is a dynamic body
-        if (typeB == BodyType::DynamicBody)
-        {
-            DynamicBody* dynamicCircleB = static_cast<DynamicBody*>(circleB);
-
-            //Get velocity, restitution, and mass
-            Vector2 velocityB = dynamicCircleB->getVelocity();
-            float restitutionB = dynamicCircleB->getRestitution();
-            float massB = dynamicCircleB->getMass();
-
-            //Move dynamic circle along normal by the full penetration depth
-            dynamicCircleB->move(normal * penDepth);
-
-            //Reflect the dynamic circle velocity along the normal
-            Vector2 reflectedVelocity = velocityB - normal * (1 + restitutionB) * velocityB.projectOntoAxis(normal);
-            dynamicCircleB->setVelocity(reflectedVelocity);
-        }
-    }
-}
-
-//Resolve a collision with a rectangle and a circle
-void CollisionSolver::resolveRectCircleCollision(PhysicsBody* rect, PhysicsBody* circle, const Vector2& normal, float penDepth)
-{
-    //Get body types
-    BodyType rectType = rect->getType();
-    BodyType circleType = circle->getType();
-
-    //Get positions of centers
-    Vector2 rectPos = rect->getPosition();
-    Vector2 circlePos = circle->getPosition();
-
-    //Get colliders
-    RectCollider* rectCollider = static_cast<RectCollider*>(rect->getCollider());
-    CircleCollider* circleCollider = static_cast<CircleCollider*>(rect->getCollider());
-
-    //If the rectangle is a dynamic body
-    if (rectType == BodyType::DynamicBody)
-    {
-        DynamicBody* dynamicRect = static_cast<DynamicBody*>(rect);
-
-        //Get rectangle velocity, restitution, and mass
-        Vector2 rectVelocity = dynamicRect->getVelocity();
-        float rectRestitution = dynamicRect->getRestitution();
-        float rectMass = dynamicRect->getMass();
-
-        //If the circle is also a dynamic body
-        if (circleType == BodyType::DynamicBody)
-        {
-            DynamicBody* dynamicCircle = static_cast<DynamicBody*>(circle);
-
-            //Get circle velocity, restitution, and mass
-            Vector2 circleVelocity = dynamicCircle->getVelocity();
-            float circleRestitution = dynamicCircle->getRestitution();
-            float circleMass = dynamicCircle->getMass();
-
-            //Move bodies along the normal by half the penetration depth
-            dynamicRect->move(-normal * penDepth / 2);
-            dynamicCircle->move(normal * penDepth / 2);
-
-            //Get relative velocity
-            Vector2 relVelocity = circleVelocity - rectVelocity;
-
-            //Get minimum restitution
-            float e = std::min(rectRestitution, circleRestitution);
-
-            //Get the impulse magnitude
-            float j = -(1 + e) * relVelocity.projectOntoAxis(normal);
-            j /= (1 / rectMass) + (1 / circleMass);
-
-            //Calculate and set new velocities
-            dynamicRect->setVelocity(dynamicRect->getVelocity() - normal * j / rectMass);
-            dynamicCircle->setVelocity(dynamicCircle->getVelocity() + normal * j / circleMass);
-        }
-
-        //If the circle is a static body
-        if (circleType == BodyType::StaticBody)
-        {
-            //Move dynamic rectangle along normal by the full penetration depth
-            dynamicRect->move(-normal * penDepth);
-
-            //Reflect the dynamic rectangle velocity along the normal
-            Vector2 reflectedVelocity = rectVelocity - normal * (1 + rectRestitution) * rectVelocity.projectOntoAxis(normal);
-            dynamicRect->setVelocity(reflectedVelocity);
-        }
-    }
-
-    //If the rectangle is a static body
-    if (rectType == BodyType::StaticBody)
-    {
-        //If the circle is a dynamic body
-        if (circleType == BodyType::DynamicBody)
-        {
-            DynamicBody* dynamicCircle = static_cast<DynamicBody*>(circle);
-
-            //Get circle velocity, restitution, and mass
-            Vector2 circleVelocity = dynamicCircle->getVelocity();
-            float circleRestitution = dynamicCircle->getRestitution();
-            float circleMass = dynamicCircle->getMass();
-
-            //Move dynamic circle along normal by the full penetration depth
-            dynamicCircle->move(normal * penDepth);
-
-            //Reflect the dynamic circle velocity along the normal
-            Vector2 reflectedVelocity = circleVelocity - normal * (1 + circleRestitution) * circleVelocity.projectOntoAxis(normal);
-            dynamicCircle->setVelocity(reflectedVelocity);
-        }
-    }
+    //Calculate and set new velocities
+    bodyA->setVelocity(bodyA->getVelocity() - normal * j / massA); 
+    bodyB->setVelocity(bodyB->getVelocity() + normal * j / massB);
 }
