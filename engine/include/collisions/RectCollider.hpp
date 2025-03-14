@@ -18,8 +18,8 @@ public:
     RectCollider(float width, float height);
 
     //Getters for member variables
-    float getWidth();
-    float getHeight();
+    float getWidth() const;
+    float getHeight() const;
 
     //Setters for member variables
     void setWidth(float newWidth);

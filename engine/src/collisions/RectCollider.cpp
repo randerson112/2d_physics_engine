@@ -7,12 +7,12 @@ RectCollider::RectCollider(float width, float height)
     : Collider(ColliderShape::Rectangle), width(width), height(height) {}
 
 //Getters for member variables
-float RectCollider::getWidth()
+float RectCollider::getWidth() const
 {
     return width;
 }
 
-float RectCollider::getHeight()
+float RectCollider::getHeight() const
 {
     return height;
 }

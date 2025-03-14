@@ -66,7 +66,7 @@ public:
     void update(float deltaTime);
 
     //Applies force of gravity on a body
-    void applyGravity(DynamicBody* body);
+    void applyGravity(DynamicBody* body) const;
 
     //Enables or disables physics
     //Parameter: true to enable, false to disable
@@ -81,7 +81,7 @@ public:
     void setGravityScale(float scaleValue);
 
     //Returns the vector of physics bodies in the world
-    std::vector<PhysicsBody*> getBodies();
+    const std::vector<PhysicsBody*>& getBodies() const;
 };
 
 #endif

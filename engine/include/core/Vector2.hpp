@@ -21,37 +21,37 @@ public:
     Vector2(float x, float y);
 
     //Basic operator overloads
-    Vector2 operator+(Vector2 other);
-    Vector2 operator-(Vector2 other);
-    Vector2 operator*(float scalar);
-    Vector2 operator/(float divisor);
+    Vector2 operator+(const Vector2& other) const;
+    Vector2 operator-(const Vector2& other) const;
+    Vector2 operator*(float scalar) const;
+    Vector2 operator/(float divisor) const;
 
     //Basic assignment operator overloads
-    void operator+=(Vector2 other);
-    void operator-=(Vector2 other);
+    void operator+=(const Vector2& other);
+    void operator-=(const Vector2& other);
     void operator*=(float scalar);
     void operator/=(float divisor);
 
     //Negative operator overload for getting the inverse
-    Vector2 operator-();
+    Vector2 operator-() const;
 
     //Gets the normal of the vector, length of 1
-    Vector2 getNormal();
+    Vector2 getNormal() const;
 
     //Returns the magnitude or length of a vector
-    float getLength();
+    float getLength() const;
 
     //Gets the vector pointing to another vector
-    Vector2 getVectorTo(Vector2 other);
+    Vector2 getVectorTo(const Vector2& other) const;
 
     //Gets the direction with length of 1 to another vector
-    Vector2 getDirectionTo(Vector2 other);
+    Vector2 getDirectionTo(const Vector2& other) const;
 
     //Return the square of the vector
-    float getSquare();
+    float getSquare() const;
 
     //How much of the vector lies on the other vector when projected
-    float projectOntoAxis(Vector2 axis);
+    float projectOntoAxis(const Vector2& axis) const;
 };
 
 #endif

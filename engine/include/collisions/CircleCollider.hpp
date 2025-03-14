@@ -17,7 +17,7 @@ public:
     CircleCollider(float initialRadius);
 
     //Getters for member variables
-    float getRadius();
+    float getRadius() const;
 
     //Setters for member variables
     void setRadius(float newRadius);

@@ -30,25 +30,25 @@ private:
 
 public:
     //Constructor to set postion and collider
-    DynamicBody(Vector2 initialPosition, Collider* colliderInstance);
+    DynamicBody(const Vector2& initialPosition, Collider* colliderInstance);
 
     //Applies an external force to the body
-    void applyForce(Vector2 forceToAdd);
+    void applyForce(const Vector2& forceToAdd);
 
     //Update the physics of the body in the world
     void update(float deltaTime) override;
 
     //Getters for member variables
-    Vector2 getVelocity();
-    Vector2 getForce();
-    Vector2 getAcceleration();
-    float getRestitution();
-    float getMass();
+    const Vector2& getVelocity() const;
+    const Vector2& getForce() const;
+    const Vector2& getAcceleration() const;
+    float getRestitution() const;
+    float getMass() const;
 
     //Setters for member variables
-    void setVelocity(Vector2 newVelocity);
-    void setForce(Vector2 newForce);
-    void setAcceleration(Vector2 newAcceleration);
+    void setVelocity(const Vector2& newVelocity);
+    void setForce(const Vector2& newForce);
+    void setAcceleration(const Vector2& newAcceleration);
     void setRestitution(float newRestitution);
     void setMass(float newMass);
 };

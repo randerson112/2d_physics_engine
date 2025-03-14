@@ -3,7 +3,7 @@
 #include "physics/StaticBody.hpp"
 
 //Sets position and collider
-StaticBody::StaticBody(Vector2 initialPosition, Collider* colliderInstance)
+StaticBody::StaticBody(const Vector2& initialPosition, Collider* colliderInstance)
     : PhysicsBody(initialPosition, colliderInstance, BodyType::StaticBody) {}
 
 void StaticBody::update(float deltaTime)

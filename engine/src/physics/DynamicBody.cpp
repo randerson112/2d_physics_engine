@@ -3,7 +3,7 @@
 #include "physics/DynamicBody.hpp"
 
 //Constructor to set members
-DynamicBody::DynamicBody(Vector2 initialPosition, Collider* colliderInstance)
+DynamicBody::DynamicBody(const Vector2& initialPosition, Collider* colliderInstance)
 : PhysicsBody(initialPosition, colliderInstance, BodyType::DynamicBody),
 mass(1.0f),
 restitution(0.6f),
@@ -11,7 +11,7 @@ velocity({0, 0}),
 acceleration({0, 0}) {}
 
 //Applies an external force to the body
-void DynamicBody::applyForce(Vector2 forceToAdd)
+void DynamicBody::applyForce(const Vector2& forceToAdd)
 {
     force += forceToAdd;
 }
@@ -29,43 +29,43 @@ void DynamicBody::update(float deltaTime)
 }
 
 //Getters for member variables
-Vector2 DynamicBody::getVelocity()
+const Vector2& DynamicBody::getVelocity() const
 {
     return velocity;
 }
 
-Vector2 DynamicBody::getForce()
+const Vector2& DynamicBody::getForce() const
 {
     return force;
 }
 
-Vector2 DynamicBody::getAcceleration()
+const Vector2& DynamicBody::getAcceleration() const
 {
     return acceleration;
 }
 
-float DynamicBody::getRestitution()
+float DynamicBody::getRestitution() const
 {
     return restitution;
 }
 
-float DynamicBody::getMass()
+float DynamicBody::getMass() const
 {
     return mass;
 }
 
 //Setters for member variables
-void DynamicBody::setVelocity(Vector2 newVelocity)
+void DynamicBody::setVelocity(const Vector2& newVelocity)
 {
     velocity = newVelocity;
 }
 
-void DynamicBody::setForce(Vector2 newForce)
+void DynamicBody::setForce(const Vector2& newForce)
 {
     force = newForce;
 }
 
-void DynamicBody::setAcceleration(Vector2 newAcceleration)
+void DynamicBody::setAcceleration(const Vector2& newAcceleration)
 {
     acceleration = newAcceleration;
 }

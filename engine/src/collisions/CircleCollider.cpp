@@ -7,7 +7,7 @@ CircleCollider::CircleCollider(float initialRadius)
     : Collider(ColliderShape::Circle), radius(initialRadius) {}
 
 //Getters for member variables
-float CircleCollider::getRadius()
+float CircleCollider::getRadius() const
 {
     return radius;
 }

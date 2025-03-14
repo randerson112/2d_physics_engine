@@ -69,7 +69,7 @@ void CollisionSolver::resolveCollisions()
 }
 
 //Resolve a collision with two rectangles
-void CollisionSolver::resolveRectRectCollision(PhysicsBody* rectA, PhysicsBody* rectB, Vector2 normal, float penDepth)
+void CollisionSolver::resolveRectRectCollision(PhysicsBody* rectA, PhysicsBody* rectB, const Vector2& normal, float penDepth)
 {
     //Get body types
     BodyType typeA = rectA->getType();
@@ -158,7 +158,7 @@ void CollisionSolver::resolveRectRectCollision(PhysicsBody* rectA, PhysicsBody* 
 }
 
 //Resolve a collision with two circles
-void CollisionSolver::resolveCircleCircleCollision(PhysicsBody* circleA, PhysicsBody* circleB, Vector2 normal, float penDepth)
+void CollisionSolver::resolveCircleCircleCollision(PhysicsBody* circleA, PhysicsBody* circleB, const Vector2& normal, float penDepth)
 {
     //Get body types
     BodyType typeA = circleA->getType();
@@ -247,7 +247,7 @@ void CollisionSolver::resolveCircleCircleCollision(PhysicsBody* circleA, Physics
 }
 
 //Resolve a collision with a rectangle and a circle
-void CollisionSolver::resolveRectCircleCollision(PhysicsBody* rect, PhysicsBody* circle, Vector2 normal, float penDepth)
+void CollisionSolver::resolveRectCircleCollision(PhysicsBody* rect, PhysicsBody* circle, const Vector2& normal, float penDepth)
 {
     //Get body types
     BodyType rectType = rect->getType();

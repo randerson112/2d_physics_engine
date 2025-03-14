@@ -3,7 +3,7 @@
 #include "physics/PhysicsBody.hpp"
 
 //Constructor to set position, collider, and body type
-PhysicsBody::PhysicsBody(Vector2 initialPosition, Collider* colliderInstance, BodyType bodyType)
+PhysicsBody::PhysicsBody(const Vector2& initialPosition, Collider* colliderInstance, BodyType bodyType)
     : position(initialPosition), collider(colliderInstance), type(bodyType)
     {
         collider->setParent(this); //Attach the collider to body
@@ -17,13 +17,13 @@ PhysicsBody::~PhysicsBody()
 }
 
 //Moves a body by a relative amount
-void PhysicsBody::move(Vector2 amountToMove)
+void PhysicsBody::move(const Vector2& amountToMove)
 {
     setPosition({position.x + amountToMove.x, position.y + amountToMove.y});
 }
 
 //Getters for member variables
-Vector2 PhysicsBody::getPosition() const
+const Vector2& PhysicsBody::getPosition() const
 {
     return position;
 }
@@ -39,7 +39,7 @@ BodyType PhysicsBody::getType() const
 }
 
 //Setters for member variables
-void PhysicsBody::setPosition(Vector2 newPosition)
+void PhysicsBody::setPosition(const Vector2& newPosition)
 {
     position = newPosition;
     collider->setPosition(position); //Also move collider to new position

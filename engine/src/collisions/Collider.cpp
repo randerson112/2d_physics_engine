@@ -7,32 +7,32 @@ Collider::Collider(ColliderShape shapeType)
 : parent(nullptr), position({0, 0}), offset({0, 0}), shape(shapeType) {}
 
 //Getters for member variables
-Vector2 Collider::getPosition()
+const Vector2& Collider::getPosition() const
 {
     return position;
 }
 
-Vector2 Collider::getOffset()
+const Vector2& Collider::getOffset() const
 {
     return offset;
 }
-PhysicsBody* Collider::getParent()
+PhysicsBody* Collider::getParent() const
 {
     return parent;
 }
 
-ColliderShape Collider::getShape()
+ColliderShape Collider::getShape() const
 {
     return shape;
 }
 
 //Setters for member variables
-void Collider::setPosition(Vector2 newPosition)
+void Collider::setPosition(const Vector2& newPosition)
 {
     position = newPosition;
 }
 
-void Collider::setOffset(Vector2 newOffest)
+void Collider::setOffset(const Vector2& newOffest)
 {
     offset = newOffest;
 }

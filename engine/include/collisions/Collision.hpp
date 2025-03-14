@@ -13,7 +13,7 @@ struct Collision
     Vector2 normal;
     float penDepth;
 
-    Collision(PhysicsBody* bodyA, PhysicsBody* bodyB, Vector2 normal, float penDepth)
+    Collision(PhysicsBody* bodyA, PhysicsBody* bodyB, const Vector2& normal, float penDepth)
         : bodyA(bodyA), bodyB(bodyB), normal(normal), penDepth(penDepth) {}
 };
 

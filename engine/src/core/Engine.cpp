@@ -138,7 +138,7 @@ void Engine::update(float deltaTime)
 }
 
 //Applies the force of gravity to a dynamic body
-void Engine::applyGravity(DynamicBody* body)
+void Engine::applyGravity(DynamicBody* body) const
 {
     body->applyForce(gravity * gravityScale * body->getMass());
 }
@@ -165,7 +165,7 @@ void Engine::setGravityScale(float scaleValue)
 }
 
 //Returns the vector of physics bodies in the world
-std::vector<PhysicsBody*> Engine::getBodies()
+const std::vector<PhysicsBody*>& Engine::getBodies() const
 {
     return physicsBodies;
 }

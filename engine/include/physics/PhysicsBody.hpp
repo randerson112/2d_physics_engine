@@ -32,7 +32,7 @@ protected:
 
 public:
     //Constructor
-    PhysicsBody(Vector2 initialPosition, Collider* colliderInstance, BodyType bodyType);
+    PhysicsBody(const Vector2& initialPosition, Collider* colliderInstance, BodyType bodyType);
 
     //Destructor
     virtual ~PhysicsBody();
@@ -41,15 +41,15 @@ public:
     virtual void update(float deltaTime) = 0;
 
     //Moves a body by a relative amount
-    void move(Vector2 amountToMove);
+    void move(const Vector2& amountToMove);
 
     //Getters for member variables
-    Vector2 getPosition() const;
+    const Vector2& getPosition() const;
     Collider* getCollider() const;
     BodyType getType() const;
 
     //Setters for member variables
-    void setPosition(Vector2 newPosition);
+    void setPosition(const Vector2& newPosition);
     void setCollider(Collider* newCollider);
 };
 

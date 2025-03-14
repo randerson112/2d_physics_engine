@@ -38,14 +38,14 @@ public:
     virtual ~Collider() = default;
 
     //Getters for member variables
-    Vector2 getPosition();
-    Vector2 getOffset();
-    PhysicsBody* getParent();
-    ColliderShape getShape();
+    const Vector2& getPosition() const;
+    const Vector2& getOffset() const;
+    PhysicsBody* getParent() const;
+    ColliderShape getShape() const;
 
     //Setters for member variables
-    void setPosition(Vector2 newPosition);
-    void setOffset(Vector2 newOffest);
+    void setPosition(const Vector2& newPosition);
+    void setOffset(const Vector2& newOffest);
     void setParent(PhysicsBody* newParent);
 
     //Maybe a method to change the shape of the collider in the future

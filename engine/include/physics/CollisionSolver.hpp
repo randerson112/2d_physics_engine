@@ -11,13 +11,13 @@ private:
     std::vector<Collision*> collisions;
 
     //Resolve a collision with two rectangles
-    void resolveRectRectCollision(PhysicsBody* rectA, PhysicsBody* rectB, Vector2 normal, float penDepth);
+    void resolveRectRectCollision(PhysicsBody* rectA, PhysicsBody* rectB, const Vector2& normal, float penDepth);
 
     //Resolve a collision with two circles
-    void resolveCircleCircleCollision(PhysicsBody* circleA, PhysicsBody* circleB, Vector2 normal, float penDepth);
+    void resolveCircleCircleCollision(PhysicsBody* circleA, PhysicsBody* circleB, const Vector2& normal, float penDepth);
 
     //Resolve a collision with a rectangle and a circle
-    void resolveRectCircleCollision(PhysicsBody* rect, PhysicsBody* circle, Vector2 normal, float penDepth);
+    void resolveRectCircleCollision(PhysicsBody* rect, PhysicsBody* circle, const Vector2& normal, float penDepth);
 
 public:
     //Constructor needs no paramters
