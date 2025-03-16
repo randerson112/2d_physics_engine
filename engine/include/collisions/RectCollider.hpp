@@ -14,8 +14,8 @@ private:
     float height;
 
 public:
-    //Constructor to set dimensions
-    RectCollider(float width, float height);
+    //Constructor to set dimensions and collider type
+    RectCollider(Vector2 dimensions, ColliderType type);
 
     //Getters for member variables
     float getWidth() const;

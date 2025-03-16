@@ -2,9 +2,9 @@
 
 #include "collisions/Collider.hpp"
 
-//Constructor to set position and offset
-Collider::Collider(ColliderShape shapeType)
-: parent(nullptr), position({0, 0}), offset({0, 0}), shape(shapeType) {}
+//Constructor to set shape and collider type
+Collider::Collider(ColliderShape shapeType, ColliderType type)
+: parent(nullptr), position({0, 0}), offset({0, 0}), shape(shapeType), type(type) {}
 
 //Getters for member variables
 const Vector2& Collider::getPosition() const
@@ -26,6 +26,11 @@ ColliderShape Collider::getShape() const
     return shape;
 }
 
+ColliderType Collider::getType() const
+{
+    return type;
+}
+
 //Setters for member variables
 void Collider::setPosition(const Vector2& newPosition)
 {
@@ -41,4 +46,9 @@ void Collider::setParent(PhysicsBody* newParent)
 {
     parent = newParent;
     //Destroy old parent?
+}
+
+void Collider::setType(ColliderType newType)
+{
+    type = newType;
 }

@@ -15,6 +15,12 @@ enum class ColliderShape
     Circle
 };
 
+enum class ColliderType
+{
+    Solid,
+    Trigger
+};
+
 class PhysicsBody;
 
 class Collider
@@ -32,8 +38,12 @@ protected:
     //Shape of the collider
     ColliderShape shape;
 
+    //Type of collider, solid or trigger
+    ColliderType type;
+
 public:
-    Collider(ColliderShape shapeType);
+    //Constructor to set shape and collider type
+    Collider(ColliderShape shapeType, ColliderType type);
 
     virtual ~Collider() = default;
 
@@ -42,11 +52,13 @@ public:
     const Vector2& getOffset() const;
     PhysicsBody* getParent() const;
     ColliderShape getShape() const;
+    ColliderType getType() const;
 
     //Setters for member variables
     void setPosition(const Vector2& newPosition);
     void setOffset(const Vector2& newOffest);
     void setParent(PhysicsBody* newParent);
+    void setType(ColliderType newType);
 
     //Maybe a method to change the shape of the collider in the future
 };

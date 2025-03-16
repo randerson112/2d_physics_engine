@@ -13,8 +13,8 @@ private:
     float radius;
 
 public:
-    //Constructor to set radius
-    CircleCollider(float initialRadius);
+    //Constructor to set radius and collider type
+    CircleCollider(float initialRadius, ColliderType type);
 
     //Getters for member variables
     float getRadius() const;

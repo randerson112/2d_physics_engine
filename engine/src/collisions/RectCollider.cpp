@@ -3,8 +3,8 @@
 #include "collisions/RectCollider.hpp"
 
 //Constructor to set width and height of collider
-RectCollider::RectCollider(float width, float height)
-    : Collider(ColliderShape::Rectangle), width(width), height(height) {}
+RectCollider::RectCollider(Vector2 dimensions, ColliderType type)
+    : Collider(ColliderShape::Rectangle, type), width(dimensions.x), height(dimensions.y) {}
 
 //Getters for member variables
 float RectCollider::getWidth() const

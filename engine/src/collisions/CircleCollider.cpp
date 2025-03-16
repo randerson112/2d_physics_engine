@@ -2,9 +2,9 @@
 
 #include "collisions/CircleCollider.hpp"
 
-//Constructor to set radius
-CircleCollider::CircleCollider(float initialRadius)
-    : Collider(ColliderShape::Circle), radius(initialRadius) {}
+//Constructor to set radius and collider type
+CircleCollider::CircleCollider(float initialRadius, ColliderType type)
+    : Collider(ColliderShape::Circle, type), radius(initialRadius) {}
 
 //Getters for member variables
 float CircleCollider::getRadius() const

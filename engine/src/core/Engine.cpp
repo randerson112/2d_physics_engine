@@ -129,12 +129,20 @@ void Engine::processCollisions()
                 Collider* colliderA = bodyA->getCollider();
                 Collider* colliderB = bodyB->getCollider();
 
+                //Get collider types
+                ColliderType colliderTypeA = colliderA->getType();
+                ColliderType colliderTypeB = colliderB->getType();
+
                 //Get the body types
                 BodyType typeA = bodyA->getType();
                 BodyType typeB = bodyB->getType();
 
                 //If both are static bodies, no need to check for a collision
                 if (typeA == BodyType::StaticBody && typeB == BodyType::StaticBody)
+                    continue;
+
+                //If one of the bodies has a trigger collider, no need to resolve collision
+                if (colliderTypeA == ColliderType::Trigger || colliderTypeB == ColliderType::Trigger)
                     continue;
 
                 //If a collision is detected between the colliders, pass bodies to collision solver
