@@ -90,7 +90,8 @@ void Engine::processPhysics(float deltaTime)
         {
             DynamicBody* dynamicBody = static_cast<DynamicBody*>(body);
 
-            applyGravity(dynamicBody); //Apply gravity to dynamic bodies
+            if (dynamicBody->isAffectedByGravity())
+                applyGravity(dynamicBody); //Apply gravity to dynamic bodies
 
             //Enforce boundaries on dynamic body
             if (boundary && boundary->dynamicEnforce(dynamicBody))

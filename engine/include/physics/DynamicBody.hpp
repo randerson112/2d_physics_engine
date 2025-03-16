@@ -28,6 +28,9 @@ private:
     //Mass of the body
     float mass;
 
+    //Flag that determines if gravity affects the body
+    bool affectedByGravity;
+
 public:
     //Constructor to set postion and collider
     DynamicBody(const Vector2& initialPosition, Collider* colliderInstance);
@@ -44,6 +47,7 @@ public:
     const Vector2& getAcceleration() const;
     float getRestitution() const;
     float getMass() const;
+    bool isAffectedByGravity() const;
 
     //Setters for member variables
     void setVelocity(const Vector2& newVelocity);
@@ -51,6 +55,7 @@ public:
     void setAcceleration(const Vector2& newAcceleration);
     void setRestitution(float newRestitution);
     void setMass(float newMass);
+    void setAffectedByGravity(bool boolValue);
 };
 
 #endif

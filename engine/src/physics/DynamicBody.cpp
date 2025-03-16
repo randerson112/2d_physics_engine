@@ -8,7 +8,8 @@ DynamicBody::DynamicBody(const Vector2& initialPosition, Collider* colliderInsta
 mass(1.0f),
 restitution(0.6f),
 velocity({0, 0}),
-acceleration({0, 0}) {}
+acceleration({0, 0}),
+affectedByGravity(true) {}
 
 //Applies an external force to the body
 void DynamicBody::applyForce(const Vector2& forceToAdd)
@@ -54,6 +55,11 @@ float DynamicBody::getMass() const
     return mass;
 }
 
+bool DynamicBody::isAffectedByGravity() const
+{
+    return affectedByGravity;
+}
+
 //Setters for member variables
 void DynamicBody::setVelocity(const Vector2& newVelocity)
 {
@@ -80,4 +86,9 @@ void DynamicBody::setMass(float newMass)
 {
     if (newMass >= 0)
         mass = newMass;
+}
+
+void DynamicBody::setAffectedByGravity(bool boolValue)
+{
+    affectedByGravity = boolValue;
 }
