@@ -63,10 +63,26 @@ public:
 
     //Updates physics bodies in the world, processes physics, and handles collisions
     //Parameter: time since last update call
+    //Calls processPhysics and processCollisions functions
     void update(float deltaTime);
+
+    //Updates physics bodies and applies gravity
+    void processPhysics(float deltaTime);
+
+    /*
+    -Note- processPhysics and processCollisions functions can be called seperately if needed, but
+    both must be called for engine to function properly. Call update function if seperation is not needed
+    */
+
+    //Detect and resolve collisions of physics bodies
+    void processCollisions();
 
     //Applies force of gravity on a body
     void applyGravity(DynamicBody* body) const;
+
+    //Return true if given physics bodies are colliding
+    //Must be called in between processPhysics and processCollisions
+    bool checkIfColliding(PhysicsBody* bodyA, PhysicsBody* bodyB);
 
     //Enables or disables physics
     //Parameter: true to enable, false to disable

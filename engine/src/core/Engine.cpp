@@ -70,6 +70,13 @@ void Engine::removeBody(PhysicsBody* body)
 //Updates physics bodies and checks for collisions
 void Engine::update(float deltaTime)
 {
+    processPhysics(deltaTime);
+    processCollisions();
+}
+
+//Updates physics bodies and applies gravity
+void Engine::processPhysics(float deltaTime)
+{
     //If physics processing is disabled, return early
     if (!physicsProcess) return;
 
@@ -96,7 +103,11 @@ void Engine::update(float deltaTime)
         body->update(deltaTime); //Update all bodies
         i++; //Increment index
     }
+}
 
+//Detect and resolve collisions of physics bodies
+void Engine::processCollisions()
+{
     //If collisions processing is disabled, return early
     if (!collisionsProcess) return;
 
@@ -143,6 +154,17 @@ void Engine::update(float deltaTime)
 void Engine::applyGravity(DynamicBody* body) const
 {
     body->applyForce(gravity * gravityScale * body->getMass());
+}
+
+//Return true if given physics bodies are colliding
+bool Engine::checkIfColliding(PhysicsBody* bodyA, PhysicsBody* bodyB)
+{
+    Collision* collision = CollisionDetection::checkCollision(bodyA, bodyB);
+        
+    if (collision != nullptr)
+        return true;
+    else
+        return false;
 }
 
 //Pauses or resumes the physics processing
