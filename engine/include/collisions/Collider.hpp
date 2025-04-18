@@ -8,6 +8,7 @@
 
 #include "physics/PhysicsBody.hpp"
 #include "core/Vector2.hpp"
+#include "collisions/AABB.hpp"
 
 enum class ColliderShape
 {
@@ -41,11 +42,17 @@ protected:
     //Type of collider, solid or trigger
     ColliderType type;
 
+    //Bounding box for broad collision detection
+    AABB* boundingBox;
+
+    //Update AABB mins and maxes
+    virtual void updateAABB() = 0;
+
 public:
     //Constructor to set shape and collider type
     Collider(ColliderShape shapeType, ColliderType type);
 
-    virtual ~Collider() = default;
+    virtual ~Collider();
 
     //Getters for member variables
     const Vector2& getPosition() const;
@@ -53,6 +60,7 @@ public:
     PhysicsBody* getParent() const;
     ColliderShape getShape() const;
     ColliderType getType() const;
+    AABB* getAABB() const;
 
     //Setters for member variables
     void setPosition(const Vector2& newPosition);

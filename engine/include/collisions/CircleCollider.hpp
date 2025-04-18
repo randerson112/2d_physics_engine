@@ -12,6 +12,9 @@ private:
     //Radius of the circle
     float radius;
 
+    //Update AABB mins and maxes
+    virtual void updateAABB() override;
+
 public:
     //Constructor to set radius and collider type
     CircleCollider(float initialRadius, ColliderType type);

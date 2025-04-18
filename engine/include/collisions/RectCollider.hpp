@@ -13,6 +13,9 @@ private:
     float width;
     float height;
 
+    //Update AABB mins and maxes
+    virtual void updateAABB() override;
+
 public:
     //Constructor to set dimensions and collider type
     RectCollider(Vector2 dimensions, ColliderType type);

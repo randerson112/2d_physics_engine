@@ -146,11 +146,17 @@ void Engine::processCollisions()
                 if (colliderTypeA == ColliderType::Trigger || colliderTypeB == ColliderType::Trigger)
                     continue;
 
-                //If a collision is detected between the colliders, pass bodies to collision solver
+                //First check if AABBs are intersecting (Broad phase)
+                AABB* boundingBoxA = colliderA->getAABB();
+                AABB* boundingBoxB = colliderB->getAABB();
+
+                if (!CollisionDetection::checkAABBvsAABB(boundingBoxA, boundingBoxB)) continue;
+
+                //Check collision between colliders (Narrow phase)
                 Collision* collision = CollisionDetection::checkCollision(bodyA, bodyB);
                 if (collision)
                 {
-                    collisionSolver.addCollision(collision);
+                    collisionSolver.addCollision(collision); //Pass collision object to collision solver
                 }
             }
         }
