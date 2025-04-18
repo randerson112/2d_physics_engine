@@ -16,12 +16,12 @@ bool CollisionDetection::checkAABBvsAABB(AABB* boxA, AABB* boxB)
     Vector2 minB = boxB->getMin();
     Vector2 maxB = boxB->getMax();
 
-    //Exit with no intersection if found separated along an axis 
-    if(maxA.x < minB.x or minA.x > maxB.x) return false;
-    if(maxA.y < minB.y or minA.y > maxB.y) return false;
+    //Check for overlap
+    if (maxA.x > minB.x && minA.x < maxB.x && maxA.y > minB.y && minA.y < maxB.y)
+        return true;
 
-    //No separating axis found, therefor there is at least one overlapping axis 
-    return true;
+    //No overlap
+    return false;
 }
 
 //Sorts into respective function based on body shapes
