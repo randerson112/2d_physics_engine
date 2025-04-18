@@ -5,6 +5,9 @@ engine/build/
 # testing folder
 testing/
 
+# dev-tool folder
+tools/
+
 # IDE and OS files
 .vscode/
 .DS_Store
