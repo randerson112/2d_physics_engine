@@ -12,8 +12,12 @@ public:
     AABB(Vector2 min, Vector2 max);
 
     //Getters for member variables
-    Vector2 getMin();
-    Vector2 getMax();
+    Vector2 getMin() const;
+    Vector2 getMax() const;
+
+    //Setters for member variables
+    void setMin(const Vector2& newMin);
+    void setMax(const Vector2& newMax);
 
 private:
     //Min x and y
