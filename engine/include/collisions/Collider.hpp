@@ -46,13 +46,13 @@ protected:
     AABB* boundingBox;
 
     //Update AABB mins and maxes
-    virtual void updateAABB();
+    virtual void updateAABB() = 0;
 
 public:
     //Constructor to set shape and collider type
     Collider(ColliderShape shapeType, ColliderType type);
 
-    virtual ~Collider() = default;
+    virtual ~Collider();
 
     //Getters for member variables
     const Vector2& getPosition() const;

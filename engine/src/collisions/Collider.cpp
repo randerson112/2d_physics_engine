@@ -6,6 +6,11 @@
 Collider::Collider(ColliderShape shapeType, ColliderType type)
 : parent(nullptr), position({0, 0}), offset({0, 0}), shape(shapeType), type(type), boundingBox(nullptr) {}
 
+Collider::~Collider()
+{
+    delete boundingBox;
+}
+
 //Getters for member variables
 const Vector2& Collider::getPosition() const
 {
