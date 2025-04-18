@@ -4,12 +4,16 @@
 #ifndef COLLISION_DETECTION_HPP
 #define COLLISION_DETECTION_HPP
 
+#include "collisions/AABB.hpp"
 #include "collisions/RectCollider.hpp"
 #include "collisions/CircleCollider.hpp"
 #include "collisions/Collision.hpp"
 
 namespace CollisionDetection
 {
+    //Checks if two AABBs are overlapping
+    bool checkAABBvsAABB(AABB* boxA, AABB* boxB);
+
     //Sorts into respective function based on body shapes
     Collision* checkCollision(PhysicsBody* bodyA, PhysicsBody* bodyB);
 

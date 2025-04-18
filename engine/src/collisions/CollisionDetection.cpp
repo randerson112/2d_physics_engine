@@ -6,6 +6,24 @@
 
 struct Collision;
 
+//Checks if two AABBs are overlapping
+bool CollisionDetection::checkAABBvsAABB(AABB* boxA, AABB* boxB)
+{
+    //Get mins and maxes
+    Vector2 minA = boxA->getMin();
+    Vector2 maxA = boxA->getMax();
+
+    Vector2 minB = boxB->getMin();
+    Vector2 maxB = boxB->getMax();
+
+    //Exit with no intersection if found separated along an axis 
+    if(maxA.x < minB.x or minA.x > maxB.x) return false;
+    if(maxA.y < minB.y or minA.y > maxB.y) return false;
+
+    //No separating axis found, therefor there is at least one overlapping axis 
+    return true;
+}
+
 //Sorts into respective function based on body shapes
 Collision* CollisionDetection::checkCollision(PhysicsBody* bodyA, PhysicsBody* bodyB)
 {
