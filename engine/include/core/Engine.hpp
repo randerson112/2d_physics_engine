@@ -98,6 +98,8 @@ public:
 
     //Returns the vector of physics bodies in the world
     const std::vector<PhysicsBody*>& getBodies() const;
+
+    WorldBoundary* getBoundary() const;
 };
 
 #endif

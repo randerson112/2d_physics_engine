@@ -208,3 +208,12 @@ const std::vector<PhysicsBody*>& Engine::getBodies() const
 {
     return physicsBodies;
 }
+
+//Returns a pointer to the boundary
+WorldBoundary* Engine::getBoundary() const
+{
+    if (boundary)
+        return boundary;
+
+    return nullptr;
+}
