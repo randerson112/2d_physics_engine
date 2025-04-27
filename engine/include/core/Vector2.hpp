@@ -1,15 +1,14 @@
-//Class defentions for 2D vectors
+//Struct defention for 2D vectors
 //Stores an x and y value
 //Methods for normalizing, finding distance
 
-#ifndef Vector2_HPP
-#define Vector2_HPP
+#ifndef VECTOR2_HPP
+#define VECTOR2_HPP
 
 #include <cmath>
 
-class Vector2
+struct Vector2
 {
-public:
     //coordinates of the vector
     float x;
     float y;
