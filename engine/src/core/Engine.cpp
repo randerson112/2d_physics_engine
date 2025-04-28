@@ -156,12 +156,12 @@ void Engine::processCollisions()
                 Collision* collision = CollisionDetection::checkCollision(bodyA, bodyB);
                 if (collision)
                 {
-                    collisionSolver.addCollision(collision); //Pass collision object to collision solver
+                    CollisionResolution::resolveCollision(*collision); //Resolve collision
                 }
+
+                delete collision; //Delete collision data after resolution
             }
         }
-
-        collisionSolver.resolveCollisions(); //Collision solver resolves all collisions detected this iteration
     }
 }
 

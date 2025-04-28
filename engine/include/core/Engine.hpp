@@ -38,9 +38,6 @@ private:
     //Boolean to control whether collisions are detected
     bool collisionsProcess;
 
-    //Keeps track of collision instances and resolves them
-    CollisionSolver collisionSolver;
-
     //List of all physics bodies in the world
     std::vector<PhysicsBody*> physicsBodies;
 
