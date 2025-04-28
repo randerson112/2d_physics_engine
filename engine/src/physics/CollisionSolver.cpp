@@ -1,83 +1,53 @@
-//Implementation of CollisionSolver class to resolve collisions
+//Implementation of collision resolution functions
 
 #include "physics/CollisionSolver.hpp"
 
-//Constructor needs no paramters
-CollisionSolver::CollisionSolver() {}
-
-//Destructor to delete lingering collision objects
-CollisionSolver::~CollisionSolver()
+//Sort collision to respective solver
+void CollisionSolver::resolveCollision(const Collision& collision)
 {
-    for (Collision* collision : collisions)
+    //Get body types
+    BodyType typeA = collision->bodyA->getType();
+    BodyType typeB = collision->bodyB->getType();
+
+    //If the first body is dynamic
+    if (typeA == BodyType::DynamicBody)
     {
-        delete collision;
-    }
+        DynamicBody* dynamicBodyA = static_cast<DynamicBody*>(collision->bodyA);
 
-    collisions.clear();
-}
-
-//Adds a collision instance to the vector, called from the engine
-void CollisionSolver::addCollision(Collision* newCollision)
-{
-    collisions.push_back(newCollision);
-}
-
-//Loops through collisions vector and sort collisions to respective solvers
-void CollisionSolver::resolveCollisions()
-{
-    //Loop through collision objects
-    for (const auto& collision : collisions)
-    {
-        //Get body types
-        BodyType typeA = collision->bodyA->getType();
-        BodyType typeB = collision->bodyB->getType();
-
-        //If the first body is dynamic
-        if (typeA == BodyType::DynamicBody)
+        //If the second body is also dynamic
+        if (typeB == BodyType::DynamicBody)
         {
-            DynamicBody* dynamicBodyA = static_cast<DynamicBody*>(collision->bodyA);
+            DynamicBody* dynamicBodyB = static_cast<DynamicBody*>(collision->bodyB);
 
-            //If the second body is also dynamic
-            if (typeB == BodyType::DynamicBody)
-            {
-                DynamicBody* dynamicBodyB = static_cast<DynamicBody*>(collision->bodyB);
-
-                //Resolve collision between two dynamic bodies
-                resolveDynamicCollision(dynamicBodyA, dynamicBodyB, collision->normal, collision->penDepth);
-            }
-
-            //If second body is a static body
-            else if (typeB == BodyType::StaticBody)
-            {
-                StaticBody* staticBodyB = static_cast<StaticBody*>(collision->bodyB);
-
-                //Resolve collision between a dynamic body and a static body
-                resolveDynamicStaticCollision(dynamicBodyA, staticBodyB, collision->normal, collision->penDepth);
-            }
+            //Resolve collision between two dynamic bodies
+            resolveDynamicCollision(dynamicBodyA, dynamicBodyB, collision->normal, collision->penDepth);
         }
 
-        //If the first body is a static body
-        else if (typeA == BodyType::StaticBody)
+        //If second body is a static body
+        else if (typeB == BodyType::StaticBody)
         {
-            StaticBody* staticBodyA = static_cast<StaticBody*>(collision->bodyA);
+            StaticBody* staticBodyB = static_cast<StaticBody*>(collision->bodyB);
 
-            //If the second body is a dynamic body
-            if (typeB == BodyType::DynamicBody)
-            {
-                DynamicBody* dynamicBodyB = static_cast<DynamicBody*>(collision->bodyB);
-
-                //Resolve collision between a dynamic body and a static body
-                //Flip the normal since we switched the order of bodies
-                resolveDynamicStaticCollision(dynamicBodyB, staticBodyA, -collision->normal, collision->penDepth);
-            }
+            //Resolve collision between a dynamic body and a static body
+            resolveDynamicStaticCollision(dynamicBodyA, staticBodyB, collision->normal, collision->penDepth);
         }
-
-        //Delete the collision object from memory after resolution
-        delete collision;
     }
 
-    //Clears the collisions vector after all are resolved
-    collisions.clear();
+    //If the first body is a static body
+    else if (typeA == BodyType::StaticBody)
+    {
+        StaticBody* staticBodyA = static_cast<StaticBody*>(collision->bodyA);
+
+        //If the second body is a dynamic body
+        if (typeB == BodyType::DynamicBody)
+        {
+            DynamicBody* dynamicBodyB = static_cast<DynamicBody*>(collision->bodyB);
+
+            //Resolve collision between a dynamic body and a static body
+            //Flip the normal since we switched the order of bodies
+            resolveDynamicStaticCollision(dynamicBodyB, staticBodyA, -collision->normal, collision->penDepth);
+        }
+    }
 }
 
 //Resolve a collision between a dynamic body and a static body
