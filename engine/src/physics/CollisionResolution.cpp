@@ -1,6 +1,6 @@
 //Implementation of collision resolution functions
 
-#include "physics/CollisionSolver.hpp"
+#include "physics/CollisionResolution.hpp"
 
 //Sort collision to respective solver
 void CollisionResolution::resolveCollision(const Collision& collision)

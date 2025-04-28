@@ -16,7 +16,7 @@
 #include "physics/PhysicsBody.hpp"
 #include "physics/StaticBody.hpp"
 #include "physics/DynamicBody.hpp"
-#include "physics/CollisionSolver.hpp"
+#include "physics/CollisionResolution.hpp"
 
 #include <vector>
 
