@@ -43,7 +43,7 @@ protected:
     ColliderType type;
 
     //Bounding box for broad collision detection
-    AABB* boundingBox;
+    AABB boundingBox;
 
     //Update AABB mins and maxes
     virtual void updateAABB() = 0;
@@ -60,7 +60,7 @@ public:
     PhysicsBody* getParent() const;
     ColliderShape getShape() const;
     ColliderType getType() const;
-    AABB* getAABB() const;
+    const AABB& getAABB() const;
 
     //Setters for member variables
     void setPosition(const Vector2& newPosition);

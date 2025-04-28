@@ -147,8 +147,8 @@ void Engine::processCollisions()
                     continue;
 
                 //First check if AABBs are intersecting (Broad phase)
-                AABB* boundingBoxA = colliderA->getAABB();
-                AABB* boundingBoxB = colliderB->getAABB();
+                const AABB boundingBoxA = colliderA->getAABB();
+                const AABB boundingBoxB = colliderB->getAABB();
 
                 if (!CollisionDetection::checkAABBvsAABB(boundingBoxA, boundingBoxB)) continue;
 
