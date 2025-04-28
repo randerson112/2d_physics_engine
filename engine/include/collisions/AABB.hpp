@@ -1,30 +1,23 @@
-//Class defenition for Axis Aligined Bounding Boxes (AABB)
+//Struct defenition for Axis Aligined Bounding Boxes (AABB)
 
 #ifndef AABB_HPP
 #define AABB_HPP
 
 #include "core/Vector2.hpp"
 
-class AABB
+struct AABB
 {
-public:
-    //Constructor to set mins and maxes
-    AABB(Vector2 min, Vector2 max);
-
-    //Getters for member variables
-    Vector2 getMin() const;
-    Vector2 getMax() const;
-
-    //Setters for member variables
-    void setMin(const Vector2& newMin);
-    void setMax(const Vector2& newMax);
-
-private:
     //Min x and y
-    Vector2 m_min;
+    Vector2 min;
 
     //Max x and y
-    Vector2 m_max;
+    Vector2 max;
+
+    //Default constructor
+    AABB();
+
+    //Constructor to set mins and maxes
+    AABB(const Vector2& min, const Vector2& max);
 };
 
 #endif

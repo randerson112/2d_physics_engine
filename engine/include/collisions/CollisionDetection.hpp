@@ -12,7 +12,7 @@
 namespace CollisionDetection
 {
     //Checks if two AABBs are overlapping
-    bool checkAABBvsAABB(AABB* boxA, AABB* boxB);
+    bool checkAABBvsAABB(const AABB& boxA, const AABB& boxB);
 
     //Sorts into respective function based on body shapes
     Collision* checkCollision(PhysicsBody* bodyA, PhysicsBody* bodyB);

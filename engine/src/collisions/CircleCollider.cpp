@@ -7,7 +7,7 @@ CircleCollider::CircleCollider(float initialRadius, ColliderType type)
     : Collider(ColliderShape::Circle, type), radius(initialRadius)
     {
         //Create AABB to enclose circle shape
-        boundingBox = new AABB({position.x - radius, position.y - radius}, {position.x + radius, position.y + radius});
+        boundingBox = AABB({position.x - radius, position.y - radius}, {position.x + radius, position.y + radius});
     }
 
 //Getters for member variables
@@ -29,6 +29,6 @@ void CircleCollider::setRadius(float newRadius)
 
 void CircleCollider::updateAABB()
 {
-    boundingBox->setMin({position.x - radius, position.y - radius});
-    boundingBox->setMax({position.x + radius, position.y + radius});
+    boundingBox.min = {position.x - radius, position.y - radius};
+    boundingBox.max = {position.x + radius, position.y + radius};
 }

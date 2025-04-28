@@ -1,27 +1,8 @@
 #include "collisions/AABB.hpp"
 
+//Default constructor
+AABB::AABB() : min(Vector2()), max(Vector2()) {}
+
 //Constructor to set mins and maxes
-AABB::AABB(Vector2 min, Vector2 max)
-    : m_min(min), m_max(max) {}
-
-//Getters for member variables
-Vector2 AABB::getMin() const
-{
-    return m_min;
-}
-
-Vector2 AABB::getMax() const
-{
-    return m_max;
-}
-
-//Setters for member variables
-void AABB::setMin(const Vector2& newMin)
-{
-    m_min = newMin;
-}
-
-void AABB::setMax(const Vector2& newMax)
-{
-    m_max = newMax;
-}
+AABB::AABB(const Vector2& min, const Vector2& max)
+    : min(min), max(max) {}

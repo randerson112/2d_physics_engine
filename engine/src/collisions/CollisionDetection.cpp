@@ -7,14 +7,14 @@
 struct Collision;
 
 //Checks if two AABBs are overlapping
-bool CollisionDetection::checkAABBvsAABB(AABB* boxA, AABB* boxB)
+bool CollisionDetection::checkAABBvsAABB(const AABB& boxA, const AABB& boxB)
 {
     //Get mins and maxes
-    Vector2 minA = boxA->getMin();
-    Vector2 maxA = boxA->getMax();
+    Vector2 minA = boxA.min;
+    Vector2 maxA = boxA.max;
 
-    Vector2 minB = boxB->getMin();
-    Vector2 maxB = boxB->getMax();
+    Vector2 minB = boxB.min;
+    Vector2 maxB = boxB.max;
 
     //Check for overlap
     if (maxA.x > minB.x && minA.x < maxB.x && maxA.y > minB.y && minA.y < maxB.y)

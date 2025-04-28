@@ -7,7 +7,7 @@ RectCollider::RectCollider(Vector2 dimensions, ColliderType type)
     : Collider(ColliderShape::Rectangle, type), width(dimensions.x), height(dimensions.y)
     {
         //Create AABB to enclose rectangle shape
-        boundingBox = new AABB({position.x - width / 2, position.y - height / 2}, {position.x + width / 2, position.y + height / 2});
+        boundingBox = AABB({position.x - width / 2, position.y - height / 2}, {position.x + width / 2, position.y + height / 2});
     }
 
 //Getters for member variables
@@ -43,6 +43,6 @@ void RectCollider::setHeight(float newHeight)
 //Update AABB mins and maxes
 void RectCollider::updateAABB()
 {
-    boundingBox->setMin({position.x - width / 2, position.y - height / 2});
-    boundingBox->setMax({position.x + width / 2, position.y + height / 2});
+    boundingBox.min = {position.x - width / 2, position.y - height / 2};
+    boundingBox.max = {position.x + width / 2, position.y + height / 2};
 }

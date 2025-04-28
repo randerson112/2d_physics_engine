@@ -4,12 +4,10 @@
 
 //Constructor to set shape and collider type
 Collider::Collider(ColliderShape shapeType, ColliderType type)
-: parent(nullptr), position({0, 0}), offset({0, 0}), shape(shapeType), type(type), boundingBox(nullptr) {}
+: parent(nullptr), position({0, 0}), offset({0, 0}), shape(shapeType), type(type), boundingBox(AABB()) {}
 
-Collider::~Collider()
-{
-    delete boundingBox;
-}
+//Destructor
+Collider::~Collider() = default;
 
 //Getters for member variables
 const Vector2& Collider::getPosition() const
@@ -36,7 +34,7 @@ ColliderType Collider::getType() const
     return type;
 }
 
-AABB* Collider::getAABB() const
+const AABB& Collider::getAABB() const
 {
     return boundingBox;
 }
