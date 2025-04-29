@@ -1,6 +1,7 @@
 # build folders
 build/
 engine/build/
+demo/build/
 
 # testing folder
 testing/
