@@ -1,10 +1,10 @@
-//Class defenition for the main engine
-//The engine will keep track of all physics bodies positions in the world
-//The engine call the update functions of all physics bodies every frame
-//The engine will handle world constants like gravity and time
+//Class defenition for physics worlds
+//Physics worlds will keep track of all bodies within it
+//Physics worlds call the update functions of all physics bodies every frame
+//Physics worlds will handle world constants like gravity
 
-#ifndef ENGINE_HPP
-#define ENGINE_HPP
+#ifndef PHYSICS_WORLD_HPP
+#define PHYSICS_WORLD_HPP
 
 #include "core/Vector2.hpp"
 #include "core/WorldBoundary.hpp"
@@ -20,7 +20,7 @@
 
 #include <vector>
 
-class Engine
+class PhysicsWorld
 {
 private:
     //World boundaries for physics bodies, default no boundaries
@@ -43,8 +43,8 @@ private:
 
 public:
     //Constructors and deconstructors
-    Engine();
-    ~Engine();
+    PhysicsWorld();
+    ~PhysicsWorld();
 
     //Sets world boundary dimensions and type
     void setWorldBoundaries(float newWidth, float newHeight, BoundaryType type);
@@ -68,7 +68,7 @@ public:
 
     /*
     -Note- processPhysics and processCollisions functions can be called seperately if needed, but
-    both must be called for engine to function properly. Call update function if seperation is not needed
+    both must be called for the world to function properly. Call update function if seperation is not needed
     */
 
     //Detect and resolve collisions of physics bodies
