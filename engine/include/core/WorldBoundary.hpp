@@ -1,5 +1,8 @@
 //Class defenition for world boundary to keep physics bodies within constraints
 
+#ifndef WORLD_BOUNDARY_HPP
+#define WORLD_BOUNDARY_HPP
+
 #include "physics/StaticBody.hpp"
 #include "physics/DynamicBody.hpp"
 
@@ -44,3 +47,5 @@ public:
     //Set a new boundary type
     void setType(BoundaryType newType);
 };
+
+#endif
