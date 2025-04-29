@@ -1,6 +1,6 @@
 //Implementation of PhysicsWorld class: manages and updates physics bodies within it
 
-#include "core/Engine.hpp"
+#include "core/PhysicsWorld.hpp"
 
 //Constructor to set default world settings
 PhysicsWorld::PhysicsWorld()
