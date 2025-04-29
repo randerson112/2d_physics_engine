@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "core/Engine.hpp"
+#include "Engine.hpp"
 
 int main()
 {
