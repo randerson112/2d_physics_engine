@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Engine.hpp"
+#include "Timer.hpp"
 
 int main()
 {

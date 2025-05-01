@@ -18,6 +18,9 @@ add_executable(${PROJECT_NAME})
 file(GLOB_RECURSE DEMO_SOURCES src/*.cpp)
 target_sources(${PROJECT_NAME} PRIVATE ${DEMO_SOURCES})
 
+#Set include directory
+target_include_directories(${PROJECT_NAME} PRIVATE include)
+
 #Link the physics engine library
 target_link_libraries(${PROJECT_NAME} PRIVATE PhysicsEngineLibrary)
 
