@@ -16,29 +16,29 @@ class DynamicBody : public PhysicsBody
 {
 private:
     //Current velocity of the body
-    Vector2 velocity;
+    Vector2 m_velocity;
 
     //Accumulated forces on the body
-    Vector2 force;
+    Vector2 m_force;
 
     //Current acceleration of the body
-    Vector2 acceleration;
+    Vector2 m_acceleration;
 
     //Restitution or bounciness of the body
-    float restitution;
+    float m_restitution;
 
     //Mass of the body
-    float mass;
+    float m_mass;
 
     //Flag that determines if gravity affects the body
-    bool affectedByGravity;
+    bool m_affectedByGravity;
 
 public:
     //Constructor to set postion and collider
-    DynamicBody(const Vector2& initialPosition, Collider* colliderInstance);
+    DynamicBody(const Vector2& position, Collider* collider);
 
     //Applies an external force to the body
-    void applyForce(const Vector2& forceToAdd);
+    void applyForce(const Vector2& force);
 
     //Update the physics of the body in the world
     void update(float deltaTime) override;
@@ -57,7 +57,7 @@ public:
     void setAcceleration(const Vector2& newAcceleration);
     void setRestitution(float newRestitution);
     void setMass(float newMass);
-    void setAffectedByGravity(bool boolValue);
+    void setAffectedByGravity(bool affectedByGravity);
 };
 }
 

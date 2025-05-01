@@ -5,8 +5,8 @@
 namespace phys
 {
 //Constructor to set shape and collider type
-Collider::Collider(ColliderShape shapeType, ColliderType type)
-: parent(nullptr), position({0, 0}), offset({0, 0}), shape(shapeType), type(type), boundingBox(AABB()) {}
+Collider::Collider(ColliderShape colliderShape, ColliderType colliderType)
+: m_parent(nullptr), m_position({0, 0}), m_offset({0, 0}), m_shape(colliderShape), m_type(colliderType), m_boundingBox(AABB()) {}
 
 //Destructor
 Collider::~Collider() = default;
@@ -14,54 +14,54 @@ Collider::~Collider() = default;
 //Getters for member variables
 const Vector2& Collider::getPosition() const
 {
-    return position;
+    return m_position;
 }
 
 const Vector2& Collider::getOffset() const
 {
-    return offset;
+    return m_offset;
 }
 PhysicsBody* Collider::getParent() const
 {
-    return parent;
+    return m_parent;
 }
 
 ColliderShape Collider::getShape() const
 {
-    return shape;
+    return m_shape;
 }
 
 ColliderType Collider::getType() const
 {
-    return type;
+    return m_type;
 }
 
 const AABB& Collider::getAABB() const
 {
-    return boundingBox;
+    return m_boundingBox;
 }
 
 //Setters for member variables
 void Collider::setPosition(const Vector2& newPosition)
 {
-    position = newPosition;
+    m_position = newPosition;
 
     updateAABB();
 }
 
 void Collider::setOffset(const Vector2& newOffest)
 {
-    offset = newOffest;
+    m_offset = newOffest;
 }
 
 void Collider::setParent(PhysicsBody* newParent)
 {
-    parent = newParent;
+    m_parent = newParent;
     //Destroy old parent?
 }
 
 void Collider::setType(ColliderType newType)
 {
-    type = newType;
+    m_type = newType;
 }
 }

@@ -7,8 +7,8 @@
 namespace phys
 {
 //Constructor to set dimensions and boundary type
-WorldBoundary::WorldBoundary(const Vector2& dimensions, BoundaryType type)
-    : m_dimensions(dimensions), m_type(type)
+WorldBoundary::WorldBoundary(const Vector2& dimensions, BoundaryType boundaryType)
+    : m_dimensions(dimensions), m_type(boundaryType)
     {
         //Check if dimensions are not less than minimums
         if (m_dimensions.x < MIN_WORLD_WIDTH)

@@ -5,25 +5,25 @@
 namespace phys
 {
 //Constructor to set radius and collider type
-CircleCollider::CircleCollider(float initialRadius, ColliderType type)
-    : Collider(ColliderShape::Circle, type), radius(initialRadius)
+CircleCollider::CircleCollider(float radius, ColliderType colliderType)
+    : Collider(ColliderShape::Circle, colliderType), m_radius(radius)
     {
         //Create AABB to enclose circle shape
-        boundingBox = AABB({position.x - radius, position.y - radius}, {position.x + radius, position.y + radius});
+        m_boundingBox = AABB({m_position.x - m_radius, m_position.y - m_radius}, {m_position.x + m_radius, m_position.y + m_radius});
     }
 
 //Getters for member variables
 float CircleCollider::getRadius() const
 {
-    return radius;
+    return m_radius;
 }
 
 //Setters for member variables
 void CircleCollider::setRadius(float newRadius)
 {
-    if (radius >= 0)
+    if (m_radius >= 0)
     {
-        radius = newRadius; //Ensure non-negative radius
+        m_radius = newRadius; //Ensure non-negative radius
 
         updateAABB();
     }
@@ -31,7 +31,7 @@ void CircleCollider::setRadius(float newRadius)
 
 void CircleCollider::updateAABB()
 {
-    boundingBox.min = {position.x - radius, position.y - radius};
-    boundingBox.max = {position.x + radius, position.y + radius};
+    m_boundingBox.min = {m_position.x - m_radius, m_position.y - m_radius};
+    m_boundingBox.max = {m_position.x + m_radius, m_position.y + m_radius};
 }
 }

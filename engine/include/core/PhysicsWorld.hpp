@@ -54,7 +54,7 @@ public:
     void setBoundaryDimensions(Vector2& newDimensions);
 
     //Sets the type of the world boundaries
-    void setBoundaryType(BoundaryType type);
+    void setBoundaryType(BoundaryType newType);
 
     //Adds a physics body to the world
     void addBody(PhysicsBody* body);
@@ -95,7 +95,7 @@ public:
 
     //Sets the gravity scale of the world
     //Parameter: a non-negative scale factor
-    void setGravityScale(float scaleValue);
+    void setGravityScale(float newScaleValue);
 
     //Returns the vector of physics bodies in the world
     const std::vector<PhysicsBody*>& getBodies() const;

@@ -30,29 +30,29 @@ class Collider
 {
 protected:
     //position of the collider in the world
-    Vector2 position;
+    Vector2 m_position;
 
     //position relative to parent body, default no offset
-    Vector2 offset;
+    Vector2 m_offset;
 
     //The parent of the collider, a physics body
-    PhysicsBody* parent;
+    PhysicsBody* m_parent;
 
     //Shape of the collider
-    ColliderShape shape;
+    ColliderShape m_shape;
 
     //Type of collider, solid or trigger
-    ColliderType type;
+    ColliderType m_type;
 
     //Bounding box for broad collision detection
-    AABB boundingBox;
+    AABB m_boundingBox;
 
     //Update AABB mins and maxes
     virtual void updateAABB() = 0;
 
 public:
     //Constructor to set shape and collider type
-    Collider(ColliderShape shapeType, ColliderType type);
+    Collider(ColliderShape colliderShape, ColliderType ColliderType);
 
     virtual ~Collider();
 

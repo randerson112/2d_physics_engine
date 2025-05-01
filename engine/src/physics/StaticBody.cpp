@@ -5,8 +5,8 @@
 namespace phys
 {
 //Sets position and collider
-StaticBody::StaticBody(const Vector2& initialPosition, Collider* colliderInstance)
-    : PhysicsBody(initialPosition, colliderInstance, BodyType::StaticBody) {}
+StaticBody::StaticBody(const Vector2& position, Collider* collider)
+    : PhysicsBody(position, collider, BodyType::StaticBody) {}
 
 void StaticBody::update(float deltaTime)
 {

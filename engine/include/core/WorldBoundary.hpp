@@ -34,7 +34,7 @@ private:
 
 public:
     //Constructor to set world width and height and the type of boundary
-    WorldBoundary(const Vector2& dimensions, BoundaryType type);
+    WorldBoundary(const Vector2& dimensions, BoundaryType boundaryType);
 
     //Keeps a body within boundaries when placed or moved
     bool placementEnforce(PhysicsBody* body) const;
