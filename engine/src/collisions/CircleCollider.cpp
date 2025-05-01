@@ -2,6 +2,8 @@
 
 #include "collisions/CircleCollider.hpp"
 
+namespace phys
+{
 //Constructor to set radius and collider type
 CircleCollider::CircleCollider(float initialRadius, ColliderType type)
     : Collider(ColliderShape::Circle, type), radius(initialRadius)
@@ -31,4 +33,5 @@ void CircleCollider::updateAABB()
 {
     boundingBox.min = {position.x - radius, position.y - radius};
     boundingBox.max = {position.x + radius, position.y + radius};
+}
 }

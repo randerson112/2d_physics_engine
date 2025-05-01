@@ -7,6 +7,8 @@
 
 #include <cmath>
 
+namespace phys
+{
 struct Vector2
 {
     //coordinates of the vector
@@ -52,5 +54,6 @@ struct Vector2
     //How much of the vector lies on the other vector when projected
     float projectOntoAxis(const Vector2& axis) const;
 };
+}
 
 #endif

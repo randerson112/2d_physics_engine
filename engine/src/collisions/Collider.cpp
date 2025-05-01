@@ -2,6 +2,8 @@
 
 #include "collisions/Collider.hpp"
 
+namespace phys
+{
 //Constructor to set shape and collider type
 Collider::Collider(ColliderShape shapeType, ColliderType type)
 : parent(nullptr), position({0, 0}), offset({0, 0}), shape(shapeType), type(type), boundingBox(AABB()) {}
@@ -61,4 +63,5 @@ void Collider::setParent(PhysicsBody* newParent)
 void Collider::setType(ColliderType newType)
 {
     type = newType;
+}
 }

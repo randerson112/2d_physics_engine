@@ -9,6 +9,8 @@
 #include "collisions/Collider.hpp"
 #include <memory>
 
+namespace phys
+{
 enum class BodyType
 {
     StaticBody,
@@ -52,5 +54,6 @@ public:
     void setPosition(const Vector2& newPosition);
     void setCollider(Collider* newCollider);
 };
+}
 
 #endif

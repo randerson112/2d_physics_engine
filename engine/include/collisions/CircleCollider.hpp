@@ -6,6 +6,8 @@
 
 #include "collisions/Collider.hpp"
 
+namespace phys
+{
 class CircleCollider : public Collider
 {
 private:
@@ -25,5 +27,6 @@ public:
     //Setters for member variables
     void setRadius(float newRadius);
 };
+}
 
 #endif

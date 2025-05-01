@@ -10,6 +10,8 @@
 #include "physics/PhysicsBody.hpp"
 #include "core/Vector2.hpp"
 
+namespace phys
+{
 class DynamicBody : public PhysicsBody
 {
 private:
@@ -57,5 +59,6 @@ public:
     void setMass(float newMass);
     void setAffectedByGravity(bool boolValue);
 };
+}
 
 #endif

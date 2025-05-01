@@ -4,6 +4,8 @@
 #include "collisions/RectCollider.hpp"
 #include "collisions/CircleCollider.hpp"
 
+namespace phys
+{
 //Constructor to set dimensions and boundary type
 WorldBoundary::WorldBoundary(float width, float height, BoundaryType type)
     : worldWidth(width), worldHeight(height), type(type)
@@ -307,4 +309,5 @@ void WorldBoundary::setDimensions(float newWidth, float newHeight)
 void WorldBoundary::setType(BoundaryType newType)
 {
     type = newType;
+}
 }

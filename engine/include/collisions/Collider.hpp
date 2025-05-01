@@ -10,6 +10,8 @@
 #include "core/Vector2.hpp"
 #include "collisions/AABB.hpp"
 
+namespace phys
+{
 enum class ColliderShape
 {
     Rectangle,
@@ -70,5 +72,6 @@ public:
 
     //Maybe a method to change the shape of the collider in the future
 };
+}
 
 #endif

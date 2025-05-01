@@ -5,6 +5,8 @@
 
 #include "core/Vector2.hpp"
 
+namespace phys
+{
 struct AABB
 {
     //Min x and y
@@ -20,5 +22,6 @@ struct AABB
     AABB(const Vector2& min, const Vector2& max)
         : min(min), max(max) {}
 };
+}
 
 #endif

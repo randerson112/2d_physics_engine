@@ -2,6 +2,8 @@
 
 #include "core/PhysicsWorld.hpp"
 
+namespace phys
+{
 //Constructor to set default world settings
 PhysicsWorld::PhysicsWorld()
     : boundary(nullptr), gravityScale(1.0f), physicsProcess(true), collisionsProcess(true) {}
@@ -216,4 +218,5 @@ WorldBoundary* PhysicsWorld::getBoundary() const
         return boundary;
 
     return nullptr;
+}
 }

@@ -2,6 +2,8 @@
 
 #include "core/Vector2.hpp"
 
+namespace phys
+{
 //Default constructor
 Vector2::Vector2() : x(0.0f), y(0.0f) {}
 
@@ -101,4 +103,5 @@ float Vector2::getSquare() const
 float Vector2::projectOntoAxis(const Vector2& axis) const
 {
     return (x * axis.x) + (y * axis.y);
+}
 }

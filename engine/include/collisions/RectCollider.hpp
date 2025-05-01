@@ -6,6 +6,8 @@
 
 #include "collisions/Collider.hpp"
 
+namespace phys
+{
 class RectCollider : public Collider
 {
 private:
@@ -28,5 +30,6 @@ public:
     void setWidth(float newWidth);
     void setHeight(float newHeight);
 };
+}
 
 #endif

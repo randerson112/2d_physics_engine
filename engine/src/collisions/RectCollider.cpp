@@ -2,6 +2,8 @@
 
 #include "collisions/RectCollider.hpp"
 
+namespace phys
+{
 //Constructor to set width and height of collider
 RectCollider::RectCollider(Vector2 dimensions, ColliderType type)
     : Collider(ColliderShape::Rectangle, type), width(dimensions.x), height(dimensions.y)
@@ -45,4 +47,5 @@ void RectCollider::updateAABB()
 {
     boundingBox.min = {position.x - width / 2, position.y - height / 2};
     boundingBox.max = {position.x + width / 2, position.y + height / 2};
+}
 }

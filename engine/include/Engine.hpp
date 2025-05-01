@@ -1,3 +1,6 @@
+#ifndef ENGINE_HPP
+#define ENGINE_HPP
+
 #include "core/PhysicsWorld.hpp"
 #include "core/Vector2.hpp"
 #include "core/WorldBoundary.hpp"
@@ -11,3 +14,10 @@
 #include "physics/StaticBody.hpp"
 #include "physics/DynamicBody.hpp"
 #include "physics/CollisionResolution.hpp"
+
+namespace phys
+{
+    //Add useful API functions here
+}
+
+#endif

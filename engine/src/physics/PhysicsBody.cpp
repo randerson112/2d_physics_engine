@@ -2,6 +2,8 @@
 
 #include "physics/PhysicsBody.hpp"
 
+namespace phys
+{
 //Constructor to set position, collider, and body type
 PhysicsBody::PhysicsBody(const Vector2& initialPosition, Collider* colliderInstance, BodyType bodyType)
     : position(initialPosition), collider(colliderInstance), type(bodyType)
@@ -53,4 +55,5 @@ void PhysicsBody::setCollider(Collider* newCollider)
     }
 
     collider = newCollider;
+}
 }

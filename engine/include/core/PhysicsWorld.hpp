@@ -20,6 +20,8 @@
 
 #include <vector>
 
+namespace phys
+{
 class PhysicsWorld
 {
 private:
@@ -99,5 +101,6 @@ public:
     //Returns a pointer to the world boundary
     WorldBoundary* getBoundary() const;
 };
+}
 
 #endif

@@ -6,6 +6,8 @@
 #include "physics/StaticBody.hpp"
 #include "physics/DynamicBody.hpp"
 
+namespace phys
+{
 enum class BoundaryType
 {
     Collidable,
@@ -47,5 +49,6 @@ public:
     //Set a new boundary type
     void setType(BoundaryType newType);
 };
+}
 
 #endif

@@ -2,6 +2,8 @@
 
 #include "physics/DynamicBody.hpp"
 
+namespace phys
+{
 //Constructor to set members
 DynamicBody::DynamicBody(const Vector2& initialPosition, Collider* colliderInstance)
 : PhysicsBody(initialPosition, colliderInstance, BodyType::DynamicBody),
@@ -91,4 +93,5 @@ void DynamicBody::setMass(float newMass)
 void DynamicBody::setAffectedByGravity(bool boolValue)
 {
     affectedByGravity = boolValue;
+}
 }

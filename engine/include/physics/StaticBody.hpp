@@ -10,6 +10,8 @@
 #include "physics/PhysicsBody.hpp"
 #include "core/Vector2.hpp"
 
+namespace phys
+{
 class StaticBody : public PhysicsBody
 {
 public:
@@ -19,5 +21,6 @@ public:
     //Nothing will happen here since body is static
     void update(float deltaTime) override;
 };
+}
 
 #endif
