@@ -82,7 +82,9 @@ cmake ..
 cmake --build .
 ```
 
-### Running the Demo
+---
+
+## Running the Demo
 
 1. Navigate to **build/demo**, there should now be an executable called **PhysicsEngineDemo**
 
@@ -97,7 +99,21 @@ cmake --build .
 PhysicsEngineDemo.exe
 ```
 
-## Example Usage - Non-Visual
+### Demo Controls
+
+The demo allows you to interact with the simulation using the following controls:
+
+- **Left Mouse Button**: Spawns dynamic circle objects at the mouse position with a random radius and color.
+- **Right Mouse Button**: Spawns dynamic rectangle objects at the mouse position with random dimensions and color.
+- **P Key**: Hold down to pause physics, release to resume.
+- **C Key**: Hold down to disable collisions, release to enable.
+- **B Key**: Hold down to make window borders collidable, release to disable.
+- **Window Resize**: You can resize the window to dynamically adjust the world boundaries to match the new window size.
+- **Escape Key**: Closes the demo window.
+
+---
+
+## Example Engine Usage - Non-Visual
 
 This Simple demo calculates how long it takes for a body dropped from 500 meters to hit the ground. It also states the objects velocity at impact.
 
@@ -130,7 +146,9 @@ int main()
 }
 ```
 
-**Refer to the demo source code for more examples**
+**Refer to the demo source code for more example usage**
+
+---
 
 ## Future Goals
 
