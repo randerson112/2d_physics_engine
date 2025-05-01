@@ -9,6 +9,8 @@
 #include "collisions/CircleCollider.hpp"
 #include "collisions/Collision.hpp"
 
+namespace phys
+{
 namespace CollisionDetection
 {
     //Checks if two AABBs are overlapping
@@ -25,6 +27,7 @@ namespace CollisionDetection
 
     //Calculate collision between a rectangle and a circle collider
     Collision* checkRectCircleCollision(RectCollider* rect, CircleCollider* circle);
+}
 }
 
 #endif

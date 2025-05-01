@@ -9,6 +9,8 @@
 #include "collisions/Collider.hpp"
 #include <memory>
 
+namespace phys
+{
 enum class BodyType
 {
     StaticBody,
@@ -22,17 +24,17 @@ class PhysicsBody
 {
 protected:
     //Position of body in the world
-    Vector2 position;
+    Vector2 m_position;
 
     //Collider for detecting collisions
-    Collider* collider;
+    Collider* m_collider;
 
     //Type of the body (static, dynamic...)
-    BodyType type;
+    BodyType m_type;
 
 public:
     //Constructor
-    PhysicsBody(const Vector2& initialPosition, Collider* colliderInstance, BodyType bodyType);
+    PhysicsBody(const Vector2& position, Collider* collider, BodyType bodyType);
 
     //Destructor
     virtual ~PhysicsBody();
@@ -52,5 +54,6 @@ public:
     void setPosition(const Vector2& newPosition);
     void setCollider(Collider* newCollider);
 };
+}
 
 #endif

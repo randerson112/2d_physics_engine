@@ -2,55 +2,58 @@
 
 #include "physics/PhysicsBody.hpp"
 
+namespace phys
+{
 //Constructor to set position, collider, and body type
-PhysicsBody::PhysicsBody(const Vector2& initialPosition, Collider* colliderInstance, BodyType bodyType)
-    : position(initialPosition), collider(colliderInstance), type(bodyType)
+PhysicsBody::PhysicsBody(const Vector2& position, Collider* collider, BodyType bodyType)
+    : m_position(position), m_collider(collider), m_type(bodyType)
     {
         collider->setParent(this); //Attach the collider to body
-        collider->setPosition(position + collider->getOffset()); //Set the position of the collider to body position
+        collider->setPosition(m_position + m_collider->getOffset()); //Set the position of the collider to body position
     }
 
 //Destructor to delete collider memory
 PhysicsBody::~PhysicsBody()
 {
-    delete collider; 
+    delete m_collider; 
 }
 
 //Moves a body by a relative amount
 void PhysicsBody::move(const Vector2& amountToMove)
 {
-    setPosition({position.x + amountToMove.x, position.y + amountToMove.y});
+    setPosition({m_position.x + amountToMove.x, m_position.y + amountToMove.y});
 }
 
 //Getters for member variables
 const Vector2& PhysicsBody::getPosition() const
 {
-    return position;
+    return m_position;
 }
 
 Collider* PhysicsBody::getCollider() const
 {
-    return collider;
+    return m_collider;
 }
 
 BodyType PhysicsBody::getType() const
 {
-    return type;
+    return m_type;
 }
 
 //Setters for member variables
 void PhysicsBody::setPosition(const Vector2& newPosition)
 {
-    position = newPosition;
-    collider->setPosition(position); //Also move collider to new position
+    m_position = newPosition;
+    m_collider->setPosition(m_position); //Also move collider to new position
 }
 
 void PhysicsBody::setCollider(Collider* newCollider)
 {
-    if (collider) //If there is an active collider already
+    if (m_collider) //If there is an active collider already
     {
-        delete collider; //Delete current collider
+        delete m_collider; //Delete current collider
     }
 
-    collider = newCollider;
+    m_collider = newCollider;
+}
 }

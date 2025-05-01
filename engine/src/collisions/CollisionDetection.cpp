@@ -6,6 +6,8 @@
 
 struct Collision;
 
+namespace phys
+{
 //Checks if two AABBs are overlapping
 bool CollisionDetection::checkAABBvsAABB(const AABB& boxA, const AABB& boxB)
 {
@@ -231,4 +233,5 @@ Collision* CollisionDetection::checkRectCircleCollision(RectCollider* rect, Circ
 
     //If no collision is detected
     return nullptr;
+}
 }

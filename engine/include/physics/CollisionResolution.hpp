@@ -6,6 +6,8 @@
 #include "collisions/Collision.hpp"
 #include <vector>
 
+namespace phys
+{
 namespace CollisionResolution
 {
     //Resolves a collision by sorting it into respective function based on bodies
@@ -17,3 +19,4 @@ namespace CollisionResolution
     //Resolve a collision between two dynamic bodies
     void resolveDynamicCollision(DynamicBody* bodyA, DynamicBody* bodyB, const Vector2& normal, float penDepth);
 };
+}

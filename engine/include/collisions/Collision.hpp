@@ -6,6 +6,8 @@
 
 #include "physics/PhysicsBody.hpp"
 
+namespace phys
+{
 struct Collision
 {
     PhysicsBody* bodyA;
@@ -16,5 +18,6 @@ struct Collision
     Collision(PhysicsBody* bodyA, PhysicsBody* bodyB, const Vector2& normal, float penDepth)
         : bodyA(bodyA), bodyB(bodyB), normal(normal), penDepth(penDepth) {}
 };
+}
 
 #endif

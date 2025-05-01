@@ -4,16 +4,25 @@
 #include "collisions/RectCollider.hpp"
 #include "collisions/CircleCollider.hpp"
 
+namespace phys
+{
 //Constructor to set dimensions and boundary type
-WorldBoundary::WorldBoundary(float width, float height, BoundaryType type)
-    : worldWidth(width), worldHeight(height), type(type)
+WorldBoundary::WorldBoundary(const Vector2& dimensions, BoundaryType boundaryType)
+    : m_dimensions(dimensions), m_type(boundaryType)
     {
         //Check if dimensions are not less than minimums
-        if (worldWidth < MIN_WORLD_WIDTH)
-            worldWidth = MIN_WORLD_WIDTH;
+        if (m_dimensions.x < MIN_WORLD_WIDTH)
+            m_dimensions.x = MIN_WORLD_WIDTH;
 
-        if (worldHeight < MIN_WORLD_HEIGHT)
-            worldHeight = MIN_WORLD_HEIGHT;
+        if (m_dimensions.y < MIN_WORLD_HEIGHT)
+            m_dimensions.y = MIN_WORLD_HEIGHT;
+
+        //Check if dimensions are not greater than maximums
+        if (m_dimensions.x > MAX_WORLD_WIDTH)
+            m_dimensions.x = MAX_WORLD_WIDTH;
+
+        if (m_dimensions.y > MAX_WORLD_HEIGHT)
+            m_dimensions.y = MAX_WORLD_HEIGHT;
     }
 
 //Enforce boundaries on a body when it is first placed or moved
@@ -21,8 +30,8 @@ WorldBoundary::WorldBoundary(float width, float height, BoundaryType type)
 bool WorldBoundary::placementEnforce(PhysicsBody* body) const
 {
     //Get world half dimensions
-    float halfWorldWidth = worldWidth / 2;
-    float halfWorldHeight = worldHeight / 2;
+    float halfWorldWidth = m_dimensions.x / 2;
+    float halfWorldHeight = m_dimensions.y / 2;
 
     //Get collider shape
     ColliderShape bodyShape = body->getCollider()->getShape();
@@ -43,7 +52,7 @@ bool WorldBoundary::placementEnforce(PhysicsBody* body) const
         float halfBodyHeight = bodyCollider->getHeight() / 2;
 
         //if we want the body to stay inside the boundary
-        if (type == BoundaryType::Collidable)
+        if (m_type == BoundaryType::Collidable)
         {
             //Left boundary
             if (bodyPos.x - halfBodyWidth < -halfWorldWidth) newBodyPos.x = -halfWorldWidth + halfBodyWidth;
@@ -59,7 +68,7 @@ bool WorldBoundary::placementEnforce(PhysicsBody* body) const
         }
 
         //If we want to delete the body if it is beyond the boundary
-        if (type == BoundaryType::Delete)
+        if (m_type == BoundaryType::Delete)
         {
             //Left boundary
             if (bodyPos.x + halfBodyWidth < -halfWorldWidth) return true;
@@ -87,7 +96,7 @@ bool WorldBoundary::placementEnforce(PhysicsBody* body) const
         float bodyRadius = bodyCollider->getRadius();
 
         //if we want the body to stay inside the boundary
-        if (type == BoundaryType::Collidable)
+        if (m_type == BoundaryType::Collidable)
         {
             //Left boundary
             if (bodyPos.x - bodyRadius < -halfWorldWidth) newBodyPos.x = -halfWorldWidth + bodyRadius;
@@ -103,7 +112,7 @@ bool WorldBoundary::placementEnforce(PhysicsBody* body) const
         }
 
         //If we want to delete the body if it is beyond the boundary
-        if (type == BoundaryType::Delete)
+        if (m_type == BoundaryType::Delete)
         {
             //Left boundary
             if (bodyPos.x + bodyRadius < -halfWorldWidth) return true;
@@ -133,8 +142,8 @@ bool WorldBoundary::placementEnforce(PhysicsBody* body) const
 bool WorldBoundary::dynamicEnforce(DynamicBody* body) const
 {
     //Get world half dimensions
-    float halfWorldWidth = worldWidth / 2;
-    float halfWorldHeight = worldHeight / 2;
+    float halfWorldWidth = m_dimensions.x / 2;
+    float halfWorldHeight = m_dimensions.y / 2;
 
     //Get collider shape
     ColliderShape bodyShape = body->getCollider()->getShape();
@@ -161,7 +170,7 @@ bool WorldBoundary::dynamicEnforce(DynamicBody* body) const
         float halfBodyHeight = bodyCollider->getHeight() / 2;
 
         //If we want the dynamic body to collide with the boundary
-        if (type == BoundaryType::Collidable)
+        if (m_type == BoundaryType::Collidable)
         {
             //Left boundary
             if (bodyPos.x - halfBodyWidth < -halfWorldWidth)
@@ -193,7 +202,7 @@ bool WorldBoundary::dynamicEnforce(DynamicBody* body) const
         }
 
         //If we want the dynamic body to be deleted if it goes beyond the boundary
-        if (type == BoundaryType::Delete)
+        if (m_type == BoundaryType::Delete)
         {
             //Left boundary
             if (bodyPos.x + halfBodyWidth < -halfWorldWidth) return true;
@@ -221,7 +230,7 @@ bool WorldBoundary::dynamicEnforce(DynamicBody* body) const
         float bodyRadius = bodyCollider->getRadius();
 
         //If we want the dynamic body to collide with the boundary
-        if (type == BoundaryType::Collidable)
+        if (m_type == BoundaryType::Collidable)
         {
             //Left boundary
             if (bodyPos.x - bodyRadius < -halfWorldWidth)
@@ -253,7 +262,7 @@ bool WorldBoundary::dynamicEnforce(DynamicBody* body) const
         }
 
         //If we want the dynamic body to be deleted if it goes beyond the boundary
-        if (type == BoundaryType::Delete)
+        if (m_type == BoundaryType::Delete)
         {
             //Left boundary
             if (bodyPos.x + bodyRadius < -halfWorldWidth) return true;
@@ -285,26 +294,38 @@ bool WorldBoundary::dynamicEnforce(DynamicBody* body) const
 //Getters for member variables
 float WorldBoundary::getWidth() const
 {
-    return worldWidth;
+    return m_dimensions.x;
 }
 
 float WorldBoundary::getHeight() const
 {
-    return worldHeight;
+    return m_dimensions.y;
 }
 
 //Sets new dimensions for world boundaries, cannot be less than minimums
-void WorldBoundary::setDimensions(float newWidth, float newHeight)
+void WorldBoundary::setDimensions(Vector2& newDimensions)
 {
-    if (newWidth >= MIN_WORLD_WIDTH)
-        worldWidth = newWidth;
+    //Check if dimensions are not less than minimums
+    if (newDimensions.x < MIN_WORLD_WIDTH)
+        newDimensions.x = MIN_WORLD_WIDTH;
 
-    if (newHeight >= MIN_WORLD_HEIGHT)
-        worldHeight = newHeight;
+    if (newDimensions.y < MIN_WORLD_HEIGHT)
+        newDimensions.y = MIN_WORLD_HEIGHT;
+
+    //Check if dimensions are not greater than maximums
+    if (newDimensions.x > MAX_WORLD_WIDTH)
+        newDimensions.x = MAX_WORLD_WIDTH;
+
+    if (newDimensions.y > MAX_WORLD_HEIGHT)
+        newDimensions.y = MAX_WORLD_HEIGHT;
+
+    //Set new dimensions
+    m_dimensions = newDimensions;
 }
 
 //Set a new boundary type
 void WorldBoundary::setType(BoundaryType newType)
 {
-    type = newType;
+    m_type = newType;
+}
 }

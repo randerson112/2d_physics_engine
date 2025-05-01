@@ -2,6 +2,8 @@
 
 #include "physics/CollisionResolution.hpp"
 
+namespace phys
+{
 //Sort collision to respective solver
 void CollisionResolution::resolveCollision(const Collision& collision)
 {
@@ -96,4 +98,5 @@ void CollisionResolution::resolveDynamicCollision(DynamicBody* bodyA, DynamicBod
     //Calculate and set new velocities
     bodyA->setVelocity(bodyA->getVelocity() - normal * j / massA); 
     bodyB->setVelocity(bodyB->getVelocity() + normal * j / massB);
+}
 }

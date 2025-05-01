@@ -6,6 +6,8 @@
 #include "physics/StaticBody.hpp"
 #include "physics/DynamicBody.hpp"
 
+namespace phys
+{
 enum class BoundaryType
 {
     Collidable,
@@ -15,21 +17,24 @@ enum class BoundaryType
 class WorldBoundary
 {
 private:
-    //Minimum boundaries for world, cannot be smaller
+    //Minimum boundaries for world
     const float MIN_WORLD_WIDTH = 5.0f;
     const float MIN_WORLD_HEIGHT = 5.0f;
 
+    //Maximum boundaries for world
+    const float MAX_WORLD_WIDTH = 10000.0f;
+    const float MAX_WORLD_HEIGHT = 10000.0f;
+
     //Dimensions of the world boundaries
-    float worldWidth;
-    float worldHeight;
+    Vector2 m_dimensions;
 
     //Type of boundary
     //Objects collide with it, or get deleted when beyond boundary
-    BoundaryType type;
+    BoundaryType m_type;
 
 public:
     //Constructor to set world width and height and the type of boundary
-    WorldBoundary(float width, float height, BoundaryType type);
+    WorldBoundary(const Vector2& dimensions, BoundaryType boundaryType);
 
     //Keeps a body within boundaries when placed or moved
     bool placementEnforce(PhysicsBody* body) const;
@@ -42,10 +47,11 @@ public:
     float getHeight() const;
 
     //Set new world boundary dimensions
-    void setDimensions(float newWidth, float newHeight);
+    void setDimensions(Vector2& newDimensions);
 
     //Set a new boundary type
     void setType(BoundaryType newType);
 };
+}
 
 #endif
