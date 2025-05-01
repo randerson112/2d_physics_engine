@@ -5,93 +5,93 @@
 namespace phys
 {
 //Constructor to set members
-DynamicBody::DynamicBody(const Vector2& initialPosition, Collider* colliderInstance)
-: PhysicsBody(initialPosition, colliderInstance, BodyType::DynamicBody),
-mass(1.0f),
-restitution(0.6f),
-velocity({0, 0}),
-acceleration({0, 0}),
-affectedByGravity(true) {}
+DynamicBody::DynamicBody(const Vector2& position, Collider* collider)
+: PhysicsBody(position, collider, BodyType::DynamicBody),
+m_mass(1.0f),
+m_restitution(0.6f),
+m_velocity({0, 0}),
+m_acceleration({0, 0}),
+m_affectedByGravity(true) {}
 
 //Applies an external force to the body
 void DynamicBody::applyForce(const Vector2& forceToAdd)
 {
-    force += forceToAdd;
+    m_force += forceToAdd;
 }
 
 //Update the physics of the body in the world
 void DynamicBody::update(float deltaTime)
 {
-    acceleration = force / mass;
-    velocity += acceleration * deltaTime; //Update velocity based on current acceleration
+    m_acceleration = m_force / m_mass;
+    m_velocity += m_acceleration * deltaTime; //Update velocity based on current acceleration
 
-    position += velocity * deltaTime; //Update position based on current velocity
-    collider->setPosition(position);
+    m_position += m_velocity * deltaTime; //Update position based on current velocity
+    m_collider->setPosition(m_position);
 
-    force = {0, 0};
+    m_force = {0, 0};
 }
 
 //Getters for member variables
 const Vector2& DynamicBody::getVelocity() const
 {
-    return velocity;
+    return m_velocity;
 }
 
 const Vector2& DynamicBody::getForce() const
 {
-    return force;
+    return m_force;
 }
 
 const Vector2& DynamicBody::getAcceleration() const
 {
-    return acceleration;
+    return m_acceleration;
 }
 
 float DynamicBody::getRestitution() const
 {
-    return restitution;
+    return m_restitution;
 }
 
 float DynamicBody::getMass() const
 {
-    return mass;
+    return m_mass;
 }
 
 bool DynamicBody::isAffectedByGravity() const
 {
-    return affectedByGravity;
+    return m_affectedByGravity;
 }
 
 //Setters for member variables
 void DynamicBody::setVelocity(const Vector2& newVelocity)
 {
-    velocity = newVelocity;
+    m_velocity = newVelocity;
 }
 
 void DynamicBody::setForce(const Vector2& newForce)
 {
-    force = newForce;
+    m_force = newForce;
 }
 
 void DynamicBody::setAcceleration(const Vector2& newAcceleration)
 {
-    acceleration = newAcceleration;
+    m_acceleration = newAcceleration;
 }
 
 void DynamicBody::setRestitution(float newRestitution)
 {
     if (newRestitution >= 0 && newRestitution <= 1)
-        restitution = newRestitution;
+        m_restitution = newRestitution;
 }
 
 void DynamicBody::setMass(float newMass)
 {
     if (newMass >= 0)
-        mass = newMass;
+        m_mass = newMass;
 }
 
-void DynamicBody::setAffectedByGravity(bool boolValue)
+void DynamicBody::setAffectedByGravity(bool affectedByGravity)
 {
-    affectedByGravity = boolValue;
+    m_affectedByGravity = affectedByGravity;
 }
 }

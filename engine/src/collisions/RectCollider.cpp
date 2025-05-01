@@ -5,47 +5,34 @@
 namespace phys
 {
 //Constructor to set width and height of collider
-RectCollider::RectCollider(Vector2 dimensions, ColliderType type)
-    : Collider(ColliderShape::Rectangle, type), width(dimensions.x), height(dimensions.y)
+RectCollider::RectCollider(const Vector2& dimensions, ColliderType colliderType)
+    : Collider(ColliderShape::Rectangle, colliderType), m_dimensions(dimensions)
     {
         //Create AABB to enclose rectangle shape
-        boundingBox = AABB({position.x - width / 2, position.y - height / 2}, {position.x + width / 2, position.y + height / 2});
+        m_boundingBox = AABB({m_position.x - m_dimensions.x / 2, m_position.y - m_dimensions.y / 2}, {m_position.x + m_dimensions.x / 2, m_position.y + m_dimensions.y / 2});
     }
 
 //Getters for member variables
 float RectCollider::getWidth() const
 {
-    return width;
+    return m_dimensions.x;
 }
 
 float RectCollider::getHeight() const
 {
-    return height;
+    return m_dimensions.y;
 }
 
 //Setters for member variables
-void RectCollider::setWidth(float newWidth)
+void RectCollider::setDimensions(const Vector2& newDimensions)
 {
-    if (newWidth >= 0)
-    {
-        width = newWidth;
-        updateAABB();
-    }
-}
-
-void RectCollider::setHeight(float newHeight)
-{
-    if (newHeight >= 0)
-    {
-        height = newHeight;
-        updateAABB();
-    }
+    m_dimensions = newDimensions;
 }
 
 //Update AABB mins and maxes
 void RectCollider::updateAABB()
 {
-    boundingBox.min = {position.x - width / 2, position.y - height / 2};
-    boundingBox.max = {position.x + width / 2, position.y + height / 2};
+    m_boundingBox.min = {m_position.x - m_dimensions.x / 2, m_position.y - m_dimensions.y / 2};
+    m_boundingBox.max = {m_position.x + m_dimensions.x / 2, m_position.y + m_dimensions.y / 2};
 }
 }

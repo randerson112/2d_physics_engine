@@ -179,11 +179,11 @@ void PhysicsWorld::setCollisionProcess(bool processCollisions)
 }
 
 //Sets the gravity scale of the world
-void PhysicsWorld::setGravityScale(float scaleValue)
+void PhysicsWorld::setGravityScale(float newScaleValue)
 {
-    if (scaleValue >= 0) //Ensure non-negative gravity scale
+    if (newScaleValue >= 0) //Ensure non-negative gravity scale
     {
-        m_gravityScale = scaleValue;
+        m_gravityScale = newScaleValue;
     }
 }
 
