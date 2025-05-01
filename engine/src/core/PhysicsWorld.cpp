@@ -4,88 +4,70 @@
 
 namespace phys
 {
-//Constructor to set default world settings
-PhysicsWorld::PhysicsWorld()
-    : boundary(nullptr), gravityScale(1.0f), physicsProcess(true), collisionsProcess(true) {}
+//Constructor to set boundary dimensions and default world settings
+PhysicsWorld::PhysicsWorld(const Vector2& boundaryDimensions)
+    : m_boundary(boundaryDimensions, BoundaryType::Delete), m_gravityScale(1.0f), m_processPhysics(true), m_processCollisions(true) {}
 
 //Destructor to delete all dynamically allocated objects
 PhysicsWorld::~PhysicsWorld()
 {
-    delete boundary;
-
-    for (PhysicsBody* body: physicsBodies)
+    for (PhysicsBody* body: m_physicsBodies)
     {
         delete body;
     }
 
-    physicsBodies.clear();
+    m_physicsBodies.clear();
 }
 
-//Sets world boundary dimensions and type
-void PhysicsWorld::setWorldBoundaries(float newWidth, float newHeight, BoundaryType type)
+//Sets world boundary dimensions
+void PhysicsWorld::setBoundaryDimensions(Vector2& newDimensions)
 {
-    //Create new boundary if no boundaries are active
-    if (!boundary)
-    {
-        boundary = new WorldBoundary(newWidth, newHeight, type);
-        return;
-    }
-
-    //Resize active boundary
-    boundary->setDimensions(newWidth, newHeight);
-
-    //Set type
-    boundary->setType(type);
+    m_boundary.setDimensions(newDimensions);
 }
 
-//Removes boundaries from world
-void PhysicsWorld::removeWorldBoundaries()
+//Sets world boundary type
+void PhysicsWorld::setBoundaryType(BoundaryType type)
 {
-    if (boundary)
-    {
-        delete boundary;
-        boundary = nullptr;
-    }
+    m_boundary.setType(type);
 }
 
 //Adds a physics body to the world
 void PhysicsWorld::addBody(PhysicsBody* body)
 {
-    physicsBodies.push_back(body);
+    m_physicsBodies.push_back(body);
 
-    if (boundary)
-        if (boundary->placementEnforce(body)) //Enforce world boundary on body when added
-            removeBody(body); //Delete the body if boundary type is delete and beyond boundary
+    if (m_boundary.placementEnforce(body)) //Enforce world boundary on body when added
+        removeBody(body); //Delete the body if boundary type is delete and beyond boundary
 }
 
 //Removes a physics body from the world
 void PhysicsWorld::removeBody(PhysicsBody* body)
 {
-    auto it = std::find(physicsBodies.begin(), physicsBodies.end(), body);
-    if (it != physicsBodies.end())
+    auto it = std::find(m_physicsBodies.begin(), m_physicsBodies.end(), body);
+    if (it != m_physicsBodies.end())
     {
         delete *it;
-        physicsBodies.erase(it);
+        m_physicsBodies.erase(it);
     }
 }
 
 //Updates physics bodies and checks for collisions
 void PhysicsWorld::update(float deltaTime)
 {
-    processPhysics(deltaTime);
-    processCollisions();
+    updatePhysics(deltaTime);
+    updateCollisions();
 }
 
 //Updates physics bodies and applies gravity
-void PhysicsWorld::processPhysics(float deltaTime)
+void PhysicsWorld::updatePhysics(float deltaTime)
 {
     //If physics processing is disabled, return early
-    if (!physicsProcess) return;
+    if (!m_processPhysics) return;
 
     //Loop through all physics bodies
-    for (size_t i = 0; i < physicsBodies.size();)
+    for (size_t i = 0; i < m_physicsBodies.size();)
     {
-        PhysicsBody* body = physicsBodies[i];
+        PhysicsBody* body = m_physicsBodies[i];
 
         //Extra logic for dynamic bodies
         if (body->getType() == BodyType::DynamicBody)
@@ -96,7 +78,7 @@ void PhysicsWorld::processPhysics(float deltaTime)
                 applyGravity(dynamicBody); //Apply gravity to dynamic bodies
 
             //Enforce boundaries on dynamic body
-            if (boundary && boundary->dynamicEnforce(dynamicBody))
+            if (m_boundary.dynamicEnforce(dynamicBody))
             {
                 removeBody(dynamicBody); //Delete the body if boundary type is delete and beyond boundary
                 continue; //Do not increment index since body was deleted
@@ -109,10 +91,10 @@ void PhysicsWorld::processPhysics(float deltaTime)
 }
 
 //Detect and resolve collisions of physics bodies
-void PhysicsWorld::processCollisions()
+void PhysicsWorld::updateCollisions()
 {
     //If collisions processing is disabled, return early
-    if (!collisionsProcess) return;
+    if (!m_processCollisions) return;
 
     //Iterate many times to resolve deep interpenetration
     const int ITERATIONS = 10;
@@ -120,13 +102,13 @@ void PhysicsWorld::processCollisions()
     for (int i = 0; i < ITERATIONS; i++)
     {
         //Nested for loop to check every body against every other body
-        for (size_t i = 0; i < physicsBodies.size(); i++)
+        for (size_t i = 0; i < m_physicsBodies.size(); i++)
         {
-            PhysicsBody* bodyA = physicsBodies[i];
+            PhysicsBody* bodyA = m_physicsBodies[i];
 
-            for (size_t j = i + 1; j < physicsBodies.size(); j++)
+            for (size_t j = i + 1; j < m_physicsBodies.size(); j++)
             {
-                PhysicsBody* bodyB = physicsBodies[j];
+                PhysicsBody* bodyB = m_physicsBodies[j];
 
                 //Get the colliders of the bodies
                 Collider* colliderA = bodyA->getCollider();
@@ -170,7 +152,7 @@ void PhysicsWorld::processCollisions()
 //Applies the force of gravity to a dynamic body
 void PhysicsWorld::applyGravity(DynamicBody* body) const
 {
-    body->applyForce(gravity * gravityScale * body->getMass());
+    body->applyForce(m_gravity * m_gravityScale * body->getMass());
 }
 
 //Return true if given physics bodies are colliding
@@ -187,13 +169,13 @@ bool PhysicsWorld::checkIfColliding(PhysicsBody* bodyA, PhysicsBody* bodyB)
 //Pauses or resumes the physics processing
 void PhysicsWorld::setPhysicsProcess(bool processPhysics)
 {
-    physicsProcess = processPhysics;
+    m_processPhysics = processPhysics;
 }
 
 //Pauses or resumes the collision detection
 void PhysicsWorld::setCollisionProcess(bool processCollisions)
 {
-    collisionsProcess = processCollisions;
+    m_processCollisions = processCollisions;
 }
 
 //Sets the gravity scale of the world
@@ -201,22 +183,13 @@ void PhysicsWorld::setGravityScale(float scaleValue)
 {
     if (scaleValue >= 0) //Ensure non-negative gravity scale
     {
-        gravityScale = scaleValue;
+        m_gravityScale = scaleValue;
     }
 }
 
 //Returns the vector of physics bodies in the world
 const std::vector<PhysicsBody*>& PhysicsWorld::getBodies() const
 {
-    return physicsBodies;
-}
-
-//Returns a pointer to the boundary
-WorldBoundary* PhysicsWorld::getBoundary() const
-{
-    if (boundary)
-        return boundary;
-
-    return nullptr;
+    return m_physicsBodies;
 }
 }

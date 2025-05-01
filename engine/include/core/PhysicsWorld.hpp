@@ -25,34 +25,36 @@ namespace phys
 class PhysicsWorld
 {
 private:
-    //World boundaries for physics bodies, default no boundaries
-    WorldBoundary* boundary;
+    //World boundaries for physics bodies
+    WorldBoundary m_boundary;
 
     //Gravity force vector
-    Vector2 gravity = {0.0f, -9.81f};
+    const Vector2 m_gravity = {0.0f, -9.81f};
 
     //Gravity scale of the world
-    float gravityScale;
+    float m_gravityScale;
 
     //Boolean to control whether physics is processed
-    bool physicsProcess;
+    bool m_processPhysics;
 
     //Boolean to control whether collisions are detected
-    bool collisionsProcess;
+    bool m_processCollisions;
 
     //List of all physics bodies in the world
-    std::vector<PhysicsBody*> physicsBodies;
+    std::vector<PhysicsBody*> m_physicsBodies;
 
 public:
-    //Constructors and deconstructors
-    PhysicsWorld();
+    //Constructor to set world boundary dimensions
+    PhysicsWorld(const Vector2& boundaryDimensions);
+
+    //Destructor
     ~PhysicsWorld();
 
-    //Sets world boundary dimensions and type
-    void setWorldBoundaries(float newWidth, float newHeight, BoundaryType type);
+    //Sets world boundary dimensions
+    void setBoundaryDimensions(Vector2& newDimensions);
 
-    //Removes boundaries from world
-    void removeWorldBoundaries();
+    //Sets the type of the world boundaries
+    void setBoundaryType(BoundaryType type);
 
     //Adds a physics body to the world
     void addBody(PhysicsBody* body);
@@ -66,7 +68,7 @@ public:
     void update(float deltaTime);
 
     //Updates physics bodies and applies gravity
-    void processPhysics(float deltaTime);
+    void updatePhysics(float deltaTime);
 
     /*
     -Note- processPhysics and processCollisions functions can be called seperately if needed, but
@@ -74,9 +76,9 @@ public:
     */
 
     //Detect and resolve collisions of physics bodies
-    void processCollisions();
+    void updateCollisions();
 
-    //Applies force of gravity on a body
+    //Applies force of gravity on a dynamic body
     void applyGravity(DynamicBody* body) const;
 
     //Return true if given physics bodies are colliding
@@ -97,9 +99,6 @@ public:
 
     //Returns the vector of physics bodies in the world
     const std::vector<PhysicsBody*>& getBodies() const;
-
-    //Returns a pointer to the world boundary
-    WorldBoundary* getBoundary() const;
 };
 }
 
