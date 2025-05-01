@@ -6,7 +6,7 @@ namespace phys
 {
 //Constructor to set boundary dimensions and default world settings
 PhysicsWorld::PhysicsWorld(const Vector2& boundaryDimensions)
-    : m_boundary(boundaryDimensions.x, boundaryDimensions.y, BoundaryType::Delete), m_gravityScale(1.0f), m_processPhysics(true), m_processCollisions(true) {}
+    : m_boundary(boundaryDimensions, BoundaryType::Delete), m_gravityScale(1.0f), m_processPhysics(true), m_processCollisions(true) {}
 
 //Destructor to delete all dynamically allocated objects
 PhysicsWorld::~PhysicsWorld()
@@ -20,9 +20,9 @@ PhysicsWorld::~PhysicsWorld()
 }
 
 //Sets world boundary dimensions
-void PhysicsWorld::setBoundaryDimensions(const Vector2& newDimensions)
+void PhysicsWorld::setBoundaryDimensions(Vector2& newDimensions)
 {
-    m_boundary.setDimensions(newDimensions.x, newDimensions.y);
+    m_boundary.setDimensions(newDimensions);
 }
 
 //Sets world boundary type

@@ -51,7 +51,7 @@ public:
     ~PhysicsWorld();
 
     //Sets world boundary dimensions
-    void setBoundaryDimensions(const Vector2& newDimensions);
+    void setBoundaryDimensions(Vector2& newDimensions);
 
     //Sets the type of the world boundaries
     void setBoundaryType(BoundaryType type);
