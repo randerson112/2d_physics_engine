@@ -8,8 +8,16 @@ project(PhysicsEngineDemo)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-#Find SFML on system
-find_package(SFML 3 REQUIRED COMPONENTS Graphics Window System)
+#Include FetchContent module
+include(FetchContent)
+
+#Fetch SFML
+FetchContent_Declare(
+    SFML
+    GIT_REPOSITORY https://github.com/SFML/SFML.git
+    GIT_TAG 3.0.0
+)
+FetchContent_MakeAvailable(SFML)
 
 #Create the demo executable
 add_executable(${PROJECT_NAME})
