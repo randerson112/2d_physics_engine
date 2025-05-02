@@ -47,8 +47,8 @@ A basic 2D physics simulator using C++ and SFML. This project is an ambitious go
 ## How to Build
 
 ### Prerequisites
-- **C++ Compiler**: A compiler that supports C++20 (e.g., GCC 10+, Clang 10+, or MSVC 2019+).
-- **CMake**: Version 3.3 or higher.
+- **C++ Compiler**: A compiler that supports C++17 (e.g., GCC 10+, Clang 10+, or MSVC 2019+).
+- **CMake**: Version 3.10 or higher.
 - **SFML**: Version 3.0 or higher (for the demo).
 
 ### Building the Project

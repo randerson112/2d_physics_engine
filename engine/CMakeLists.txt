@@ -1,10 +1,10 @@
 #For building the engine as a static library for linking
 
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.10)
 project(PhysicsEngineLibrary)
 
 #Set C++ version required
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #Create a static library for the physics engine

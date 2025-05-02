@@ -1,11 +1,11 @@
 #For building the demo project
 #Builds the engine static library and links it to the demo automatically
 
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.10)
 project(PhysicsEngineDemo)
 
 #Sets C++ version required
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #Find SFML on system
