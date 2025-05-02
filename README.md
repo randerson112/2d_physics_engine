@@ -49,52 +49,59 @@ A basic 2D physics simulator using C++ and SFML. This project is an ambitious go
 ### Prerequisites
 - **C++ Compiler**: A compiler that supports C++17 (e.g., GCC 10+, Clang 10+, or MSVC 2019+).
 - **CMake**: Version 3.10 or higher.
-- **SFML**: Version 3.0 or higher (for the demo).
 
 ### Building the Project
 
-1. Clone the repository:
+**1. Clone the repository:**
 ```bash
 git clone https://github.com/randerson112/2d_physics_engine.git
 cd 2d_physics_engine
 ```
 
-2. Create a build directory:
-- **On MacOS/Linux**
+**2. Create a build directory:**
+- On MacOS/Linux
 ```bash
 mkdir build
 cd build
 ```
 
-- **On Windows**
+- On Windows
 ```bash
 md build
 cd build
 ```
 
-3. Configure the project with CMake:
+**3. Configure the project with CMake:**
+- Engine with demo
 ```bash
 cmake ..
 ```
 
-4. Build the project:
+- Engine with no demo
+```bash
+cmake -DBUILD_DEMO=OFF ..
+```
+
+**4. Build the project:**
 ```bash
 cmake --build .
-```
+``` 
+
+**Building with the demo will take significantly longer since it needs to fetch and link SFML libraries**
 
 ---
 
 ## Running the Demo
 
-1. Navigate to **build/demo**, there should now be an executable called **PhysicsEngineDemo**
+**1. Navigate to the build/demo directory, there should now be an executable called PhysicsEngineDemo**
 
-2. Run the executable:
-- **On MacOS/Linux**
+**2. Run the executable:**
+- On MacOS/Linux
 ```bash
 ./PhysicsEngineDemo
 ```
 
-- **On Windows**
+- On Windows
 ```bash
 PhysicsEngineDemo.exe
 ```
