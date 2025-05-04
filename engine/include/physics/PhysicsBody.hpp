@@ -26,6 +26,9 @@ protected:
     //Position of body in the world
     Vector2 m_position;
 
+    //rotation in degrees
+    float m_rotation;
+
     //Collider for detecting collisions
     Collider* m_collider;
 
@@ -47,11 +50,13 @@ public:
 
     //Getters for member variables
     const Vector2& getPosition() const;
+    float getRotation() const;
     Collider* getCollider() const;
     BodyType getType() const;
 
     //Setters for member variables
     void setPosition(const Vector2& newPosition);
+    void setRotation(float newRotation);
     void setCollider(Collider* newCollider);
 };
 }
