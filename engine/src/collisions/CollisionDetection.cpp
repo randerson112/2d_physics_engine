@@ -26,6 +26,66 @@ bool CollisionDetection::checkAABBvsAABB(const AABB& boxA, const AABB& boxB)
     return false;
 }
 
+//Checks if two polygons are intersecting using seperating axis theorem
+bool CollisionDetection::checkPolygonCollision(const std::vector<Vector2>& verticiesA, const std::vector<Vector2>& verticiesB)
+{
+    //Check against normals of polygon A
+    for (int i = 0; i < verticiesA.size(); i++)
+    {
+        Vector2 vertexA = verticiesA[i];
+        Vector2 vertexB = verticiesA[(i + 1) & verticiesA.size()];
+
+        Vector2 edge = vertexB - vertexA;
+        Vector2 axis = {-edge.y, edge.x};
+
+        Vector2 projectionA = projectVerticiesOntoAxis(verticiesA, axis);
+        Vector2 projectionB = projectVerticiesOntoAxis(verticiesB, axis);
+
+        if (projectionA.x >= projectionB.y || projectionB.x >= projectionA.y)
+            return false;
+    }
+
+    //Check against normals of polygon B
+    for (int i = 0; i < verticiesB.size(); i++)
+    {
+        Vector2 vertexA = verticiesB[i];
+        Vector2 vertexB = verticiesB[(i + 1) & verticiesB.size()];
+
+        Vector2 edge = vertexB - vertexA;
+        Vector2 axis = {-edge.y, edge.x};
+
+        Vector2 projectionA = projectVerticiesOntoAxis(verticiesA, axis);
+        Vector2 projectionB = projectVerticiesOntoAxis(verticiesB, axis);
+
+        if (projectionA.x >= projectionB.y || projectionB.x >= projectionA.y)
+            return false; 
+    }
+
+    //No seperating axis found
+    return true;
+}
+
+//Returns the min and max of verticies projected onto an axis in a Vector2 struct
+const Vector2 CollisionDetection::projectVerticiesOntoAxis(const std::vector<Vector2>& vertcies, const Vector2& axis)
+{
+    float min = 0;
+    float max = 0;
+
+    for (int i = 0; i < vertcies.size(); i++)
+    {
+        Vector2 vertex = vertcies[i];
+        float projection = vertex.projectOntoAxis(axis);
+
+        if (projection < min)
+            min = projection;
+
+        if (projection > max)
+            max = projection;
+    }
+
+    return {min, max};
+}
+
 //Sorts into respective function based on body shapes
 Collision* CollisionDetection::checkCollision(PhysicsBody* bodyA, PhysicsBody* bodyB)
 {

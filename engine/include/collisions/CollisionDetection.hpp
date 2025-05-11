@@ -8,6 +8,7 @@
 #include "collisions/RectCollider.hpp"
 #include "collisions/CircleCollider.hpp"
 #include "collisions/Collision.hpp"
+#include <vector>
 
 namespace phys
 {
@@ -15,6 +16,12 @@ namespace CollisionDetection
 {
     //Checks if two AABBs are overlapping
     bool checkAABBvsAABB(const AABB& boxA, const AABB& boxB);
+
+    //Checks if two polygons are intersecting using SAT
+    bool checkPolygonCollision(const std::vector<Vector2>& verticiesA, const std::vector<Vector2>& verticiesB);
+
+    //Returns the min and max of verticies projected onto an axis in a Vector2 struct
+    const Vector2 projectVerticiesOntoAxis(const std::vector<Vector2>& vertcies, const Vector2& axis);
 
     //Sorts into respective function based on body shapes
     Collision* checkCollision(PhysicsBody* bodyA, PhysicsBody* bodyB);
