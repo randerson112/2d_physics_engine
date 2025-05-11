@@ -23,7 +23,7 @@ public:
     RectCollider(const Vector2& dimensions, ColliderType type);
 
     //Returns the verticies of the collider in its current state
-    const std::vector<Vector2>& calculateVertcies();
+    const std::vector<Vector2> calculateVertcies();
 
     //Getters for member variables
     float getWidth() const;

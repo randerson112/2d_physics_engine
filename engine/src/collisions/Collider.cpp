@@ -11,10 +11,21 @@ Collider::Collider(ColliderShape colliderShape, ColliderType colliderType)
 //Destructor
 Collider::~Collider() = default;
 
+//Rotate collider by amount of radians
+void Collider::rotate(float radians)
+{
+    m_rotation += radians;
+}
+
 //Getters for member variables
 const Vector2& Collider::getPosition() const
 {
     return m_position;
+}
+
+float Collider::getRotation() const
+{
+    return m_rotation;
 }
 
 const Vector2& Collider::getOffset() const
@@ -47,6 +58,11 @@ void Collider::setPosition(const Vector2& newPosition)
     m_position = newPosition;
 
     updateAABB();
+}
+
+void Collider::setRotation(float newRotation)
+{
+    m_rotation = newRotation;
 }
 
 void Collider::setOffset(const Vector2& newOffest)

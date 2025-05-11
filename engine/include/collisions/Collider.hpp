@@ -59,6 +59,9 @@ public:
 
     virtual ~Collider();
 
+    //Rotate collider by amount of radians
+    void rotate(float radians);
+
     //Getters for member variables
     const Vector2& getPosition() const;
     float getRotation() const;

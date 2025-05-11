@@ -10,6 +10,7 @@ DynamicBody::DynamicBody(const Vector2& position, Collider* collider)
 m_mass(1.0f),
 m_restitution(0.6f),
 m_velocity({0, 0}),
+m_rotationalVelocity(0),
 m_acceleration({0, 0}),
 m_affectedByGravity(true) {}
 
@@ -28,6 +29,9 @@ void DynamicBody::update(float deltaTime)
     m_position += m_velocity * deltaTime; //Update position based on current velocity
     m_collider->setPosition(m_position);
 
+    m_rotation += m_rotationalVelocity * deltaTime; //Update rotation based on rotation velocity
+    m_collider->setRotation(m_rotation);
+
     m_force = {0, 0};
 }
 
@@ -35,6 +39,11 @@ void DynamicBody::update(float deltaTime)
 const Vector2& DynamicBody::getVelocity() const
 {
     return m_velocity;
+}
+
+float DynamicBody::getRotationalVelocity() const
+{
+    return m_rotationalVelocity;
 }
 
 const Vector2& DynamicBody::getForce() const
@@ -66,6 +75,11 @@ bool DynamicBody::isAffectedByGravity() const
 void DynamicBody::setVelocity(const Vector2& newVelocity)
 {
     m_velocity = newVelocity;
+}
+
+void DynamicBody::setRotationalVelocity(float newRotationalVelocity)
+{
+    m_rotationalVelocity = newRotationalVelocity;
 }
 
 void DynamicBody::setForce(const Vector2& newForce)

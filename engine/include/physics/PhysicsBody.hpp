@@ -48,6 +48,9 @@ public:
     //Moves a body by a relative amount
     void move(const Vector2& amountToMove);
 
+    //Rotates the body by given radians
+    void rotate(const float radians);
+
     //Getters for member variables
     const Vector2& getPosition() const;
     float getRotation() const;

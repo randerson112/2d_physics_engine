@@ -14,7 +14,7 @@ RectCollider::RectCollider(const Vector2& dimensions, ColliderType colliderType)
     }
 
 //Returns the verticies of the collider in its current state
-const std::vector<Vector2>& RectCollider::calculateVertcies()
+const std::vector<Vector2> RectCollider::calculateVertcies()
 {
     float cos = std::cos(m_rotation);
     float sin = std::sin(m_rotation);
