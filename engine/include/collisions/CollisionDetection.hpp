@@ -12,16 +12,36 @@
 
 namespace phys
 {
+
+//Data structure for storing axis projection data
+struct Projection
+{
+    float min;
+    float max;
+
+    Projection(float min, float max)
+        : min(min), max(max) {}
+};
+
 namespace CollisionDetection
 {
     //Checks if two AABBs are overlapping
     bool checkAABBvsAABB(const AABB& boxA, const AABB& boxB);
 
     //Checks if two polygons are intersecting using SAT
-    bool checkPolygonCollision(const std::vector<Vector2>& verticiesA, const std::vector<Vector2>& verticiesB);
+    bool checkPolygonCollision(const std::vector<Vector2>& verticesA, const std::vector<Vector2>& verticesB);
 
-    //Returns the min and max of verticies projected onto an axis in a Vector2 struct
-    const Vector2 projectVerticiesOntoAxis(const std::vector<Vector2>& vertcies, const Vector2& axis);
+    //Checks if circle and polygon are intersecting using SAT
+    bool checkCirclePolygonCollision(const Vector2& center, float radius, const std::vector<Vector2>& vertices);
+
+    //Returns the min and max of a polygon projected onto an axis
+    const Projection projectPolygonOntoAxis(const std::vector<Vector2>& vertices, const Vector2& axis);
+
+    //Returns the min and max of a circle projected onto an axis
+    const Projection projectCircleOntoAxis(const Vector2& center, float radius, const Vector2& axis);
+
+    //Find closest point on polygon to circle center, returns the index
+    int findClosestPointToCenter(const Vector2& center, const std::vector<Vector2>& vertices);
 
     //Sorts into respective function based on body shapes
     Collision* checkCollision(PhysicsBody* bodyA, PhysicsBody* bodyB);

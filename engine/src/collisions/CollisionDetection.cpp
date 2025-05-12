@@ -27,37 +27,37 @@ bool CollisionDetection::checkAABBvsAABB(const AABB& boxA, const AABB& boxB)
 }
 
 //Checks if two polygons are intersecting using seperating axis theorem
-bool CollisionDetection::checkPolygonCollision(const std::vector<Vector2>& verticiesA, const std::vector<Vector2>& verticiesB)
+bool CollisionDetection::checkPolygonCollision(const std::vector<Vector2>& verticesA, const std::vector<Vector2>& verticesB)
 {
     //Check against normals of polygon A
-    for (int i = 0; i < verticiesA.size(); i++)
+    for (int i = 0; i < verticesA.size(); i++)
     {
-        Vector2 vertexA = verticiesA[i];
-        Vector2 vertexB = verticiesA[(i + 1) % verticiesA.size()];
+        Vector2 vertexA = verticesA[i];
+        Vector2 vertexB = verticesA[(i + 1) % verticesA.size()];
 
         Vector2 edge = vertexB - vertexA;
         Vector2 axis = {-edge.y, edge.x};
 
-        Vector2 projectionA = projectVerticiesOntoAxis(verticiesA, axis);
-        Vector2 projectionB = projectVerticiesOntoAxis(verticiesB, axis);
+        Projection projectionA = projectPolygonOntoAxis(verticesA, axis);
+        Projection projectionB = projectPolygonOntoAxis(verticesB, axis);
 
-        if (projectionA.x >= projectionB.y || projectionB.x >= projectionA.y)
+        if (projectionA.min >= projectionB.max || projectionB.min >= projectionA.max)
             return false;
     }
 
     //Check against normals of polygon B
-    for (int i = 0; i < verticiesB.size(); i++)
+    for (int i = 0; i < verticesB.size(); i++)
     {
-        Vector2 vertexA = verticiesB[i];
-        Vector2 vertexB = verticiesB[(i + 1) % verticiesB.size()];
+        Vector2 vertexA = verticesB[i];
+        Vector2 vertexB = verticesB[(i + 1) % verticesB.size()];
 
         Vector2 edge = vertexB - vertexA;
         Vector2 axis = {-edge.y, edge.x};
 
-        Vector2 projectionA = projectVerticiesOntoAxis(verticiesA, axis);
-        Vector2 projectionB = projectVerticiesOntoAxis(verticiesB, axis);
+        Projection projectionA = projectPolygonOntoAxis(verticesA, axis);
+        Projection projectionB = projectPolygonOntoAxis(verticesB, axis);
 
-        if (projectionA.x >= projectionB.y || projectionB.x >= projectionA.y)
+        if (projectionA.min >= projectionB.max || projectionB.min >= projectionA.max)
             return false; 
     }
 
@@ -65,15 +65,50 @@ bool CollisionDetection::checkPolygonCollision(const std::vector<Vector2>& verti
     return true;
 }
 
+//Checks if circle and polygon are intersecting using SAT
+bool CollisionDetection::checkCirclePolygonCollision(const Vector2& center, float radius, const std::vector<Vector2>& vertices)
+{
+    //Check against normals of polygon
+    for (int i = 0; i < vertices.size(); i++)
+    {
+        Vector2 vertexA = vertices[i];
+        Vector2 vertexB = vertices[(i + 1) % vertices.size()];
+
+        Vector2 edge = vertexB - vertexA;
+        Vector2 axis = {-edge.y, edge.x};
+
+        Projection circleProjection = projectCircleOntoAxis(center, radius, axis);
+        Projection polygonProjection = projectPolygonOntoAxis(vertices, axis);
+
+        if (circleProjection.min >= polygonProjection.max || polygonProjection.min >= circleProjection.max)
+            return false;
+    }
+
+    //Check against axis between circle center and closest point
+    int closestIndex = findClosestPointToCenter(center, vertices);
+    Vector2 closestPoint = vertices[closestIndex];
+
+    Vector2 axis = closestPoint - center;
+
+    Projection circleProjection = projectCircleOntoAxis(center, radius, axis);
+    Projection polygonProjection = projectPolygonOntoAxis(vertices, axis);
+
+    if (circleProjection.min >= polygonProjection.max || polygonProjection.min >= circleProjection.max)
+        return false;
+
+    //No seperating axis found
+    return true;
+}
+
 //Returns the min and max of verticies projected onto an axis in a Vector2 struct
-const Vector2 CollisionDetection::projectVerticiesOntoAxis(const std::vector<Vector2>& vertcies, const Vector2& axis)
+const Projection CollisionDetection::projectPolygonOntoAxis(const std::vector<Vector2>& vertices, const Vector2& axis)
 {
     float min = std::numeric_limits<float>::infinity();
     float max = -std::numeric_limits<float>::infinity();
 
-    for (int i = 0; i < vertcies.size(); i++)
+    for (int i = 0; i < vertices.size(); i++)
     {
-        Vector2 vertex = vertcies[i];
+        Vector2 vertex = vertices[i];
         float projection = vertex.projectOntoAxis(axis);
 
         if (projection < min)
@@ -84,6 +119,54 @@ const Vector2 CollisionDetection::projectVerticiesOntoAxis(const std::vector<Vec
     }
 
     return {min, max};
+}
+
+//Returns the min and max of a circle projected onto an axis
+const Projection CollisionDetection::projectCircleOntoAxis(const Vector2& center, float radius, const Vector2& axis)
+{
+    Vector2 axisDirection = axis.getNormal();
+    Vector2 directionWithRadius = axisDirection * radius;
+
+    Vector2 point1 = center + directionWithRadius;
+    Vector2 point2 = center - directionWithRadius;
+
+    float projection1 = point1.projectOntoAxis(axis);
+    float projection2 = point2.projectOntoAxis(axis);
+
+    float min;
+    float max;
+
+    if (projection1 > projection2)
+    {
+        min = projection2;
+        max = projection1;
+    }
+    else
+    {
+        min = projection1;
+        max = projection2;
+    }
+
+    return {min, max};
+}
+
+//Find closest point on polygon to circle center, returns the index
+int CollisionDetection::findClosestPointToCenter(const Vector2& center, const std::vector<Vector2>& vertices)
+{
+    int index = 0;
+    float minDistanceSquared = center.getVectorTo(vertices[0]).getSquare();
+
+    for (int i = 1; i < vertices.size(); i++)
+    {
+        float distanceSquared = center.getVectorTo(vertices[i]).getSquare();
+        if (distanceSquared < minDistanceSquared)
+        {
+            minDistanceSquared = distanceSquared;
+            index = i;
+        }
+    }
+
+    return index;
 }
 
 //Sorts into respective function based on body shapes
