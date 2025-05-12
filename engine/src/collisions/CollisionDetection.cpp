@@ -33,7 +33,7 @@ bool CollisionDetection::checkPolygonCollision(const std::vector<Vector2>& verti
     for (int i = 0; i < verticiesA.size(); i++)
     {
         Vector2 vertexA = verticiesA[i];
-        Vector2 vertexB = verticiesA[(i + 1) & verticiesA.size()];
+        Vector2 vertexB = verticiesA[(i + 1) % verticiesA.size()];
 
         Vector2 edge = vertexB - vertexA;
         Vector2 axis = {-edge.y, edge.x};
@@ -49,7 +49,7 @@ bool CollisionDetection::checkPolygonCollision(const std::vector<Vector2>& verti
     for (int i = 0; i < verticiesB.size(); i++)
     {
         Vector2 vertexA = verticiesB[i];
-        Vector2 vertexB = verticiesB[(i + 1) & verticiesB.size()];
+        Vector2 vertexB = verticiesB[(i + 1) % verticiesB.size()];
 
         Vector2 edge = vertexB - vertexA;
         Vector2 axis = {-edge.y, edge.x};
@@ -68,8 +68,8 @@ bool CollisionDetection::checkPolygonCollision(const std::vector<Vector2>& verti
 //Returns the min and max of verticies projected onto an axis in a Vector2 struct
 const Vector2 CollisionDetection::projectVerticiesOntoAxis(const std::vector<Vector2>& vertcies, const Vector2& axis)
 {
-    float min = 0;
-    float max = 0;
+    float min = std::numeric_limits<float>::infinity();
+    float max = -std::numeric_limits<float>::infinity();
 
     for (int i = 0; i < vertcies.size(); i++)
     {

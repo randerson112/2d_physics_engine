@@ -19,27 +19,27 @@ const std::vector<Vector2> RectCollider::calculateVertcies()
     float cos = std::cos(m_rotation);
     float sin = std::sin(m_rotation);
 
-    float width = getWidth();
-    float height = getHeight();
+    float halfWidth = getWidth() / 2.0f;
+    float halfHeight = getHeight() / 2.0f;
 
     //Standard vertecies without rotation
     const std::vector<Vector2> localVerticies = {
-        {-width / 2, height / 2},
-        {width / 2, height / 2},
-        {width / 2, -height / 2},
-        {-width / 2, -height / 2}
+        {-halfWidth, halfHeight},
+        {halfWidth, halfHeight},
+        {halfWidth, -halfHeight},
+        {-halfWidth, -halfHeight}
     };
 
     //Calculate vertcies with rotation applied
-    std::vector<Vector2> worldVerticies;
+    std::vector<Vector2> WorldVerticies;
     for (const Vector2& vertex : localVerticies)
     {
         float rotatedX = vertex.x * cos - vertex.y * sin;
         float rotatedY = vertex.x * sin + vertex.y * cos;
-        worldVerticies.emplace_back(rotatedX, rotatedY);
+        WorldVerticies.emplace_back(rotatedX + m_position.x, rotatedY + m_position.y);
     }
 
-    return worldVerticies;
+    return WorldVerticies;
 }
 
 //Getters for member variables
