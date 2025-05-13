@@ -27,8 +27,16 @@ bool CollisionDetection::checkAABBvsAABB(const AABB& boxA, const AABB& boxB)
 }
 
 //Checks if two polygons are intersecting using seperating axis theorem
-bool CollisionDetection::checkPolygonCollision(const std::vector<Vector2>& verticesA, const std::vector<Vector2>& verticesB)
+Collision* CollisionDetection::checkPolygonCollision(RectCollider* polygonA, RectCollider* polygonB)
 {
+    //Define variables for penetration depth and normal
+    float penDepth = std::numeric_limits<float>::infinity();
+    Vector2 normal;
+
+    //Get vertices of each polygon
+    std::vector<Vector2> verticesA = polygonA->calculateVertcies();
+    std::vector<Vector2> verticesB = polygonB->calculateVertcies();
+
     //Check against normals of polygon A
     for (int i = 0; i < verticesA.size(); i++)
     {
@@ -37,12 +45,21 @@ bool CollisionDetection::checkPolygonCollision(const std::vector<Vector2>& verti
 
         Vector2 edge = vertexB - vertexA;
         Vector2 axis = {-edge.y, edge.x};
+        axis = axis.getNormal();
 
         Projection projectionA = projectPolygonOntoAxis(verticesA, axis);
         Projection projectionB = projectPolygonOntoAxis(verticesB, axis);
 
-        if (projectionA.min >= projectionB.max || projectionB.min >= projectionA.max)
-            return false;
+        if (projectionA.min > projectionB.max || projectionB.min > projectionA.max)
+            return nullptr;
+
+        float axisPenDepth = std::min(projectionB.max - projectionA.min, projectionA.max - projectionB.min);
+
+        if (axisPenDepth < penDepth)
+        {
+            penDepth = axisPenDepth;
+            normal = axis;
+        }
     }
 
     //Check against normals of polygon B
@@ -53,21 +70,44 @@ bool CollisionDetection::checkPolygonCollision(const std::vector<Vector2>& verti
 
         Vector2 edge = vertexB - vertexA;
         Vector2 axis = {-edge.y, edge.x};
+        axis = axis.getNormal();
 
         Projection projectionA = projectPolygonOntoAxis(verticesA, axis);
         Projection projectionB = projectPolygonOntoAxis(verticesB, axis);
 
-        if (projectionA.min >= projectionB.max || projectionB.min >= projectionA.max)
-            return false; 
+        if (projectionA.min > projectionB.max || projectionB.min > projectionA.max)
+            return nullptr;
+
+        float axisPenDepth = std::min(projectionB.max - projectionA.min, projectionA.max - projectionB.min);
+
+        if (axisPenDepth < penDepth)
+        {
+            penDepth = axisPenDepth;
+            normal = axis;
+        }
     }
 
-    //No seperating axis found
-    return true;
+    //Ensure normal points from polygonA to polygonB
+    Vector2 direction = polygonB->getParent()->getPosition() - polygonA->getParent()->getPosition();
+    if (normal.projectOntoAxis(direction) < 0)
+        normal = -normal;
+
+    //Return collision object with data if collision was found
+    return new Collision(polygonA->getParent(), polygonB->getParent(), normal, penDepth);
 }
 
 //Checks if circle and polygon are intersecting using SAT
-bool CollisionDetection::checkCirclePolygonCollision(const Vector2& center, float radius, const std::vector<Vector2>& vertices)
+Collision* CollisionDetection::checkCirclePolygonCollision(CircleCollider* circle, RectCollider* polygon)
 {
+    //Get circle properties and polygon vertices
+    Vector2 center = circle->getPosition();
+    float radius = circle->getRadius();
+    std::vector<Vector2> vertices = polygon->calculateVertcies();
+
+    //Define variables for normal and penetration depth
+    float penDepth = std::numeric_limits<float>::infinity();
+    Vector2 normal;
+
     //Check against normals of polygon
     for (int i = 0; i < vertices.size(); i++)
     {
@@ -76,12 +116,21 @@ bool CollisionDetection::checkCirclePolygonCollision(const Vector2& center, floa
 
         Vector2 edge = vertexB - vertexA;
         Vector2 axis = {-edge.y, edge.x};
+        axis = axis.getNormal();
 
         Projection circleProjection = projectCircleOntoAxis(center, radius, axis);
         Projection polygonProjection = projectPolygonOntoAxis(vertices, axis);
 
-        if (circleProjection.min >= polygonProjection.max || polygonProjection.min >= circleProjection.max)
-            return false;
+        if (circleProjection.min > polygonProjection.max || polygonProjection.min > circleProjection.max)
+            return nullptr;
+
+        float axisPenDepth = std::min(polygonProjection.max - circleProjection.min, circleProjection.max - polygonProjection.min);
+
+        if (axisPenDepth < penDepth)
+        {
+            penDepth = axisPenDepth;
+            normal = axis;
+        }
     }
 
     //Check against axis between circle center and closest point
@@ -89,15 +138,29 @@ bool CollisionDetection::checkCirclePolygonCollision(const Vector2& center, floa
     Vector2 closestPoint = vertices[closestIndex];
 
     Vector2 axis = closestPoint - center;
+    axis = axis.getNormal();
 
     Projection circleProjection = projectCircleOntoAxis(center, radius, axis);
     Projection polygonProjection = projectPolygonOntoAxis(vertices, axis);
 
-    if (circleProjection.min >= polygonProjection.max || polygonProjection.min >= circleProjection.max)
-        return false;
+    if (circleProjection.min > polygonProjection.max || polygonProjection.min > circleProjection.max)
+        return nullptr;
 
-    //No seperating axis found
-    return true;
+    float axisPenDepth = std::min(polygonProjection.max - circleProjection.min, circleProjection.max - polygonProjection.min);
+
+    if (axisPenDepth < penDepth)
+    {
+        penDepth = axisPenDepth;
+        normal = axis;
+    }
+
+    //Ensure normal points from circle to polygon
+    Vector2 direction = polygon->getParent()->getPosition() - circle->getParent()->getPosition();
+    if (normal.projectOntoAxis(direction) < 0)
+        normal = -normal;
+
+    //Return a collision object with data if collision was found
+    return new Collision(circle->getParent(), polygon->getParent(), normal, penDepth);
 }
 
 //Returns the min and max of verticies projected onto an axis in a Vector2 struct
@@ -190,8 +253,8 @@ Collision* CollisionDetection::checkCollision(PhysicsBody* bodyA, PhysicsBody* b
         {
             RectCollider* rectB = static_cast<RectCollider*>(colliderB);
 
-            //Check for rect-rect collision
-            return checkRectRectCollision(rectA, rectB);
+            //Check for polygon collision
+            return checkPolygonCollision(rectA, rectB);
         }
 
         //Second collider is a circle
@@ -199,8 +262,8 @@ Collision* CollisionDetection::checkCollision(PhysicsBody* bodyA, PhysicsBody* b
         {
             CircleCollider* circleB = static_cast<CircleCollider*>(colliderB);
 
-            //Check for rect-circle collision
-            return checkRectCircleCollision(rectA, circleB);
+            //Check for circle-polygon collision
+            return checkCirclePolygonCollision(circleB, rectA);
         }
     }
 
@@ -224,7 +287,7 @@ Collision* CollisionDetection::checkCollision(PhysicsBody* bodyA, PhysicsBody* b
             RectCollider* rectB = static_cast<RectCollider*>(colliderB);
 
             //Check for rect-circle collision
-            return checkRectCircleCollision(rectB, circleA);
+            return checkCirclePolygonCollision(circleA, rectB);
         }
     }
 

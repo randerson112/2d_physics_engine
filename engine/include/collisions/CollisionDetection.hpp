@@ -28,11 +28,11 @@ namespace CollisionDetection
     //Checks if two AABBs are overlapping
     bool checkAABBvsAABB(const AABB& boxA, const AABB& boxB);
 
-    //Checks if two polygons are intersecting using SAT
-    bool checkPolygonCollision(const std::vector<Vector2>& verticesA, const std::vector<Vector2>& verticesB);
+    //Calculate collision between two polygons using SAT
+    Collision* checkPolygonCollision(RectCollider* polygonA, RectCollider* polygonB);
 
-    //Checks if circle and polygon are intersecting using SAT
-    bool checkCirclePolygonCollision(const Vector2& center, float radius, const std::vector<Vector2>& vertices);
+    //Calculate collision between a circle and polygon using SAT
+    Collision* checkCirclePolygonCollision(CircleCollider* circle, RectCollider* polygon);
 
     //Returns the min and max of a polygon projected onto an axis
     const Projection projectPolygonOntoAxis(const std::vector<Vector2>& vertices, const Vector2& axis);
