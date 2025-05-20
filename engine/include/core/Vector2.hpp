@@ -33,6 +33,10 @@ struct Vector2
     void operator*=(float scalar);
     void operator/=(float divisor);
 
+    //Comparison operator overloads
+    bool operator==(const Vector2& other);
+    bool operator!=(const Vector2& other);
+
     //Negative operator overload for getting the inverse
     Vector2 operator-() const;
 

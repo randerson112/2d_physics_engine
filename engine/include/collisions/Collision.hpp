@@ -5,6 +5,8 @@
 #define COLLISION_HPP
 
 #include "physics/PhysicsBody.hpp"
+#include "core/Vector2.hpp"
+#include <array>
 
 namespace phys
 {
@@ -14,9 +16,11 @@ struct Collision
     PhysicsBody* bodyB;
     Vector2 normal;
     float penDepth;
+    std::array<Vector2, 2> contactPoints;
+    int contactCount;
 
-    Collision(PhysicsBody* bodyA, PhysicsBody* bodyB, const Vector2& normal, float penDepth)
-        : bodyA(bodyA), bodyB(bodyB), normal(normal), penDepth(penDepth) {}
+    Collision(PhysicsBody* bodyA, PhysicsBody* bodyB, const Vector2& normal, float penDepth, std::array<Vector2, 2>& collisionPoints, int collisionCount)
+        : bodyA(bodyA), bodyB(bodyB), normal(normal), penDepth(penDepth), contactPoints(collisionPoints), contactCount(collisionCount) {}
 };
 }
 

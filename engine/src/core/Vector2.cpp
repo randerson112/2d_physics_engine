@@ -62,6 +62,17 @@ void Vector2::operator/=(float divisor)
     y /= divisor;
 }
 
+//Comparison operator overloads
+bool Vector2::operator==(const Vector2& other)
+{
+    return abs(x - other.x) < 0.001 && abs(y - other.y) < 0.001;
+}
+
+bool Vector2::operator!=(const Vector2& other)
+{
+    return abs(x - other.x) > 0.001 && abs(y - other.y) > 0.001;
+}
+
 //Negative operator for getting the inverse
 Vector2 Vector2::operator-() const
 {

@@ -3,6 +3,7 @@
 #include "collisions/CollisionDetection.hpp"
 #include "core/Vector2.hpp"
 #include <algorithm>
+#include <array>
 
 struct Collision;
 
@@ -29,9 +30,11 @@ bool CollisionDetection::checkAABBvsAABB(const AABB& boxA, const AABB& boxB)
 //Checks if two polygons are intersecting using seperating axis theorem
 Collision* CollisionDetection::checkPolygonCollision(RectCollider* polygonA, RectCollider* polygonB)
 {
-    //Define variables for penetration depth and normal
+    //Define variables for collision data
     float penDepth = std::numeric_limits<float>::infinity();
     Vector2 normal;
+    std::array<Vector2, 2> contactPoints;
+    int contactCount = 0;
 
     //Get vertices of each polygon
     std::vector<Vector2> verticesA = polygonA->calculateVertcies();
@@ -92,8 +95,12 @@ Collision* CollisionDetection::checkPolygonCollision(RectCollider* polygonA, Rec
     if (normal.projectOntoAxis(direction) < 0)
         normal = -normal;
 
+    //Find contact points
+    contactPoints = findPolygonContactPoints(verticesA, verticesB);
+    contactCount = contactPoints.size();
+
     //Return collision object with data if collision was found
-    return new Collision(polygonA->getParent(), polygonB->getParent(), normal, penDepth);
+    return new Collision(polygonA->getParent(), polygonB->getParent(), normal, penDepth, contactPoints, contactCount);
 }
 
 //Checks if circle and polygon are intersecting using SAT
@@ -104,9 +111,11 @@ Collision* CollisionDetection::checkCirclePolygonCollision(CircleCollider* circl
     float radius = circle->getRadius();
     std::vector<Vector2> vertices = polygon->calculateVertcies();
 
-    //Define variables for normal and penetration depth
+    //Define variables for collision data
     float penDepth = std::numeric_limits<float>::infinity();
     Vector2 normal;
+    std::array<Vector2, 2> contactPoints;
+    int contactCount = 0;
 
     //Check against normals of polygon
     for (int i = 0; i < vertices.size(); i++)
@@ -159,8 +168,12 @@ Collision* CollisionDetection::checkCirclePolygonCollision(CircleCollider* circl
     if (normal.projectOntoAxis(direction) < 0)
         normal = -normal;
 
+    //Find contact points
+    contactPoints = findCirclePolygonContactPoints(center, radius, vertices);
+    contactCount = contactPoints.size();
+
     //Return a collision object with data if collision was found
-    return new Collision(circle->getParent(), polygon->getParent(), normal, penDepth);
+    return new Collision(circle->getParent(), polygon->getParent(), normal, penDepth, contactPoints, contactCount);
 }
 
 //Returns the min and max of verticies projected onto an axis in a Vector2 struct
@@ -278,7 +291,7 @@ Collision* CollisionDetection::checkCollision(PhysicsBody* bodyA, PhysicsBody* b
             CircleCollider* circleB = static_cast<CircleCollider*>(colliderB);
 
             //Check for circle-circle collision
-            return checkCircleCircleCollision(circleA, circleB);
+            return checkCircleCollision(circleA, circleB);
         }
 
         //Second collider is a rectangle
@@ -294,66 +307,8 @@ Collision* CollisionDetection::checkCollision(PhysicsBody* bodyA, PhysicsBody* b
     return nullptr;
 }
 
-//Calculate collision between two rectangle colliders
-Collision* CollisionDetection::checkRectRectCollision(RectCollider* rectA, RectCollider* rectB)
-{
-    //Get positions of centers
-    Vector2 rectAPos = rectA->getPosition();
-    Vector2 rectBPos = rectB->getPosition();
-
-    //Get widths and heights
-    float rectAWidth = rectA->getWidth();
-    float rectAHeight = rectA->getHeight();
-
-    float rectBWidth = rectB->getWidth();
-    float rectBHeight = rectB->getHeight();
-
-    //Calculate side bounds
-    float rectALeft = rectAPos.x - rectAWidth / 2;
-    float rectATop = rectAPos.y - rectAHeight / 2;
-    float rectARight = rectAPos.x + rectAWidth / 2;
-    float rectABottom = rectAPos.y + rectAHeight / 2;
-
-    float rectBLeft = rectBPos.x - rectBWidth / 2;
-    float rectBTop = rectBPos.y - rectBHeight / 2;
-    float rectBRight = rectBPos.x + rectBWidth / 2;
-    float rectBBottom = rectBPos.y + rectBHeight / 2;
-
-    //Check for overlap
-    if (rectARight > rectBLeft && rectALeft < rectBRight && rectABottom > rectBTop && rectATop < rectBBottom)
-    {
-        // Compute penetration depth on both axes
-        float xOverlap = std::min(rectARight - rectBLeft, rectBRight - rectALeft);
-        float yOverlap = std::min(rectABottom - rectBTop, rectBBottom - rectATop);
-
-        //Declare variables for normal and penetration depth
-        Vector2 normal;
-        float penDepth;
-
-        //Horizontal collision
-        if (xOverlap <= yOverlap)
-        {
-            normal = (rectAPos.x < rectBPos.x) ? Vector2(1, 0) : Vector2(-1, 0);
-            penDepth = xOverlap;
-        }
-
-        //Vertical collision
-        else
-        {
-            normal = (rectAPos.y < rectBPos.y) ? Vector2(0, 1) : Vector2(0, -1);
-            penDepth = yOverlap;
-        }
-
-        //Return a collision object
-        return new Collision(rectA->getParent(), rectB->getParent(), normal, penDepth);
-    }
-
-    //If no collision is detected
-    return nullptr;
-}
-
 //Calculate collision between two circle colliders
-Collision* CollisionDetection::checkCircleCircleCollision(CircleCollider* circleA, CircleCollider* circleB)
+Collision* CollisionDetection::checkCircleCollision(CircleCollider* circleA, CircleCollider* circleB)
 {
     //Get positions of centers
     Vector2 circleAPos = circleA->getPosition();
@@ -376,68 +331,148 @@ Collision* CollisionDetection::checkCircleCircleCollision(CircleCollider* circle
         Vector2 normal = circleAPos.getDirectionTo(circleBPos);
         float penDepth = sumRadii - (circleAPos.getVectorTo(circleBPos)).getLength();
 
+        //Find contact points
+        std::array<Vector2, 2> contactPoints = findCircleContactPoints(circleAPos, circleARadius, circleBPos, normal);
+        int contactCount = contactPoints.size();
+
         //Return a collision object
-        return new Collision(circleA->getParent(), circleB->getParent(), normal, penDepth);
+        return new Collision(circleA->getParent(), circleB->getParent(), normal, penDepth, contactPoints, contactCount);
     }
 
     //If no collision is detected
     return nullptr;
 }
 
-//Calculate collision between a rectangle and a circle collider
-Collision* CollisionDetection::checkRectCircleCollision(RectCollider* rect, CircleCollider* circle)
+//Find contact point between two circles
+std::array<Vector2, 2> CollisionDetection::findCircleContactPoints(const Vector2& centerA, float radiusA, const Vector2& centerB, const Vector2& normal)
 {
-    //Get the rectangle center position
-    Vector2 rectPos = rect->getPosition();
+    Vector2 contact = centerA + normal * radiusA;
 
-    //Get the circle center position and radius
-    Vector2 circlePos = circle->getPosition();
-    float circleRadius = circle->getRadius();
-
-    //Get rectangle width and height
-    float rectWidth = rect->getWidth();
-    float rectHeight = rect->getHeight();
-
-    //Find point on the rectangle closest to the circle center
-    float closestX = std::clamp(circlePos.x, rectPos.x - rectWidth / 2, rectPos.x + rectWidth / 2);
-    float closestY = std::clamp(circlePos.y, rectPos.y - rectHeight / 2, rectPos.y + rectHeight / 2);
-    Vector2 closestPoint = {closestX, closestY};
-
-    //Calculate the distance between the closest point and the circle center
-    Vector2 vectorBetween = closestPoint.getVectorTo(circlePos);
-    float distanceSquared = vectorBetween.getSquare();
-
-    //Check if circle center is inside the rectangle
-    if (closestX == circlePos.x && closestY == circlePos.y)
-    {
-        // Circle is inside the rectangle, push it outward
-        Vector2 rectCenterToCircle = rectPos.getDirectionTo(circlePos);
-        
-        // Avoid zero-length normal
-        if (rectCenterToCircle.x == 0 && rectCenterToCircle.y == 0)
-        {
-            rectCenterToCircle = Vector2(1, 0); // Arbitrary normal
-        }
-
-        //Return a collision object
-        return new Collision(rect->getParent(), circle->getParent(), rectCenterToCircle, circleRadius);
-    }
-
-    //Get radius squared
-    float circleRadiusSquared = circleRadius * circleRadius;
-
-    //Compare distance squared with the squared radius
-    if (distanceSquared < circleRadiusSquared)
-    {
-        //Get the normal and penetration depth of the collision
-        Vector2 normal = closestPoint.getDirectionTo(circlePos);
-        float penDepth = circleRadius - sqrt(distanceSquared);
-
-        //Return a collision object
-        return new Collision(rect->getParent(), circle->getParent(), normal, penDepth);
-    }
-
-    //If no collision is detected
-    return nullptr;
+    return {contact};
 }
+
+//Find contact point between a circle and polygon
+std::array<Vector2, 2> CollisionDetection::findCirclePolygonContactPoints(const Vector2& circleCenter, float circleRadius, const std::vector<Vector2>& polygonVertices)
+{
+    Vector2 contact;
+
+    float minDistanceSquared = std::numeric_limits<float>::infinity();
+
+    //Loop through edges of polygon and find closest point to circle center
+    for (int i = 0; i < polygonVertices.size(); i++)
+    {
+        Vector2 vertexA = polygonVertices[i];
+        Vector2 vertexB = polygonVertices[(i + 1) % polygonVertices.size()];
+
+        Vector2 closestPointOnEdge = findClosestPointOnSegment(circleCenter, vertexA, vertexB);
+        float distanceSquared = (circleCenter - closestPointOnEdge).getSquare();
+
+        if (distanceSquared < minDistanceSquared)
+        {
+            minDistanceSquared = distanceSquared;
+            contact = closestPointOnEdge;
+        }
+    }
+
+    return {contact};
+}
+
+//Find contact points between two polygons
+std::array<Vector2, 2> CollisionDetection::findPolygonContactPoints(std::vector<Vector2>& verticesA, std::vector<Vector2>& verticesB)
+{
+    Vector2 contact1;
+    Vector2 contact2;
+    int contactCount = 0;
+
+    float minDistanceSquared = std::numeric_limits<float>::infinity();
+
+    //Loop through points of polygon A
+    for (int i = 0; i < verticesA.size(); i++)
+    {
+        Vector2 point = verticesA[i];
+
+        //Check against edges of polygon B and find closest point on edge
+        for (int j = 0; j < verticesB.size(); j++)
+        {
+            Vector2 vertexA = verticesB[j];
+            Vector2 vertexB = verticesB[(i + 1) % verticesB.size()];
+
+            Vector2 edge = vertexB - vertexA;
+            Vector2 closestPointOnEdge = findClosestPointOnSegment(point, vertexA, vertexB);
+            float distanceSquared = (point - closestPointOnEdge).getSquare();
+            
+            if (distanceSquared == minDistanceSquared && closestPointOnEdge != contact1)
+            {
+                contact2 = closestPointOnEdge;
+                contactCount = 2;
+            }
+            else if (distanceSquared < minDistanceSquared)
+            {
+                minDistanceSquared = distanceSquared;
+                contact1 = closestPointOnEdge;
+                contactCount = 1;
+            }
+        }
+    }
+
+    //Loop through points of polygon B
+    for (int i = 0; i < verticesB.size(); i++)
+    {
+        Vector2 point = verticesB[i];
+
+        //Check against edges of polygon A and find closest point on edge
+        for (int j = 0; j < verticesA.size(); j++)
+        {
+            Vector2 vertexA = verticesA[j];
+            Vector2 vertexB = verticesA[(i + 1) % verticesA.size()];
+
+            Vector2 edge = vertexB - vertexA;
+            Vector2 closestPointOnEdge = findClosestPointOnSegment(point, vertexA, vertexB);
+            float distanceSquared = (point - closestPointOnEdge).getSquare();
+            
+            if (distanceSquared == minDistanceSquared && closestPointOnEdge != contact1)
+            {
+                contact2 = closestPointOnEdge;
+                contactCount = 2;
+            }
+            else if (distanceSquared < minDistanceSquared)
+            {
+                minDistanceSquared = distanceSquared;
+                contact1 = closestPointOnEdge;
+                contactCount = 1;
+            }
+        }
+    }
+
+    //Return contact points
+    if (contactCount == 1)
+        return {contact1};
+    else if (contactCount == 2)
+        return {contact1, contact2};
+}
+
+//Find closest point on a segment to another point
+const Vector2 CollisionDetection::findClosestPointOnSegment(const Vector2& point, const Vector2& vertexA, const Vector2& vertexB)
+{
+    Vector2 edge = vertexB - vertexA;
+    Vector2 aToPoint = point - vertexA;
+
+    float projection = aToPoint.projectOntoAxis(edge);
+    float edgeLengthSquared = edge.getSquare();
+    float distance = projection / edgeLengthSquared;
+
+    if (distance < 0)
+    {
+        return vertexA;
+    }
+    else if (distance > 1)
+    {
+        return vertexB;
+    }
+    else
+    {
+        return vertexA + edge * distance;
+    }
+}
+
 }
