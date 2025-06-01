@@ -1,0 +1,28 @@
+BasedOnStyle: Microsoft
+
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+
+BreakBeforeBraces: Allman
+AllowShortFunctionsOnASingleLine: Inline
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+BreakConstructorInitializers: AfterColon
+
+BinPackParameters: false
+BinPackArguments: false
+AlignAfterOpenBracket: DontAlign
+
+PointerAlignment: Left
+ReferenceAlignment: Left
+
+ReflowComments: false
+
+ColumnLimit: 120
+
+SortIncludes: false
+IncludeBlocks: Preserve
+
+AlwaysBreakTemplateDeclarations: No
+NamespaceIndentation: All
+FixNamespaceComments: false

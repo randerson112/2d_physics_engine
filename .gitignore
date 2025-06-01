@@ -2,6 +2,7 @@
 build/
 engine/build/
 demo/build/
+.idea
 
 # testing folder
 testing/
