@@ -9,51 +9,51 @@
 
 namespace phys
 {
-struct Vector2
-{
-    //coordinates of the vector
-    float x;
-    float y;
+    struct Vector2
+    {
+        //coordinates of the vector
+        float x;
+        float y;
 
-    //Default constructor
-    Vector2();
+        //Default constructor
+        Vector2();
 
-    //Constructor with x and y parameters
-    Vector2(float x, float y);
+        //Constructor with x and y parameters
+        Vector2(float x, float y);
 
-    //Basic operator overloads
-    Vector2 operator+(const Vector2& other) const;
-    Vector2 operator-(const Vector2& other) const;
-    Vector2 operator*(float scalar) const;
-    Vector2 operator/(float divisor) const;
+        //Basic operator overloads
+        Vector2 operator+(const Vector2& other) const;
+        Vector2 operator-(const Vector2& other) const;
+        Vector2 operator*(float scalar) const;
+        Vector2 operator/(float divisor) const;
 
-    //Basic assignment operator overloads
-    void operator+=(const Vector2& other);
-    void operator-=(const Vector2& other);
-    void operator*=(float scalar);
-    void operator/=(float divisor);
+        //Basic assignment operator overloads
+        void operator+=(const Vector2& other);
+        void operator-=(const Vector2& other);
+        void operator*=(float scalar);
+        void operator/=(float divisor);
 
-    //Negative operator overload for getting the inverse
-    Vector2 operator-() const;
+        //Negative operator overload for getting the inverse
+        Vector2 operator-() const;
 
-    //Gets the normal of the vector, length of 1
-    Vector2 getNormal() const;
+        //Gets the normal of the vector, length of 1
+        Vector2 getNormal() const;
 
-    //Returns the magnitude or length of a vector
-    float getLength() const;
+        //Returns the magnitude or length of a vector
+        float getLength() const;
 
-    //Gets the vector pointing to another vector
-    Vector2 getVectorTo(const Vector2& other) const;
+        //Gets the vector pointing to another vector
+        Vector2 getVectorTo(const Vector2& other) const;
 
-    //Gets the direction with length of 1 to another vector
-    Vector2 getDirectionTo(const Vector2& other) const;
+        //Gets the direction with length of 1 to another vector
+        Vector2 getDirectionTo(const Vector2& other) const;
 
-    //Return the square of the vector
-    float getSquare() const;
+        //Return the square of the vector
+        float getSquare() const;
 
-    //How much of the vector lies on the other vector when projected
-    float projectOntoAxis(const Vector2& axis) const;
-};
+        //How much of the vector lies on the other vector when projected
+        float projectOntoAxis(const Vector2& axis) const;
+    };
 }
 
 #endif

@@ -16,7 +16,7 @@ sf::Vector2f getRenderPosition(const phys::Vector2& objectEnginePosition, const 
     float windowHeight = static_cast<float>(windowSize.y);
 
     return {objectEnginePosition.x * PIXELS_PER_METER + windowWidth / 2,
-            -objectEnginePosition.y * PIXELS_PER_METER + windowHeight / 2};
+        -objectEnginePosition.y * PIXELS_PER_METER + windowHeight / 2};
 }
 
 //Converts a position in the window in pixels to a position in the engine in meters
@@ -26,22 +26,22 @@ phys::Vector2 getEnginePosition(const sf::Vector2i& objectRenderPosition, const 
     float windowHeight = static_cast<float>(windowSize.y);
 
     return {(objectRenderPosition.x - windowWidth / 2) / PIXELS_PER_METER,
-            -(objectRenderPosition.y - windowHeight / 2) / PIXELS_PER_METER};
+        -(objectRenderPosition.y - windowHeight / 2) / PIXELS_PER_METER};
 }
 
 //Constructor
-PhysicsEngineDemo::PhysicsEngineDemo()
-    : m_window(sf::VideoMode({DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT}), "Physics Engine Demo"),
-      m_font("../../../demos/demo1/assets/arial.ttf"),
-      m_fpsText(m_font),
-      m_objectCountText(m_font),
-      m_world({DEFAULT_WINDOW_WIDTH / PIXELS_PER_METER, DEFAULT_WINDOW_HEIGHT / PIXELS_PER_METER}),
-      m_fpsDisplayTimer(0.5f),
-      m_objectSpawnTimer(0.01f),
-      m_gen(m_rd()),
-      m_rgbRange(1, 255),
-      m_radiusRange(0.1f, 0.5f),
-      m_rectSizeRange(0.1f, 1.0f)
+PhysicsEngineDemo::PhysicsEngineDemo() :
+    m_window(sf::VideoMode({DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT}), "Physics Engine Demo"),
+    m_font("../../../demos/demo1/assets/arial.ttf"),
+    m_fpsText(m_font),
+    m_objectCountText(m_font),
+    m_world({DEFAULT_WINDOW_WIDTH / PIXELS_PER_METER, DEFAULT_WINDOW_HEIGHT / PIXELS_PER_METER}),
+    m_fpsDisplayTimer(0.5f),
+    m_objectSpawnTimer(0.01f),
+    m_gen(m_rd()),
+    m_rgbRange(1, 255),
+    m_radiusRange(0.1f, 0.5f),
+    m_rectSizeRange(0.1f, 1.0f)
 {
     //Setup FPS text
     m_fpsText.setString("fps: ");
@@ -89,7 +89,8 @@ void PhysicsEngineDemo::instantiateStaticBodies()
     m_world.addBody(rectangle);
 
     //Create a visual for the rectangle and map it to the body
-    sf::RectangleShape* rectVisual = new sf::RectangleShape({dimensions.x * PIXELS_PER_METER, dimensions.y * PIXELS_PER_METER});
+    sf::RectangleShape* rectVisual =
+        new sf::RectangleShape({dimensions.x * PIXELS_PER_METER, dimensions.y * PIXELS_PER_METER});
     rectVisual->setFillColor(sf::Color(m_rgbRange(m_gen), m_rgbRange(m_gen), m_rgbRange(m_gen)));
     rectVisual->setOrigin({dimensions.x / 2 * PIXELS_PER_METER, dimensions.y / 2 * PIXELS_PER_METER});
     rectVisual->setPosition(getRenderPosition(rectPosition, m_window.getSize()));
@@ -159,7 +160,7 @@ void PhysicsEngineDemo::handleEvents()
             {
                 m_world.setCollisionProcess(false);
             }
-            
+
             if (keyPressed->scancode == sf::Keyboard::Scancode::B)
             {
                 m_world.setBoundaryType(phys::BoundaryType::Collidable);
@@ -250,7 +251,7 @@ void PhysicsEngineDemo::render()
 {
     //Clear the window to black
     m_window.clear();
-        
+
     //Draw object visuals to the screen
     for (const auto& pair : m_bodyVisualMap)
     {
@@ -282,10 +283,10 @@ void PhysicsEngineDemo::spawnDynamicCircle()
     bodyVisual->setFillColor(sf::Color(m_rgbRange(m_gen), m_rgbRange(m_gen), m_rgbRange(m_gen)));
     bodyVisual->setOrigin({randRadius * PIXELS_PER_METER, randRadius * PIXELS_PER_METER});
     bodyVisual->setPosition(getRenderPosition(newCircle->getPosition(), m_window.getSize()));
-    
+
     //Map body to visual
     m_bodyVisualMap[newCircle] = bodyVisual;
-    
+
     //Reset spawn cooldown timer
     m_objectSpawnTimer.reset();
 }
@@ -306,7 +307,8 @@ void PhysicsEngineDemo::spawnDynamicRectangle()
     m_world.addBody(newRect);
 
     //Create a rectangle visual for the dynamic body
-    sf::RectangleShape* rectVisual = new sf::RectangleShape({randWidth * PIXELS_PER_METER, randHeight * PIXELS_PER_METER});
+    sf::RectangleShape* rectVisual =
+        new sf::RectangleShape({randWidth * PIXELS_PER_METER, randHeight * PIXELS_PER_METER});
     rectVisual->setFillColor(sf::Color(m_rgbRange(m_gen), m_rgbRange(m_gen), m_rgbRange(m_gen)));
     rectVisual->setOrigin({randWidth / 2 * PIXELS_PER_METER, randHeight / 2 * PIXELS_PER_METER});
     rectVisual->setPosition(getRenderPosition(newRect->getPosition(), m_window.getSize()));

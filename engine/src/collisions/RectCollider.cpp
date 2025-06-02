@@ -4,35 +4,36 @@
 
 namespace phys
 {
-//Constructor to set width and height of collider
-RectCollider::RectCollider(const Vector2& dimensions, ColliderType colliderType)
-    : Collider(ColliderShape::Rectangle, colliderType), m_dimensions(dimensions)
+    //Constructor to set width and height of collider
+    RectCollider::RectCollider(const Vector2& dimensions, ColliderType colliderType) :
+        Collider(ColliderShape::Rectangle, colliderType), m_dimensions(dimensions)
     {
         //Create AABB to enclose rectangle shape
-        m_boundingBox = AABB({m_position.x - m_dimensions.x / 2, m_position.y - m_dimensions.y / 2}, {m_position.x + m_dimensions.x / 2, m_position.y + m_dimensions.y / 2});
+        m_boundingBox = AABB({m_position.x - m_dimensions.x / 2, m_position.y - m_dimensions.y / 2},
+            {m_position.x + m_dimensions.x / 2, m_position.y + m_dimensions.y / 2});
     }
 
-//Getters for member variables
-float RectCollider::getWidth() const
-{
-    return m_dimensions.x;
-}
+    //Getters for member variables
+    float RectCollider::getWidth() const
+    {
+        return m_dimensions.x;
+    }
 
-float RectCollider::getHeight() const
-{
-    return m_dimensions.y;
-}
+    float RectCollider::getHeight() const
+    {
+        return m_dimensions.y;
+    }
 
-//Setters for member variables
-void RectCollider::setDimensions(const Vector2& newDimensions)
-{
-    m_dimensions = newDimensions;
-}
+    //Setters for member variables
+    void RectCollider::setDimensions(const Vector2& newDimensions)
+    {
+        m_dimensions = newDimensions;
+    }
 
-//Update AABB mins and maxes
-void RectCollider::updateAABB()
-{
-    m_boundingBox.min = {m_position.x - m_dimensions.x / 2, m_position.y - m_dimensions.y / 2};
-    m_boundingBox.max = {m_position.x + m_dimensions.x / 2, m_position.y + m_dimensions.y / 2};
-}
+    //Update AABB mins and maxes
+    void RectCollider::updateAABB()
+    {
+        m_boundingBox.min = {m_position.x - m_dimensions.x / 2, m_position.y - m_dimensions.y / 2};
+        m_boundingBox.max = {m_position.x + m_dimensions.x / 2, m_position.y + m_dimensions.y / 2};
+    }
 }

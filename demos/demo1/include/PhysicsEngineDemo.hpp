@@ -13,14 +13,14 @@
 
 class PhysicsEngineDemo
 {
-public:
+  public:
     //Constructor
     PhysicsEngineDemo();
 
     //Runs the main loop of the demo
     void run();
 
-private:
+  private:
     //Window and rendering
     sf::RenderWindow m_window;
     sf::Font m_font;

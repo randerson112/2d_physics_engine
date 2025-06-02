@@ -4,99 +4,101 @@
 
 namespace phys
 {
-//Sort collision to respective solver
-void CollisionResolution::resolveCollision(const Collision& collision)
-{
-    //Get body types
-    BodyType typeA = collision.bodyA->getType();
-    BodyType typeB = collision.bodyB->getType();
-
-    //If the first body is dynamic
-    if (typeA == BodyType::DynamicBody)
+    //Sort collision to respective solver
+    void CollisionResolution::resolveCollision(const Collision& collision)
     {
-        DynamicBody* dynamicBodyA = static_cast<DynamicBody*>(collision.bodyA);
+        //Get body types
+        BodyType typeA = collision.bodyA->getType();
+        BodyType typeB = collision.bodyB->getType();
 
-        //If the second body is also dynamic
-        if (typeB == BodyType::DynamicBody)
+        //If the first body is dynamic
+        if (typeA == BodyType::DynamicBody)
         {
-            DynamicBody* dynamicBodyB = static_cast<DynamicBody*>(collision.bodyB);
+            DynamicBody* dynamicBodyA = static_cast<DynamicBody*>(collision.bodyA);
 
-            //Resolve collision between two dynamic bodies
-            resolveDynamicCollision(dynamicBodyA, dynamicBodyB, collision.normal, collision.penDepth);
+            //If the second body is also dynamic
+            if (typeB == BodyType::DynamicBody)
+            {
+                DynamicBody* dynamicBodyB = static_cast<DynamicBody*>(collision.bodyB);
+
+                //Resolve collision between two dynamic bodies
+                resolveDynamicCollision(dynamicBodyA, dynamicBodyB, collision.normal, collision.penDepth);
+            }
+
+            //If second body is a static body
+            else if (typeB == BodyType::StaticBody)
+            {
+                StaticBody* staticBodyB = static_cast<StaticBody*>(collision.bodyB);
+
+                //Resolve collision between a dynamic body and a static body
+                resolveDynamicStaticCollision(dynamicBodyA, staticBodyB, collision.normal, collision.penDepth);
+            }
         }
 
-        //If second body is a static body
-        else if (typeB == BodyType::StaticBody)
+        //If the first body is a static body
+        else if (typeA == BodyType::StaticBody)
         {
-            StaticBody* staticBodyB = static_cast<StaticBody*>(collision.bodyB);
+            StaticBody* staticBodyA = static_cast<StaticBody*>(collision.bodyA);
 
-            //Resolve collision between a dynamic body and a static body
-            resolveDynamicStaticCollision(dynamicBodyA, staticBodyB, collision.normal, collision.penDepth);
+            //If the second body is a dynamic body
+            if (typeB == BodyType::DynamicBody)
+            {
+                DynamicBody* dynamicBodyB = static_cast<DynamicBody*>(collision.bodyB);
+
+                //Resolve collision between a dynamic body and a static body
+                //Flip the normal since we switched the order of bodies
+                resolveDynamicStaticCollision(dynamicBodyB, staticBodyA, -collision.normal, collision.penDepth);
+            }
         }
     }
 
-    //If the first body is a static body
-    else if (typeA == BodyType::StaticBody)
+    //Resolve a collision between a dynamic body and a static body
+    void CollisionResolution::resolveDynamicStaticCollision(
+        DynamicBody* dynamicBody, StaticBody* staticBody, const Vector2& normal, float penDepth)
     {
-        StaticBody* staticBodyA = static_cast<StaticBody*>(collision.bodyA);
+        //Get velocity, restitution, and mass of dynamic body
+        Vector2 velocity = dynamicBody->getVelocity();
+        float restitution = dynamicBody->getRestitution();
+        float mass = dynamicBody->getMass();
 
-        //If the second body is a dynamic body
-        if (typeB == BodyType::DynamicBody)
-        {
-            DynamicBody* dynamicBodyB = static_cast<DynamicBody*>(collision.bodyB);
+        //Move dynamic body along normal by the full penetration depth
+        dynamicBody->move(-normal * penDepth);
 
-            //Resolve collision between a dynamic body and a static body
-            //Flip the normal since we switched the order of bodies
-            resolveDynamicStaticCollision(dynamicBodyB, staticBodyA, -collision.normal, collision.penDepth);
-        }
+        //Reflect the dynamic body velocity along the normal
+        Vector2 reflectedVelocity = velocity - normal * (1 + restitution) * velocity.projectOntoAxis(normal);
+        dynamicBody->setVelocity(reflectedVelocity);
     }
-}
 
-//Resolve a collision between a dynamic body and a static body
-void CollisionResolution::resolveDynamicStaticCollision(DynamicBody* dynamicBody, StaticBody* staticBody, const Vector2& normal, float penDepth)
-{
-    //Get velocity, restitution, and mass of dynamic body
-    Vector2 velocity = dynamicBody->getVelocity();
-    float restitution = dynamicBody->getRestitution();
-    float mass = dynamicBody->getMass();
+    //Resolve a collision between two dynamic bodies
+    void CollisionResolution::resolveDynamicCollision(
+        DynamicBody* bodyA, DynamicBody* bodyB, const Vector2& normal, float penDepth)
+    {
+        //get velocities, restitutions, and masses of both bodies
+        Vector2 velocityA = bodyA->getVelocity();
+        Vector2 velocityB = bodyB->getVelocity();
 
-    //Move dynamic body along normal by the full penetration depth
-    dynamicBody->move(-normal * penDepth);
+        float restitutionA = bodyA->getRestitution();
+        float restitutionB = bodyB->getRestitution();
 
-    //Reflect the dynamic body velocity along the normal
-    Vector2 reflectedVelocity = velocity - normal * (1 + restitution) * velocity.projectOntoAxis(normal);
-    dynamicBody->setVelocity(reflectedVelocity);
-}
+        float massA = bodyA->getMass();
+        float massB = bodyB->getMass();
 
-//Resolve a collision between two dynamic bodies
-void CollisionResolution::resolveDynamicCollision(DynamicBody* bodyA, DynamicBody* bodyB, const Vector2& normal, float penDepth)
-{
-    //get velocities, restitutions, and masses of both bodies
-    Vector2 velocityA = bodyA->getVelocity();
-    Vector2 velocityB = bodyB->getVelocity();
+        //Move bodies along the normal by half the penetration depth
+        bodyA->move(-normal * penDepth / 2);
+        bodyB->move(normal * penDepth / 2);
 
-    float restitutionA = bodyA->getRestitution();
-    float restitutionB = bodyB->getRestitution();
+        //Get relative velocity
+        Vector2 relVelocity = velocityB - velocityA;
 
-    float massA = bodyA->getMass();
-    float massB = bodyB->getMass();
+        //Get minimum restitution
+        float e = std::min(restitutionA, restitutionB);
 
-    //Move bodies along the normal by half the penetration depth
-    bodyA->move(-normal * penDepth / 2);
-    bodyB->move(normal * penDepth / 2);
+        //Get the impulse magnitude
+        float j = -(1 + e) * relVelocity.projectOntoAxis(normal);
+        j /= (1 / massA) + (1 / massB);
 
-    //Get relative velocity
-    Vector2 relVelocity = velocityB - velocityA;
-
-    //Get minimum restitution
-    float e = std::min(restitutionA, restitutionB);
-
-    //Get the impulse magnitude
-    float j = -(1 + e) * relVelocity.projectOntoAxis(normal);
-    j /= (1 / massA) + (1 / massB);
-
-    //Calculate and set new velocities
-    bodyA->setVelocity(bodyA->getVelocity() - normal * j / massA); 
-    bodyB->setVelocity(bodyB->getVelocity() + normal * j / massB);
-}
+        //Calculate and set new velocities
+        bodyA->setVelocity(bodyA->getVelocity() - normal * j / massA);
+        bodyB->setVelocity(bodyB->getVelocity() + normal * j / massB);
+    }
 }
