@@ -115,4 +115,11 @@ float Vector2::projectOntoAxis(const Vector2& axis) const
 {
     return (x * axis.x) + (y * axis.y);
 }
+
+//Cross product of vector with another vector
+float Vector2::crossProduct(const Vector2& other) const
+{
+    return (x * other.y) - (y * other.x);
+}
+
 }

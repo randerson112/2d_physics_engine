@@ -1,6 +1,8 @@
 //Class implementation for dynamic physics bodies
 
 #include "physics/DynamicBody.hpp"
+#include "collisions/CircleCollider.hpp"
+#include "collisions/RectCollider.hpp"
 
 namespace phys
 {
@@ -35,6 +37,46 @@ void DynamicBody::update(float deltaTime)
     m_force = {0, 0};
 }
 
+//Calculates moment of rotational intertia based on shape
+float DynamicBody::calculateRotationalInertia()
+{
+    ColliderShape shape = m_collider->getShape();
+
+    //Circle intertia calculation
+    if (shape == ColliderShape::Circle)
+    {
+        CircleCollider* collider = static_cast<CircleCollider*>(m_collider);
+        float radius = collider->getRadius();
+
+        return (1.0f / 2.0f) * m_mass * (radius * radius);
+    }
+
+    //Rectangle intertia calculation
+    else if (shape == ColliderShape::Rectangle)
+    {
+        RectCollider* collider = static_cast<RectCollider*>(m_collider);
+        float width = collider->getWidth();
+        float height = collider->getHeight();
+
+        return (1.0f / 12.0f) * m_mass * (width * width + height * height);
+    }
+
+    //Unknown shape
+    else
+    {
+        return 0;
+    }
+}
+
+float DynamicBody::getInvRotationalInertia()
+{
+    float inertia = calculateRotationalInertia();
+    if (inertia != 0)
+    {
+        return 1.0f / inertia;
+    }
+}
+
 //Getters for member variables
 const Vector2& DynamicBody::getVelocity() const
 {
@@ -64,6 +106,11 @@ float DynamicBody::getRestitution() const
 float DynamicBody::getMass() const
 {
     return m_mass;
+}
+
+float DynamicBody::getInvMass() const
+{
+    return 1 / m_mass;
 }
 
 bool DynamicBody::isAffectedByGravity() const

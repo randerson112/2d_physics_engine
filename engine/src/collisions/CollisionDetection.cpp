@@ -3,7 +3,6 @@
 #include "collisions/CollisionDetection.hpp"
 #include "core/Vector2.hpp"
 #include <algorithm>
-#include <array>
 
 struct Collision;
 
@@ -33,7 +32,7 @@ Collision* CollisionDetection::checkPolygonCollision(RectCollider* polygonA, Rec
     //Define variables for collision data
     float penDepth = std::numeric_limits<float>::infinity();
     Vector2 normal;
-    std::array<Vector2, 2> contactPoints;
+    std::vector<Vector2> contactPoints;
     int contactCount = 0;
 
     //Get vertices of each polygon
@@ -114,7 +113,7 @@ Collision* CollisionDetection::checkCirclePolygonCollision(CircleCollider* circl
     //Define variables for collision data
     float penDepth = std::numeric_limits<float>::infinity();
     Vector2 normal;
-    std::array<Vector2, 2> contactPoints;
+    std::vector<Vector2> contactPoints;
     int contactCount = 0;
 
     //Check against normals of polygon
@@ -332,7 +331,7 @@ Collision* CollisionDetection::checkCircleCollision(CircleCollider* circleA, Cir
         float penDepth = sumRadii - (circleAPos.getVectorTo(circleBPos)).getLength();
 
         //Find contact points
-        std::array<Vector2, 2> contactPoints = findCircleContactPoints(circleAPos, circleARadius, circleBPos, normal);
+        std::vector<Vector2> contactPoints = findCircleContactPoints(circleAPos, circleARadius, circleBPos, normal);
         int contactCount = contactPoints.size();
 
         //Return a collision object
@@ -344,16 +343,20 @@ Collision* CollisionDetection::checkCircleCollision(CircleCollider* circleA, Cir
 }
 
 //Find contact point between two circles
-std::array<Vector2, 2> CollisionDetection::findCircleContactPoints(const Vector2& centerA, float radiusA, const Vector2& centerB, const Vector2& normal)
+std::vector<Vector2> CollisionDetection::findCircleContactPoints(const Vector2& centerA, float radiusA, const Vector2& centerB, const Vector2& normal)
 {
-    Vector2 contact = centerA + normal * radiusA;
+    std::vector<Vector2> contactPoints;
 
-    return {contact};
+    Vector2 contact = centerA + normal * radiusA;
+    contactPoints.push_back(contact);
+
+    return contactPoints;
 }
 
 //Find contact point between a circle and polygon
-std::array<Vector2, 2> CollisionDetection::findCirclePolygonContactPoints(const Vector2& circleCenter, float circleRadius, const std::vector<Vector2>& polygonVertices)
+std::vector<Vector2> CollisionDetection::findCirclePolygonContactPoints(const Vector2& circleCenter, float circleRadius, const std::vector<Vector2>& polygonVertices)
 {
+    std::vector<Vector2> contactPoints;
     Vector2 contact;
 
     float minDistanceSquared = std::numeric_limits<float>::infinity();
@@ -374,12 +377,15 @@ std::array<Vector2, 2> CollisionDetection::findCirclePolygonContactPoints(const 
         }
     }
 
-    return {contact};
+    contactPoints.push_back(contact);
+
+    return contactPoints;
 }
 
 //Find contact points between two polygons
-std::array<Vector2, 2> CollisionDetection::findPolygonContactPoints(std::vector<Vector2>& verticesA, std::vector<Vector2>& verticesB)
+std::vector<Vector2> CollisionDetection::findPolygonContactPoints(std::vector<Vector2>& verticesA, std::vector<Vector2>& verticesB)
 {
+    std::vector<Vector2> contactPoints;
     Vector2 contact1;
     Vector2 contact2;
     int contactCount = 0;
@@ -446,9 +452,19 @@ std::array<Vector2, 2> CollisionDetection::findPolygonContactPoints(std::vector<
 
     //Return contact points
     if (contactCount == 1)
-        return {contact1};
+    {
+        contactPoints.push_back(contact1);
+        
+        return contactPoints;
+    }
+
     else if (contactCount == 2)
-        return {contact1, contact2};
+    {
+        contactPoints.push_back(contact1);
+        contactPoints.push_back(contact2);
+
+        return contactPoints;
+    }
 }
 
 //Find closest point on a segment to another point

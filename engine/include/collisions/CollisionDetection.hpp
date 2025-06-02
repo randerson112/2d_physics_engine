@@ -50,13 +50,13 @@ namespace CollisionDetection
     Collision* checkCircleCollision(CircleCollider* circleA, CircleCollider* circleB);
 
     //Find contact point between two circles
-    std::array<Vector2, 2> findCircleContactPoints(const Vector2& centerA, float radiusA, const Vector2& centerB, const Vector2& normal);
+    std::vector<Vector2> findCircleContactPoints(const Vector2& centerA, float radiusA, const Vector2& centerB, const Vector2& normal);
 
     //Find contact point between a circle and polygon
-    std::array<Vector2, 2> findCirclePolygonContactPoints(const Vector2& circleCenter, float circleRadius, const std::vector<Vector2>& polygonVertices);
+    std::vector<Vector2> findCirclePolygonContactPoints(const Vector2& circleCenter, float circleRadius, const std::vector<Vector2>& polygonVertices);
 
     //Find contact points between two polygons
-    std::array<Vector2, 2> findPolygonContactPoints(std::vector<Vector2>& verticesA, std::vector<Vector2>& verticesB);
+    std::vector<Vector2> findPolygonContactPoints(std::vector<Vector2>& verticesA, std::vector<Vector2>& verticesB);
 
     //Find closest point on a segment to another point
     const Vector2 findClosestPointOnSegment(const Vector2& point, const Vector2& vertexA, const Vector2& vertexB);

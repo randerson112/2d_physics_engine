@@ -46,6 +46,10 @@ public:
     //Update the physics of the body in the world
     void update(float deltaTime) override;
 
+    //Calculates moment of rotational intertia based on shape
+    float calculateRotationalInertia();
+    float getInvRotationalInertia();
+
     //Getters for member variables
     const Vector2& getVelocity() const;
     float getRotationalVelocity() const;
@@ -53,6 +57,7 @@ public:
     const Vector2& getAcceleration() const;
     float getRestitution() const;
     float getMass() const;
+    float getInvMass() const;
     bool isAffectedByGravity() const;
 
     //Setters for member variables
