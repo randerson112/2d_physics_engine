@@ -7,21 +7,20 @@
 
 namespace phys
 {
-struct AABB
-{
-    //Min x and y
-    Vector2 min;
+    struct AABB
+    {
+        //Min x and y
+        Vector2 min;
 
-    //Max x and y
-    Vector2 max;
+        //Max x and y
+        Vector2 max;
 
-    //Default constructor
-    AABB() : min(Vector2()), max(Vector2()) {}
+        //Default constructor
+        AABB() : min(Vector2()), max(Vector2()) {}
 
-    //Constructor to set mins and maxes
-    AABB(const Vector2& min, const Vector2& max)
-        : min(min), max(max) {}
-};
+        //Constructor to set mins and maxes
+        AABB(const Vector2& min, const Vector2& max) : min(min), max(max) {}
+    };
 }
 
 #endif

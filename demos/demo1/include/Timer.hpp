@@ -5,7 +5,7 @@
 //Used for limiting object spawning speed and displaying fps
 class Timer
 {
-public:
+  public:
     //Constructor to set interval in seconds
     Timer(float interval);
 
@@ -18,8 +18,8 @@ public:
     //Resets the timer back to counting from zero
     void reset();
 
-private:
-    float m_interval; //The interval in seconds at which the timer times out
+  private:
+    float m_interval;    //The interval in seconds at which the timer times out
     float m_currentTime; //The current time elapsed since last reset
 };
 

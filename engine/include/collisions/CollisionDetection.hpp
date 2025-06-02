@@ -11,23 +11,23 @@
 
 namespace phys
 {
-namespace CollisionDetection
-{
-    //Checks if two AABBs are overlapping
-    bool checkAABBvsAABB(const AABB& boxA, const AABB& boxB);
+    namespace CollisionDetection
+    {
+        //Checks if two AABBs are overlapping
+        bool checkAABBvsAABB(const AABB& boxA, const AABB& boxB);
 
-    //Sorts into respective function based on body shapes
-    Collision* checkCollision(PhysicsBody* bodyA, PhysicsBody* bodyB);
+        //Sorts into respective function based on body shapes
+        Collision* checkCollision(PhysicsBody* bodyA, PhysicsBody* bodyB);
 
-    //Calculate collision between two rectangle colliders
-    Collision* checkRectRectCollision(RectCollider* rectA, RectCollider* rectB);
+        //Calculate collision between two rectangle colliders
+        Collision* checkRectRectCollision(RectCollider* rectA, RectCollider* rectB);
 
-    //Calculate collision between two circle colliders
-    Collision* checkCircleCircleCollision(CircleCollider* circleA, CircleCollider* circleB);
+        //Calculate collision between two circle colliders
+        Collision* checkCircleCircleCollision(CircleCollider* circleA, CircleCollider* circleB);
 
-    //Calculate collision between a rectangle and a circle collider
-    Collision* checkRectCircleCollision(RectCollider* rect, CircleCollider* circle);
-}
+        //Calculate collision between a rectangle and a circle collider
+        Collision* checkRectCircleCollision(RectCollider* rect, CircleCollider* circle);
+    }
 }
 
 #endif

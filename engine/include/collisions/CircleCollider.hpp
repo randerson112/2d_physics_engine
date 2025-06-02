@@ -8,25 +8,25 @@
 
 namespace phys
 {
-class CircleCollider : public Collider
-{
-private:
-    //Radius of the circle
-    float m_radius;
+    class CircleCollider : public Collider
+    {
+      private:
+        //Radius of the circle
+        float m_radius;
 
-    //Update AABB mins and maxes
-    virtual void updateAABB() override;
+        //Update AABB mins and maxes
+        virtual void updateAABB() override;
 
-public:
-    //Constructor to set radius and collider type
-    CircleCollider(float radius, ColliderType colliderType);
+      public:
+        //Constructor to set radius and collider type
+        CircleCollider(float radius, ColliderType colliderType);
 
-    //Getters for member variables
-    float getRadius() const;
+        //Getters for member variables
+        float getRadius() const;
 
-    //Setters for member variables
-    void setRadius(float newRadius);
-};
+        //Setters for member variables
+        void setRadius(float newRadius);
+    };
 }
 
 #endif
