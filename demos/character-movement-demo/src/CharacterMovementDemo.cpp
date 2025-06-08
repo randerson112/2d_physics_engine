@@ -52,6 +52,8 @@ void CharacterMovementDemo::run()
 
         // handle mouse events
         handleEvents(deltaTime);
+        // handle player events
+        updatePlayerMovement(deltaTime);
         update(deltaTime);
         // render visuals
         render();
@@ -88,6 +90,13 @@ void CharacterMovementDemo::handleEvents(float deltaTime)
             m_window.close();
         }
 
+        // close window on escape key press
+        if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+        {
+            if (keyPressed->scancode == sf::Keyboard::Scancode::Escape)
+                m_window.close();
+        }
+
         // Resize window event
         if (event->is<sf::Event::Resized>())
         {
@@ -103,30 +112,6 @@ void CharacterMovementDemo::handleEvents(float deltaTime)
             phys::Vector2 newDimensions = {windowWidth / PIXELS_PER_METER, windowHeight / PIXELS_PER_METER};
             m_world.setBoundaryDimensions(newDimensions);
         }
-
-        // Handle key press events
-        if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
-        {
-            // Close the window if escape key is pressed
-            if (keyPressed->scancode == sf::Keyboard::Scancode::Escape)
-            {
-                m_window.close();
-            }
-
-            // handle player movement events
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
-            {
-                m_player->move({-moveSpeed * deltaTime, 0});
-            }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
-            {
-                m_player->move({moveSpeed * deltaTime, 0});
-            }
-            if (keyPressed->scancode == sf::Keyboard::Scancode::Up)
-            {
-                m_player->move({0, moveSpeed * deltaTime});
-            }
-        }
     }
 }
 
@@ -134,9 +119,6 @@ void CharacterMovementDemo::instantiatePlayer()
 {
     phys::Vector2 rectPosition = {-2, -3};
     phys::Vector2 dimensions = {2, 4};
-
-    // Create collider first
-    // phys::RectCollider* collider = new phys::RectCollider(dimensions, phys::ColliderType::Solid);
 
     // Create body using the collider
     phys::DynamicBody* playerBody = phys::createDynamicRectangle(rectPosition, dimensions);
@@ -157,6 +139,7 @@ void CharacterMovementDemo::instantiatePlayer()
     m_playerVisual = visual;
     m_bodyVisualMap[playerBody] = visual;
 }
+
 void CharacterMovementDemo::update(float deltaTime)
 {
     //Update the physics world
@@ -168,6 +151,48 @@ void CharacterMovementDemo::update(float deltaTime)
         it->second->setPosition(getRenderPosition(it->first->getPosition(), m_window.getSize()));
         ++it;
     }
+}
+
+void CharacterMovementDemo::updatePlayerMovement(float deltaTime) const
+{
+    const float moveSpeed = 4.0f;    // m/s
+    const float jumpStrength = 8.0f; // m/s
+
+    phys::Vector2 velocity = m_player->getVelocity();
+
+    // Horizontal movement
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+        velocity.x = -moveSpeed;
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+        velocity.x = moveSpeed;
+    else
+        velocity.x = 0;
+
+    // Jumping
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
+        velocity.y = -jumpStrength;
+
+    m_player->setVelocity(velocity);
+}
+
+bool CharacterMovementDemo::isPlayerTouchingGround() const
+{
+    const float epsilon = 0.5f; // threshold
+
+    for (phys::PhysicsBody* other : m_world.getBodies())
+    {
+        if (other == m_player || other->getType() != phys::BodyType::StaticBody)
+            continue;
+
+        // todo ask for implementation of isCollidingWith and getContactNormal functions
+        // if (m_player->getCollider()->isCollidingWith(other->getCollider()))
+        // {
+        //     phys::Vector2 contactNormal = m_player->getCollider()->getContactNormal(other->getCollider());
+        //     if (contactNormal.y > 0.9f) // Mostly vertical collision
+        //         return true;
+        // }
+    }
+    return false;
 }
 
 void CharacterMovementDemo::render()

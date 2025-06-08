@@ -23,7 +23,7 @@ class CharacterMovementDemo
     phys::PhysicsWorld m_world;
 
     // Player instance
-    phys::PhysicsBody* m_player;
+    phys::DynamicBody* m_player;
     sf::Shape* m_playerVisual;
 
     // Map to pair the bodies of the engine with sfml bodies (used for rendering objects)
@@ -44,6 +44,12 @@ class CharacterMovementDemo
 
     // update fuction
     void update(float deltaTime);
+
+    // handles player movement controls
+    void updatePlayerMovement(float deltaTime) const;
+
+    // check if the player is touching the ground (used for jumping logic)
+    bool isPlayerTouchingGround() const;
 };
 
 #endif
