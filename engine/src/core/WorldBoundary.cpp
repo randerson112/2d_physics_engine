@@ -315,6 +315,54 @@ namespace phys
         return false;
     }
 
+    //Checks if a body is on the boundary floor
+    bool WorldBoundary::checkIfOnFloor(const PhysicsBody* body) const
+    {
+        //Get world half dimensions
+        float halfWorldWidth = m_dimensions.x / 2;
+        float halfWorldHeight = m_dimensions.y / 2;
+
+        //Get shape and collider
+        Collider* collider = body->getCollider();
+        ColliderShape shape = collider->getShape();
+
+        //Get body y position
+        float yPosition = body->getPosition().y;
+
+        //Room for error
+        float error = 0.01;
+
+        //Thresholds to check if body is within
+        float upperThreshold = -halfWorldHeight + error;
+        float lowerThreshold = -halfWorldHeight - error;
+
+        //Check if bottom of circle is touching the floor
+        if (shape == ColliderShape::Circle)
+        {
+            CircleCollider* circleCollider = static_cast<CircleCollider*>(collider);
+
+            float radius = circleCollider->getRadius();
+            float circleBottomPos = yPosition - radius;
+
+            if (circleBottomPos <= upperThreshold && circleBottomPos >= lowerThreshold)
+                return true;
+        }
+
+        //Check if bottom of rectangle is touching floor
+        else if (shape == ColliderShape::Rectangle)
+        {
+            RectCollider* rectCollider = static_cast<RectCollider*>(collider);
+            
+            float height = rectCollider->getHeight();
+            float rectBottomPos = yPosition - height / 2;
+
+            if (rectBottomPos <= upperThreshold && rectBottomPos >= lowerThreshold)
+                return true;
+        }
+
+        return false;
+    }
+
     //Getters for member variables
     float WorldBoundary::getWidth() const
     {
