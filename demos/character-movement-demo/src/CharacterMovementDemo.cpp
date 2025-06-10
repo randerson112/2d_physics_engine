@@ -122,6 +122,7 @@ void CharacterMovementDemo::instantiatePlayer()
 
     // Create body using the collider
     phys::DynamicBody* playerBody = phys::createDynamicRectangle(rectPosition, dimensions);
+    playerBody->setRestitution(0.0f); //Removes bounciness
 
     // Add to the world
     m_world.addBody(playerBody);
@@ -170,7 +171,7 @@ void CharacterMovementDemo::updatePlayerMovement(float deltaTime) const
 
     // Jumping
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
-        velocity.y = -jumpStrength;
+        velocity.y = jumpStrength;
 
     m_player->setVelocity(velocity);
 }
