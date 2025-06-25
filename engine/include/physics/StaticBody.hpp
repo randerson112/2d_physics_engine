@@ -12,15 +12,15 @@
 
 namespace phys
 {
-class StaticBody : public PhysicsBody
-{
-public:
-    //Constructor to set position in world and attach collider
-    StaticBody(const Vector2& position, Collider* collider);
+    class StaticBody : public PhysicsBody
+    {
+      public:
+        //Constructor to set position in world and attach collider
+        StaticBody(const Vector2& position, Collider* collider);
 
-    //Nothing will happen here since body is static
-    void update(float deltaTime) override;
-};
+        //Nothing will happen here since body is static
+        void update(float deltaTime) override;
+    };
 }
 
 #endif

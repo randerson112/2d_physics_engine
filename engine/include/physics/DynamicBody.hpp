@@ -12,63 +12,63 @@
 
 namespace phys
 {
-class DynamicBody : public PhysicsBody
-{
-private:
-    //Current velocity of the body
-    Vector2 m_velocity;
+    class DynamicBody : public PhysicsBody
+    {
+      private:
+        //Current velocity of the body
+        Vector2 m_velocity;
 
-    //rate of change of rotation
-    float m_rotationalVelocity;
+        //rate of change of rotation
+        float m_rotationalVelocity;
 
-    //Accumulated forces on the body
-    Vector2 m_force;
+        //Accumulated forces on the body
+        Vector2 m_force;
 
-    //Current acceleration of the body
-    Vector2 m_acceleration;
+        //Current acceleration of the body
+        Vector2 m_acceleration;
 
-    //Restitution or bounciness of the body
-    float m_restitution;
+        //Restitution or bounciness of the body
+        float m_restitution;
 
-    //Mass of the body
-    float m_mass;
+        //Mass of the body
+        float m_mass;
 
-    //Flag that determines if gravity affects the body
-    bool m_affectedByGravity;
+        //Flag that determines if gravity affects the body
+        bool m_affectedByGravity;
 
-public:
-    //Constructor to set postion and collider
-    DynamicBody(const Vector2& position, Collider* collider);
+      public:
+        //Constructor to set postion and collider
+        DynamicBody(const Vector2& position, Collider* collider);
 
-    //Applies an external force to the body
-    void applyForce(const Vector2& force);
+        //Applies an external force to the body
+        void applyForce(const Vector2& force);
 
-    //Update the physics of the body in the world
-    void update(float deltaTime) override;
+        //Update the physics of the body in the world
+        void update(float deltaTime) override;
 
-    //Calculates moment of rotational intertia based on shape
-    float calculateRotationalInertia();
-    float getInvRotationalInertia();
+        //Calculates moment of rotational intertia based on shape
+        float calculateRotationalInertia();
+        float getInvRotationalInertia();
 
-    //Getters for member variables
-    const Vector2& getVelocity() const;
-    float getRotationalVelocity() const;
-    const Vector2& getForce() const;
-    const Vector2& getAcceleration() const;
-    float getRestitution() const;
-    float getMass() const;
-    float getInvMass() const;
-    bool isAffectedByGravity() const;
+        //Getters for member variables
+        const Vector2& getVelocity() const;
+        float getRotationalVelocity() const;
+        const Vector2& getForce() const;
+        const Vector2& getAcceleration() const;
+        float getRestitution() const;
+        float getMass() const;
+        float getInvMass() const;
+        bool isAffectedByGravity() const;
 
-    //Setters for member variables
-    void setVelocity(const Vector2& newVelocity);
-    void setRotationalVelocity(float newRotationalVelocity);
-    void setForce(const Vector2& newForce);
-    void setAcceleration(const Vector2& newAcceleration);
-    void setRestitution(float newRestitution);
-    void setMass(float newMass);
-    void setAffectedByGravity(bool affectedByGravity);
-};
+        //Setters for member variables
+        void setVelocity(const Vector2& newVelocity);
+        void setRotationalVelocity(float newRotationalVelocity);
+        void setForce(const Vector2& newForce);
+        void setAcceleration(const Vector2& newAcceleration);
+        void setRestitution(float newRestitution);
+        void setMass(float newMass);
+        void setAffectedByGravity(bool affectedByGravity);
+    };
 }
 
 #endif

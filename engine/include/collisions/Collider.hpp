@@ -12,74 +12,74 @@
 
 namespace phys
 {
-enum class ColliderShape
-{
-    Rectangle,
-    Circle
-};
+    enum class ColliderShape
+    {
+        Rectangle,
+        Circle
+    };
 
-enum class ColliderType
-{
-    Solid,
-    Trigger
-};
+    enum class ColliderType
+    {
+        Solid,
+        Trigger
+    };
 
-class PhysicsBody;
+    class PhysicsBody;
 
-class Collider
-{
-protected:
-    //position of the collider in the world
-    Vector2 m_position;
+    class Collider
+    {
+      protected:
+        //position of the collider in the world
+        Vector2 m_position;
 
-    //position relative to parent body, default no offset
-    Vector2 m_offset;
+        //position relative to parent body, default no offset
+        Vector2 m_offset;
 
-    //rotation in degrees
-    float m_rotation;
+        //rotation in degrees
+        float m_rotation;
 
-    //The parent of the collider, a physics body
-    PhysicsBody* m_parent;
+        //The parent of the collider, a physics body
+        PhysicsBody* m_parent;
 
-    //Shape of the collider
-    ColliderShape m_shape;
+        //Shape of the collider
+        ColliderShape m_shape;
 
-    //Type of collider, solid or trigger
-    ColliderType m_type;
+        //Type of collider, solid or trigger
+        ColliderType m_type;
 
-    //Bounding box for broad collision detection
-    AABB m_boundingBox;
+        //Bounding box for broad collision detection
+        AABB m_boundingBox;
 
-    //Update AABB mins and maxes
-    virtual void updateAABB() = 0;
+        //Update AABB mins and maxes
+        virtual void updateAABB() = 0;
 
-public:
-    //Constructor to set shape and collider type
-    Collider(ColliderShape colliderShape, ColliderType ColliderType);
+      public:
+        //Constructor to set shape and collider type
+        Collider(ColliderShape colliderShape, ColliderType ColliderType);
 
-    virtual ~Collider();
+        virtual ~Collider();
 
-    //Rotate collider by amount of radians
-    void rotate(float radians);
+        //Rotate collider by amount of radians
+        void rotate(float radians);
 
-    //Getters for member variables
-    const Vector2& getPosition() const;
-    float getRotation() const;
-    const Vector2& getOffset() const;
-    PhysicsBody* getParent() const;
-    ColliderShape getShape() const;
-    ColliderType getType() const;
-    const AABB& getAABB() const;
+        //Getters for member variables
+        const Vector2& getPosition() const;
+        float getRotation() const;
+        const Vector2& getOffset() const;
+        PhysicsBody* getParent() const;
+        ColliderShape getShape() const;
+        ColliderType getType() const;
+        const AABB& getAABB() const;
 
-    //Setters for member variables
-    void setPosition(const Vector2& newPosition);
-    void setRotation(float newRotation);
-    void setOffset(const Vector2& newOffest);
-    void setParent(PhysicsBody* newParent);
-    void setType(ColliderType newType);
+        //Setters for member variables
+        void setPosition(const Vector2& newPosition);
+        void setRotation(float newRotation);
+        void setOffset(const Vector2& newOffest);
+        void setParent(PhysicsBody* newParent);
+        void setType(ColliderType newType);
 
-    //Maybe a method to change the shape of the collider in the future
-};
+        //Maybe a method to change the shape of the collider in the future
+    };
 }
 
 #endif

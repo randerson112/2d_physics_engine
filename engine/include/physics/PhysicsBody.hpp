@@ -11,57 +11,57 @@
 
 namespace phys
 {
-enum class BodyType
-{
-    StaticBody,
-    DynamicBody,
-    ControllableBody
-};
+    enum class BodyType
+    {
+        StaticBody,
+        DynamicBody,
+        ControllableBody
+    };
 
-class Collider;
+    class Collider;
 
-class PhysicsBody
-{
-protected:
-    //Position of body in the world
-    Vector2 m_position;
+    class PhysicsBody
+    {
+      protected:
+        //Position of body in the world
+        Vector2 m_position;
 
-    //rotation in degrees
-    float m_rotation;
+        //rotation in degrees
+        float m_rotation;
 
-    //Collider for detecting collisions
-    Collider* m_collider;
+        //Collider for detecting collisions
+        Collider* m_collider;
 
-    //Type of the body (static, dynamic...)
-    BodyType m_type;
+        //Type of the body (static, dynamic...)
+        BodyType m_type;
 
-public:
-    //Constructor
-    PhysicsBody(const Vector2& position, Collider* collider, BodyType bodyType);
+      public:
+        //Constructor
+        PhysicsBody(const Vector2& position, Collider* collider, BodyType bodyType);
 
-    //Destructor
-    virtual ~PhysicsBody();
+        //Destructor
+        virtual ~PhysicsBody();
 
-    //Updates the physics of the body in the world (implemented in derived classes)
-    virtual void update(float deltaTime) = 0;
+        //Updates the physics of the body in the world (implemented in derived classes)
+        virtual void update(float deltaTime) = 0;
 
-    //Moves a body by a relative amount
-    void move(const Vector2& amountToMove);
+        //Moves a body by a relative amount
+        void move(const Vector2& amountToMove);
 
-    //Rotates the body by given radians
-    void rotate(const float radians);
+        //Rotates the body by given radians
+        void rotate(const float radians);
 
-    //Getters for member variables
-    const Vector2& getPosition() const;
-    float getRotation() const;
-    Collider* getCollider() const;
-    BodyType getType() const;
+        //Getters for member variables
+        const Vector2& getPosition() const;
+        float getRotation() const;
+        Collider* getCollider() const;
+        BodyType getType() const;
 
-    //Setters for member variables
-    void setPosition(const Vector2& newPosition);
-    void setRotation(float newRotation);
-    void setCollider(Collider* newCollider);
-};
+        //Setters for member variables
+        void setPosition(const Vector2& newPosition);
+        void setRotation(float newRotation);
+        void setCollider(Collider* newCollider);
+    };
 }
 
 #endif
