@@ -126,7 +126,8 @@ namespace phys
         int contactCount)
     {
         //Move dynamic body out of penetration
-        dynamicBody->move(-normal * penDepth);
+        const float percent = 0.50f; //50% correction
+        dynamicBody->move(-normal * penDepth * percent);
 
         //Get properties
         Vector2 position = dynamicBody->getPosition();
@@ -143,19 +144,22 @@ namespace phys
         //Calculate impulses for each contact point
         for (int i = 0; i < contactCount; i++)
         {
-            Vector2 ra = contactPoints[i] - position;
+            Vector2 contactPoint = contactPoints[i];
+            Vector2 ra = contactPoint - position;
             raValues.push_back(ra);
 
             // Velocity at contact point
-            Vector2 velAtContact = linearVelocity + Vector2(-ra.y, ra.x) * angularVelocity;
+            Vector2 rotComponent = Vector2(-ra.y, ra.x) * angularVelocity;
+            Vector2 velAtContact = linearVelocity + rotComponent;
             float contactVelocityMagnitude = velAtContact.projectOntoAxis(normal);
 
             float raCrossN = ra.crossProduct(normal);
             float denom = invMass + (raCrossN * raCrossN) * invInertia;
 
             float j = -(1.0f + restitution) * contactVelocityMagnitude / denom;
+            j /= static_cast<float>(contactCount);
 
-            Vector2 impulse = normal * j;
+            Vector2 impulse = -normal * j;
             impulses.push_back(impulse);
         }
 
@@ -210,8 +214,9 @@ namespace phys
         float e = std::min(std::max(std::min(restitutionA, restitutionB), 0.0f), 1.0f);
 
         //Move bodies to resolve penetration
-        bodyA->move(-normal * penDepth / 2.0f);
-        bodyB->move(normal * penDepth / 2.0f);
+        const float percent = 0.5f; // 50% correction
+        bodyA->move(-normal * penDepth * percent / 2.0f);
+        bodyB->move(normal * penDepth * percent / 2.0f);
 
         //Vectors to store values
         std::vector<Vector2> impulses;
@@ -240,6 +245,7 @@ namespace phys
                 invMassA + invMassB + (raCrossN * raCrossN) * invInertiaA + (rbCrossN * rbCrossN) * invInertiaB;
 
             float j = -(1.0f + e) * contactVelocityMagnitude / denom;
+            j /= static_cast<float>(contactCount);
 
             Vector2 impulse = normal * j;
             impulses.push_back(impulse);
