@@ -44,7 +44,7 @@ float getEngineRotation(sf::Angle objectRenderRotation)
 //Constructor
 PhysicsEngineDemo::PhysicsEngineDemo() :
     m_window(sf::VideoMode({DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT}), "Physics Engine Demo"),
-    m_font("../../demo/assets/arial.ttf"),
+    m_font("../../../demos/demo1/assets/arial.ttf"),
     m_fpsText(m_font),
     m_objectCountText(m_font),
     m_world({DEFAULT_WINDOW_WIDTH / PIXELS_PER_METER, DEFAULT_WINDOW_HEIGHT / PIXELS_PER_METER}),

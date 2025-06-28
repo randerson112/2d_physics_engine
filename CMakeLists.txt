@@ -12,5 +12,5 @@ add_subdirectory(engine)
 
 #Build the demo executable unless specified not to
 if(BUILD_DEMO)
-    add_subdirectory(demo)
+    add_subdirectory(demos/demo1)
 endif()

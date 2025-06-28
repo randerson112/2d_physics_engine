@@ -2,7 +2,7 @@
 #Builds the engine static library and links it to the demo automatically
 
 cmake_minimum_required(VERSION 3.10)
-project(PhysicsEngineDemo)
+project(PhysicsEngineDemo1)
 
 #Sets C++ version required
 set(CMAKE_CXX_STANDARD 17)

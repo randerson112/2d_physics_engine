@@ -174,6 +174,11 @@ namespace phys
             return false;
     }
 
+    bool PhysicsWorld::checkIfOnFloor(const PhysicsBody* body) const
+    {
+        return m_boundary.checkIfOnFloor(body);
+    }
+
     //Pauses or resumes the physics processing
     void PhysicsWorld::setPhysicsProcess(bool processPhysics)
     {
