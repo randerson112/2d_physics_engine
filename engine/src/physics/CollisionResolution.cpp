@@ -132,7 +132,7 @@ namespace phys
         //Get properties
         Vector2 position = dynamicBody->getPosition();
         Vector2 linearVelocity = dynamicBody->getVelocity();
-        float angularVelocity = dynamicBody->getRotationalVelocity();
+        float angularVelocity = dynamicBody->getAngularVelocity();
         float restitution = dynamicBody->getRestitution();
         float invMass = dynamicBody->getInvMass();
         float invInertia = dynamicBody->getInvRotationalInertia();
@@ -152,6 +152,12 @@ namespace phys
             Vector2 rotComponent = Vector2(-ra.y, ra.x) * angularVelocity;
             Vector2 velAtContact = linearVelocity + rotComponent;
             float contactVelocityMagnitude = velAtContact.projectOntoAxis(normal);
+
+            if (contactVelocityMagnitude < 0)
+            {
+                impulses.push_back(Vector2());
+                continue;
+            }
 
             float raCrossN = ra.crossProduct(normal);
             float denom = invMass + (raCrossN * raCrossN) * invInertia;
@@ -180,7 +186,7 @@ namespace phys
         }
 
         dynamicBody->setVelocity(newVelocity);
-        dynamicBody->setRotationalVelocity(newAngularVelocity);
+        dynamicBody->setAngularVelocity(newAngularVelocity);
     }
 
     //Resolve a collision between two dynamic bodies, with rotation
@@ -198,8 +204,8 @@ namespace phys
         Vector2 linearVelocityA = bodyA->getVelocity();
         Vector2 linearVelocityB = bodyB->getVelocity();
 
-        float angularVelocityA = bodyA->getRotationalVelocity();
-        float angularVelocityB = bodyB->getRotationalVelocity();
+        float angularVelocityA = bodyA->getAngularVelocity();
+        float angularVelocityB = bodyB->getAngularVelocity();
 
         float restitutionA = bodyA->getRestitution();
         float restitutionB = bodyB->getRestitution();
@@ -238,6 +244,12 @@ namespace phys
             Vector2 relVelocity = velB - velA;
             float contactVelocityMagnitude = relVelocity.projectOntoAxis(normal);
 
+            if (contactVelocityMagnitude > 0)
+            {
+                impulses.push_back(Vector2());
+                continue;
+            }
+
             float raCrossN = ra.crossProduct(normal);
             float rbCrossN = rb.crossProduct(normal);
 
@@ -275,10 +287,10 @@ namespace phys
         }
 
         bodyA->setVelocity(newLinearVelocityA);
-        bodyA->setRotationalVelocity(newAngularVelocityA);
+        bodyA->setAngularVelocity(newAngularVelocityA);
 
         bodyB->setVelocity(newLinearVelocityB);
-        bodyB->setRotationalVelocity(newAngularVelocityB);
+        bodyB->setAngularVelocity(newAngularVelocityB);
     }
 
 }

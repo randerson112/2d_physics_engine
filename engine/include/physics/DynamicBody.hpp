@@ -19,7 +19,7 @@ namespace phys
         Vector2 m_velocity;
 
         //rate of change of rotation
-        float m_rotationalVelocity;
+        float m_angularVelocity;
 
         //Accumulated forces on the body
         Vector2 m_force;
@@ -52,7 +52,7 @@ namespace phys
 
         //Getters for member variables
         const Vector2& getVelocity() const;
-        float getRotationalVelocity() const;
+        float getAngularVelocity() const;
         const Vector2& getForce() const;
         const Vector2& getAcceleration() const;
         float getRestitution() const;
@@ -62,7 +62,7 @@ namespace phys
 
         //Setters for member variables
         void setVelocity(const Vector2& newVelocity);
-        void setRotationalVelocity(float newRotationalVelocity);
+        void setAngularVelocity(float newAngularVelocity);
         void setForce(const Vector2& newForce);
         void setAcceleration(const Vector2& newAcceleration);
         void setRestitution(float newRestitution);

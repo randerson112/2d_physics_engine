@@ -26,7 +26,7 @@ namespace phys
         //Position of body in the world
         Vector2 m_position;
 
-        //rotation in degrees
+        //rotation in radians
         float m_rotation;
 
         //Collider for detecting collisions

@@ -23,14 +23,14 @@ namespace phys
             PhysicsBody* bodyB,
             const Vector2& normal,
             float penDepth,
-            std::vector<Vector2>& collisionPoints,
-            int collisionCount) :
+            std::vector<Vector2>& contactPoints,
+            int contactCount) :
             bodyA(bodyA),
             bodyB(bodyB),
             normal(normal),
             penDepth(penDepth),
-            contactPoints(collisionPoints),
-            contactCount(collisionCount)
+            contactPoints(contactPoints),
+            contactCount(contactCount)
         {
         }
     };

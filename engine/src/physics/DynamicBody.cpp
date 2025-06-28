@@ -12,7 +12,7 @@ namespace phys
         m_mass(1.0f),
         m_restitution(0.6f),
         m_velocity({0, 0}),
-        m_rotationalVelocity(0),
+        m_angularVelocity(0),
         m_acceleration({0, 0}),
         m_affectedByGravity(true)
     {
@@ -33,7 +33,7 @@ namespace phys
         m_position += m_velocity * deltaTime; //Update position based on current velocity
         m_collider->setPosition(m_position);
 
-        m_rotation += m_rotationalVelocity * deltaTime; //Update rotation based on rotation velocity
+        m_rotation += m_angularVelocity * deltaTime; //Update rotation based on rotation velocity
         m_collider->setRotation(m_rotation);
 
         m_force = {0, 0};
@@ -85,9 +85,9 @@ namespace phys
         return m_velocity;
     }
 
-    float DynamicBody::getRotationalVelocity() const
+    float DynamicBody::getAngularVelocity() const
     {
-        return m_rotationalVelocity;
+        return m_angularVelocity;
     }
 
     const Vector2& DynamicBody::getForce() const
@@ -126,9 +126,9 @@ namespace phys
         m_velocity = newVelocity;
     }
 
-    void DynamicBody::setRotationalVelocity(float newRotationalVelocity)
+    void DynamicBody::setAngularVelocity(float newAngularVelocity)
     {
-        m_rotationalVelocity = newRotationalVelocity;
+        m_angularVelocity = newAngularVelocity;
     }
 
     void DynamicBody::setForce(const Vector2& newForce)
