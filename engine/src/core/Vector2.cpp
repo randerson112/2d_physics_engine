@@ -62,6 +62,17 @@ namespace phys
         y /= divisor;
     }
 
+    //Comparison operator overloads
+    bool Vector2::operator==(const Vector2& other)
+    {
+        return abs(x - other.x) < 0.001 && abs(y - other.y) < 0.001;
+    }
+
+    bool Vector2::operator!=(const Vector2& other)
+    {
+        return abs(x - other.x) > 0.001 && abs(y - other.y) > 0.001;
+    }
+
     //Negative operator for getting the inverse
     Vector2 Vector2::operator-() const
     {
@@ -104,4 +115,11 @@ namespace phys
     {
         return (x * axis.x) + (y * axis.y);
     }
+
+    //Cross product of vector with another vector
+    float Vector2::crossProduct(const Vector2& other) const
+    {
+        return (x * other.y) - (y * other.x);
+    }
+
 }
