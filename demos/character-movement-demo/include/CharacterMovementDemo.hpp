@@ -26,7 +26,12 @@ class CharacterMovementDemo
     phys::DynamicBody* m_player;
     sf::Shape* m_playerVisual;
 
-    //Jump button already pressed that frame
+    // Coin instance
+    //TODO: make this a list or a map of coins
+    phys::StaticBody* m_coin;
+    sf::CircleShape m_coinVisual;
+
+    //Jump button pressed this frame
     bool m_jumpPressed;
 
     // Map to pair the bodies of the engine with sfml bodies (used for rendering objects)
@@ -35,6 +40,10 @@ class CharacterMovementDemo
     // Private functions used internally
     // Instantiates obstacles for character to move
     void instantiateStaticBodies();
+
+    // Instantiates a coin for player to collect
+    //TODO: make this instantiate a list of coins at random locations instead of only 1
+    void instantiateCoin();
 
     // Handle key press and window close events
     void handleEvents(float deltaTime);
@@ -47,6 +56,10 @@ class CharacterMovementDemo
 
     // update fuction
     void update(float deltaTime);
+
+    // Check if coin is touched
+    //TODO: make this loop through all coins and check for collision with player
+    void updateCoin();
 
     // handles player movement controls
     void updatePlayerMovement(float deltaTime);
