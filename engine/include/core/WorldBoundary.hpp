@@ -42,6 +42,9 @@ namespace phys
         //Keeps a dynamic body within boundaries every frame
         bool dynamicEnforce(DynamicBody* body) const;
 
+        //Checks if a body is on the boundary floor
+        bool checkIfOnFloor(const PhysicsBody* body) const;
+
         //Getters for member variables
         float getWidth() const;
         float getHeight() const;

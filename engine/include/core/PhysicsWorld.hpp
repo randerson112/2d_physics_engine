@@ -85,6 +85,8 @@ namespace phys
         //Must be called in between processPhysics and processCollisions
         bool checkIfColliding(PhysicsBody* bodyA, PhysicsBody* bodyB);
 
+        bool checkIfOnFloor(const PhysicsBody* body) const;
+
         //Enables or disables physics
         //Parameter: true to enable, false to disable
         void setPhysicsProcess(bool processPhysics);

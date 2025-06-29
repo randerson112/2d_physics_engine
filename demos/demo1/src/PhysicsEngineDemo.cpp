@@ -29,6 +29,18 @@ phys::Vector2 getEnginePosition(const sf::Vector2i& objectRenderPosition, const 
         -(objectRenderPosition.y - windowHeight / 2) / PIXELS_PER_METER};
 }
 
+//Returns a render rotation in radians of a object in the engine
+sf::Angle getRenderRotation(float objectEngineRotation)
+{
+    return sf::radians(-objectEngineRotation);
+}
+
+//Returns a rotation in the engine of a visual
+float getEngineRotation(sf::Angle objectRenderRotation)
+{
+    return -objectRenderRotation.asRadians();
+}
+
 //Constructor
 PhysicsEngineDemo::PhysicsEngineDemo() :
     m_window(sf::VideoMode({DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT}), "Physics Engine Demo"),
@@ -241,6 +253,7 @@ void PhysicsEngineDemo::update(float deltaTime)
         {
             //Reposition visual to match where their body is in the world
             it->second->setPosition(getRenderPosition(it->first->getPosition(), m_window.getSize()));
+            it->second->setRotation(getRenderRotation(it->first->getRotation()));
             ++it;
         }
     }

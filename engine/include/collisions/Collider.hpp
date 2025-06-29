@@ -35,6 +35,9 @@ namespace phys
         //position relative to parent body, default no offset
         Vector2 m_offset;
 
+        //rotation in degrees
+        float m_rotation;
+
         //The parent of the collider, a physics body
         PhysicsBody* m_parent;
 
@@ -56,8 +59,12 @@ namespace phys
 
         virtual ~Collider();
 
+        //Rotate collider by amount of radians
+        void rotate(float radians);
+
         //Getters for member variables
         const Vector2& getPosition() const;
+        float getRotation() const;
         const Vector2& getOffset() const;
         PhysicsBody* getParent() const;
         ColliderShape getShape() const;
@@ -66,6 +73,7 @@ namespace phys
 
         //Setters for member variables
         void setPosition(const Vector2& newPosition);
+        void setRotation(float newRotation);
         void setOffset(const Vector2& newOffest);
         void setParent(PhysicsBody* newParent);
         void setType(ColliderType newType);
