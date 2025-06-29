@@ -35,6 +35,7 @@ CharacterMovementDemo::CharacterMovementDemo() :
     m_player(nullptr)
 {
     m_world.setBoundaryType(phys::BoundaryType::Collidable);
+    m_world.setRotationalPhysics(false);
     instantiateStaticBodies();
     instantiatePlayer();
 }
@@ -95,6 +96,9 @@ void CharacterMovementDemo::handleEvents(float deltaTime)
         {
             if (keyPressed->scancode == sf::Keyboard::Scancode::Escape)
                 m_window.close();
+
+            if (keyPressed->scancode == sf::Keyboard::Scancode::Up && isPlayerTouchingGround())
+                m_jumpPressed = true;
         }
 
         // Resize window event
@@ -139,6 +143,8 @@ void CharacterMovementDemo::instantiatePlayer()
 
     m_playerVisual = visual;
     m_bodyVisualMap[playerBody] = visual;
+
+    m_jumpPressed = false;
 }
 
 void CharacterMovementDemo::update(float deltaTime)
@@ -152,12 +158,14 @@ void CharacterMovementDemo::update(float deltaTime)
         it->second->setPosition(getRenderPosition(it->first->getPosition(), m_window.getSize()));
         ++it;
     }
+
+    std::cout << m_jumpPressed << std::endl;
 }
 
-void CharacterMovementDemo::updatePlayerMovement(float deltaTime) const
+void CharacterMovementDemo::updatePlayerMovement(float deltaTime)
 {
     const float moveSpeed = 4.0f;    // m/s
-    const float jumpStrength = 8.0f; // m/s
+    const float jumpStrength = 10.0f; // m/s
 
     phys::Vector2 velocity = m_player->getVelocity();
 
@@ -170,20 +178,23 @@ void CharacterMovementDemo::updatePlayerMovement(float deltaTime) const
         velocity.x = 0;
 
     // Jumping
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
+    if (m_jumpPressed)
+    {
         velocity.y = jumpStrength;
+        m_jumpPressed = false;
+    }
 
     m_player->setVelocity(velocity);
 }
 
 bool CharacterMovementDemo::isPlayerTouchingGround() const
 {
-    const float epsilon = 0.5f; // threshold
+    //const float epsilon = 0.5f; // threshold
 
-    for (phys::PhysicsBody* other : m_world.getBodies())
-    {
-        if (other == m_player || other->getType() != phys::BodyType::StaticBody)
-            continue;
+    //for (phys::PhysicsBody* other : m_world.getBodies())
+    //{
+    //    if (other == m_player || other->getType() != phys::BodyType::StaticBody)
+    //        continue;
 
         // todo ask for implementation of isCollidingWith and getContactNormal functions
         // if (m_player->getCollider()->isCollidingWith(other->getCollider()))
@@ -192,8 +203,12 @@ bool CharacterMovementDemo::isPlayerTouchingGround() const
         //     if (contactNormal.y > 0.9f) // Mostly vertical collision
         //         return true;
         // }
-    }
-    return false;
+    //}
+    //return false;
+
+    //Returns true if player is on world floor or resting on platform
+    //For now just checking if y velocity is 0 until proper function is implemented
+    return m_world.checkIfOnFloor(m_player) || m_player->getVelocity().y == 0;
 }
 
 void CharacterMovementDemo::render()

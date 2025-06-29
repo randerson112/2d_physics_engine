@@ -26,6 +26,9 @@ class CharacterMovementDemo
     phys::DynamicBody* m_player;
     sf::Shape* m_playerVisual;
 
+    //Jump button already pressed that frame
+    bool m_jumpPressed;
+
     // Map to pair the bodies of the engine with sfml bodies (used for rendering objects)
     std::unordered_map<phys::PhysicsBody*, sf::Shape*> m_bodyVisualMap;
 
@@ -46,7 +49,7 @@ class CharacterMovementDemo
     void update(float deltaTime);
 
     // handles player movement controls
-    void updatePlayerMovement(float deltaTime) const;
+    void updatePlayerMovement(float deltaTime);
 
     // check if the player is touching the ground (used for jumping logic)
     bool isPlayerTouchingGround() const;
