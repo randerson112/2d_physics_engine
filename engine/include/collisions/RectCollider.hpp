@@ -5,6 +5,7 @@
 #define RECT_COLLIDER_HPP
 
 #include "collisions/Collider.hpp"
+#include <vector>
 
 namespace phys
 {
@@ -20,6 +21,9 @@ namespace phys
       public:
         //Constructor to set dimensions and collider type
         RectCollider(const Vector2& dimensions, ColliderType type);
+
+        //Returns the verticies of the collider in its current state
+        const std::vector<Vector2> calculateVertcies();
 
         //Getters for member variables
         float getWidth() const;

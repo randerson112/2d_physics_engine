@@ -18,6 +18,9 @@ namespace phys
         //Current velocity of the body
         Vector2 m_velocity;
 
+        //rate of change of rotation
+        float m_angularVelocity;
+
         //Accumulated forces on the body
         Vector2 m_force;
 
@@ -43,16 +46,23 @@ namespace phys
         //Update the physics of the body in the world
         void update(float deltaTime) override;
 
+        //Calculates moment of rotational intertia based on shape
+        float calculateRotationalInertia();
+        float getInvRotationalInertia();
+
         //Getters for member variables
         const Vector2& getVelocity() const;
+        float getAngularVelocity() const;
         const Vector2& getForce() const;
         const Vector2& getAcceleration() const;
         float getRestitution() const;
         float getMass() const;
+        float getInvMass() const;
         bool isAffectedByGravity() const;
 
         //Setters for member variables
         void setVelocity(const Vector2& newVelocity);
+        void setAngularVelocity(float newAngularVelocity);
         void setForce(const Vector2& newForce);
         void setAcceleration(const Vector2& newAcceleration);
         void setRestitution(float newRestitution);

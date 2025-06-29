@@ -33,6 +33,10 @@ namespace phys
         void operator*=(float scalar);
         void operator/=(float divisor);
 
+        //Comparison operator overloads
+        bool operator==(const Vector2& other);
+        bool operator!=(const Vector2& other);
+
         //Negative operator overload for getting the inverse
         Vector2 operator-() const;
 
@@ -53,6 +57,9 @@ namespace phys
 
         //How much of the vector lies on the other vector when projected
         float projectOntoAxis(const Vector2& axis) const;
+
+        //Cross product of vector with another vector
+        float crossProduct(const Vector2& other) const;
     };
 }
 

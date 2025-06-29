@@ -26,6 +26,9 @@ namespace phys
         //Position of body in the world
         Vector2 m_position;
 
+        //rotation in radians
+        float m_rotation;
+
         //Collider for detecting collisions
         Collider* m_collider;
 
@@ -45,13 +48,18 @@ namespace phys
         //Moves a body by a relative amount
         void move(const Vector2& amountToMove);
 
+        //Rotates the body by given radians
+        void rotate(const float radians);
+
         //Getters for member variables
         const Vector2& getPosition() const;
+        float getRotation() const;
         Collider* getCollider() const;
         BodyType getType() const;
 
         //Setters for member variables
         void setPosition(const Vector2& newPosition);
+        void setRotation(float newRotation);
         void setCollider(Collider* newCollider);
     };
 }

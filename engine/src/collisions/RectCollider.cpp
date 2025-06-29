@@ -1,6 +1,7 @@
 //Class implementation for rectangle shape colliders
 
 #include "collisions/RectCollider.hpp"
+#include <cmath>
 
 namespace phys
 {
@@ -11,6 +12,31 @@ namespace phys
         //Create AABB to enclose rectangle shape
         m_boundingBox = AABB({m_position.x - m_dimensions.x / 2, m_position.y - m_dimensions.y / 2},
             {m_position.x + m_dimensions.x / 2, m_position.y + m_dimensions.y / 2});
+    }
+
+    //Returns the verticies of the collider in its current state
+    const std::vector<Vector2> RectCollider::calculateVertcies()
+    {
+        float cos = std::cos(m_rotation);
+        float sin = std::sin(m_rotation);
+
+        float halfWidth = getWidth() / 2.0f;
+        float halfHeight = getHeight() / 2.0f;
+
+        //Standard vertecies without rotation
+        const std::vector<Vector2> localVerticies = {
+            {-halfWidth, halfHeight}, {halfWidth, halfHeight}, {halfWidth, -halfHeight}, {-halfWidth, -halfHeight}};
+
+        //Calculate vertcies with rotation applied
+        std::vector<Vector2> WorldVerticies;
+        for (const Vector2& vertex : localVerticies)
+        {
+            float rotatedX = vertex.x * cos - vertex.y * sin;
+            float rotatedY = vertex.x * sin + vertex.y * cos;
+            WorldVerticies.emplace_back(rotatedX + m_position.x, rotatedY + m_position.y);
+        }
+
+        return WorldVerticies;
     }
 
     //Getters for member variables

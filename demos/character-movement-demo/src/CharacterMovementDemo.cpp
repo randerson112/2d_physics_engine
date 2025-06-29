@@ -32,10 +32,12 @@ phys::Vector2 getEnginePosition(const sf::Vector2i& objectRenderPosition, const 
 CharacterMovementDemo::CharacterMovementDemo() :
     m_world({DEFAULT_WINDOW_WIDTH / PIXELS_PER_METER, DEFAULT_WINDOW_HEIGHT / PIXELS_PER_METER}),
     m_window(sf::VideoMode({DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT}), "Physics Engine Character Movement Demo"),
-    m_player(nullptr)
+    m_player(nullptr), m_coin(nullptr)
 {
     m_world.setBoundaryType(phys::BoundaryType::Collidable);
+    m_world.setRotationalPhysics(false);
     instantiateStaticBodies();
+    instantiateCoin();
     instantiatePlayer();
 }
 
@@ -54,6 +56,11 @@ void CharacterMovementDemo::run()
         handleEvents(deltaTime);
         // handle player events
         updatePlayerMovement(deltaTime);
+
+        //If coin is there, check for collision
+        if (m_coin)
+            updateCoin();
+
         update(deltaTime);
         // render visuals
         render();
@@ -80,6 +87,25 @@ void CharacterMovementDemo::instantiateStaticBodies()
     m_bodyVisualMap[rectangle] = rectVisual;
 }
 
+//TODO: make this instantiate a list of coins at random locations instead of only 1
+void CharacterMovementDemo::instantiateCoin()
+{
+    //Properties
+    phys::Vector2 position = {3, 3};
+    float radius = 0.5;
+
+    //Create static body object for the coin
+    m_coin = phys::createStaticCircle(position, radius);
+    m_coin->getCollider()->setType(phys::ColliderType::Trigger);
+    m_world.addBody(m_coin);
+
+    //Create coin visual
+    m_coinVisual = sf::CircleShape(radius * PIXELS_PER_METER);
+    m_coinVisual.setFillColor(sf::Color(255, 215, 0));
+    m_coinVisual.setOrigin({radius * PIXELS_PER_METER, radius * PIXELS_PER_METER});
+    m_coinVisual.setPosition(getRenderPosition(position, m_window.getSize()));
+}
+
 void CharacterMovementDemo::handleEvents(float deltaTime)
 {
     while (const std::optional event = m_window.pollEvent())
@@ -95,6 +121,9 @@ void CharacterMovementDemo::handleEvents(float deltaTime)
         {
             if (keyPressed->scancode == sf::Keyboard::Scancode::Escape)
                 m_window.close();
+
+            if (keyPressed->scancode == sf::Keyboard::Scancode::Up && isPlayerTouchingGround())
+                m_jumpPressed = true;
         }
 
         // Resize window event
@@ -139,6 +168,8 @@ void CharacterMovementDemo::instantiatePlayer()
 
     m_playerVisual = visual;
     m_bodyVisualMap[playerBody] = visual;
+
+    m_jumpPressed = false;
 }
 
 void CharacterMovementDemo::update(float deltaTime)
@@ -154,10 +185,23 @@ void CharacterMovementDemo::update(float deltaTime)
     }
 }
 
-void CharacterMovementDemo::updatePlayerMovement(float deltaTime) const
+//TODO: make this loop through all coins and check for collision with player
+void CharacterMovementDemo::updateCoin()
+{
+    if (m_world.checkIfColliding(m_player, m_coin))
+    {
+        //Coin collected, delete coin
+        m_world.removeBody(m_coin);
+        m_coin = nullptr;
+
+        std::cout << "Coin collected" << std::endl;
+    }
+}
+
+void CharacterMovementDemo::updatePlayerMovement(float deltaTime)
 {
     const float moveSpeed = 4.0f;    // m/s
-    const float jumpStrength = 8.0f; // m/s
+    const float jumpStrength = 10.0f; // m/s
 
     phys::Vector2 velocity = m_player->getVelocity();
 
@@ -170,20 +214,23 @@ void CharacterMovementDemo::updatePlayerMovement(float deltaTime) const
         velocity.x = 0;
 
     // Jumping
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
+    if (m_jumpPressed)
+    {
         velocity.y = jumpStrength;
+        m_jumpPressed = false;
+    }
 
     m_player->setVelocity(velocity);
 }
 
 bool CharacterMovementDemo::isPlayerTouchingGround() const
 {
-    const float epsilon = 0.5f; // threshold
+    //const float epsilon = 0.5f; // threshold
 
-    for (phys::PhysicsBody* other : m_world.getBodies())
-    {
-        if (other == m_player || other->getType() != phys::BodyType::StaticBody)
-            continue;
+    //for (phys::PhysicsBody* other : m_world.getBodies())
+    //{
+    //    if (other == m_player || other->getType() != phys::BodyType::StaticBody)
+    //        continue;
 
         // todo ask for implementation of isCollidingWith and getContactNormal functions
         // if (m_player->getCollider()->isCollidingWith(other->getCollider()))
@@ -192,8 +239,12 @@ bool CharacterMovementDemo::isPlayerTouchingGround() const
         //     if (contactNormal.y > 0.9f) // Mostly vertical collision
         //         return true;
         // }
-    }
-    return false;
+    //}
+    //return false;
+
+    //Returns true if player is on world floor or resting on platform
+    //For now just checking if y velocity is 0 until proper function is implemented
+    return m_world.checkIfOnFloor(m_player) || m_player->getVelocity().y == 0;
 }
 
 void CharacterMovementDemo::render()
@@ -206,6 +257,9 @@ void CharacterMovementDemo::render()
     {
         m_window.draw(*pair.second);
     }
+
+    if (m_coin != nullptr)
+        m_window.draw(m_coinVisual);
 
     m_window.display();
 }
