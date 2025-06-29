@@ -3,6 +3,11 @@
 #include "Engine.hpp"
 #include <SFML/Graphics.hpp>
 
+struct Coin {
+    phys::StaticBody* body;
+    sf::CircleShape visual;
+};
+
 class CharacterMovementDemo
 {
   public:
@@ -27,9 +32,7 @@ class CharacterMovementDemo
     sf::Shape* m_playerVisual;
 
     // Coin instance
-    //TODO: make this a list or a map of coins
-    phys::StaticBody* m_coin;
-    sf::CircleShape m_coinVisual;
+    std::vector<Coin> m_coins;
 
     //Jump button pressed this frame
     bool m_jumpPressed;
@@ -42,8 +45,13 @@ class CharacterMovementDemo
     void instantiateStaticBodies();
 
     // Instantiates a coin for player to collect
-    //TODO: make this instantiate a list of coins at random locations instead of only 1
-    void instantiateCoin();
+    void instantiateCoinsInitially();
+
+    // Used for creating a coin
+    void createCoin();
+
+    // Used for creating a coin
+    Coin createRandomCoin();
 
     // Handle key press and window close events
     void handleEvents(float deltaTime);
@@ -58,7 +66,6 @@ class CharacterMovementDemo
     void update(float deltaTime);
 
     // Check if coin is touched
-    //TODO: make this loop through all coins and check for collision with player
     void updateCoin();
 
     // handles player movement controls

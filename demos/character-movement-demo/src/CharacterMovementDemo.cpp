@@ -32,12 +32,13 @@ phys::Vector2 getEnginePosition(const sf::Vector2i& objectRenderPosition, const 
 CharacterMovementDemo::CharacterMovementDemo() :
     m_world({DEFAULT_WINDOW_WIDTH / PIXELS_PER_METER, DEFAULT_WINDOW_HEIGHT / PIXELS_PER_METER}),
     m_window(sf::VideoMode({DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT}), "Physics Engine Character Movement Demo"),
-    m_player(nullptr), m_coin(nullptr)
+    m_player(nullptr),
+    m_coins()
 {
     m_world.setBoundaryType(phys::BoundaryType::Collidable);
     m_world.setRotationalPhysics(false);
     instantiateStaticBodies();
-    instantiateCoin();
+    instantiateCoinsInitially();
     instantiatePlayer();
 }
 
@@ -58,7 +59,7 @@ void CharacterMovementDemo::run()
         updatePlayerMovement(deltaTime);
 
         //If coin is there, check for collision
-        if (m_coin)
+        if (!m_coins.empty())
             updateCoin();
 
         update(deltaTime);
@@ -69,41 +70,71 @@ void CharacterMovementDemo::run()
 
 void CharacterMovementDemo::instantiateStaticBodies()
 {
-    // Create a static rectangle
-    // Define properties
-    phys::Vector2 rectPosition = {-2, -5};
-    phys::Vector2 dimensions = {4, 1};
+    std::vector<std::pair<phys::Vector2, phys::Vector2>> staticPlatforms = {
+        {{-2, -5}, {4, 1}},   // position, dimensions
+        {{3, -2}, {2, 1}},
+        {{-4, 0}, {3, 1}},
+        {{0, 3}, {5, 1}}
+    };
 
-    // Create the physics body and add to the world
-    phys::StaticBody* rectangle = phys::createStaticRectangle(rectPosition, dimensions);
-    m_world.addBody(rectangle);
+    for (const auto& [pos, size] : staticPlatforms)
+    {
+        phys::StaticBody* rectangle = phys::createStaticRectangle(pos, size);
+        m_world.addBody(rectangle);
 
-    // Create a visual for the rectangle and map it to the body
-    sf::RectangleShape* rectVisual =
-        new sf::RectangleShape({dimensions.x * PIXELS_PER_METER, dimensions.y * PIXELS_PER_METER});
-    rectVisual->setFillColor(sf::Color(255, 255, 255));
-    rectVisual->setOrigin({dimensions.x / 2 * PIXELS_PER_METER, dimensions.y / 2 * PIXELS_PER_METER});
-    rectVisual->setPosition(getRenderPosition(rectPosition, m_window.getSize()));
-    m_bodyVisualMap[rectangle] = rectVisual;
+        sf::RectangleShape* rectVisual = new sf::RectangleShape(
+            sf::Vector2f(size.x * PIXELS_PER_METER, size.y * PIXELS_PER_METER)
+        );
+        rectVisual->setFillColor(sf::Color::White);
+        rectVisual->setOrigin(sf::Vector2f(size.x * PIXELS_PER_METER / 2, size.y * PIXELS_PER_METER / 2));
+        rectVisual->setPosition(getRenderPosition(pos, m_window.getSize()));
+
+        m_bodyVisualMap[rectangle] = rectVisual;
+    }
 }
 
-//TODO: make this instantiate a list of coins at random locations instead of only 1
-void CharacterMovementDemo::instantiateCoin()
+void CharacterMovementDemo::createCoin()
 {
-    //Properties
-    phys::Vector2 position = {3, 3};
-    float radius = 0.5;
+    m_coins.push_back(createRandomCoin());
+}
 
-    //Create static body object for the coin
-    m_coin = phys::createStaticCircle(position, radius);
-    m_coin->getCollider()->setType(phys::ColliderType::Trigger);
-    m_world.addBody(m_coin);
+Coin CharacterMovementDemo::createRandomCoin()
+{
+    sf::Vector2u windowSize = m_window.getSize();
+    const float radiusPixels = 0.5f * PIXELS_PER_METER;
 
-    //Create coin visual
-    m_coinVisual = sf::CircleShape(radius * PIXELS_PER_METER);
-    m_coinVisual.setFillColor(sf::Color(255, 215, 0));
-    m_coinVisual.setOrigin({radius * PIXELS_PER_METER, radius * PIXELS_PER_METER});
-    m_coinVisual.setPosition(getRenderPosition(position, m_window.getSize()));
+    const int minX = static_cast<int>(radiusPixels);
+    const int maxX = static_cast<int>(windowSize.x - radiusPixels);
+    const int minY = static_cast<int>(radiusPixels);
+    const int maxY = static_cast<int>(windowSize.y - radiusPixels);
+
+    const int randX = rand() % (maxX - minX) + minX;
+    const int randY = rand() % (maxY - minY) + minY;
+
+    sf::Vector2i randomPixelPosition(randX, randY);
+    phys::Vector2 position = getEnginePosition(randomPixelPosition, windowSize);
+
+    phys::StaticBody* body = phys::createStaticCircle(position, 0.5f);
+    body->getCollider()->setType(phys::ColliderType::Trigger);
+    m_world.addBody(body);
+
+    sf::CircleShape visual(radiusPixels);
+    visual.setFillColor(sf::Color(255, 215, 0));
+    visual.setOrigin(sf::Vector2f(radiusPixels, radiusPixels));
+    visual.setPosition(getRenderPosition(position, windowSize));
+
+    return { body, visual };
+}
+
+void CharacterMovementDemo::instantiateCoinsInitially()
+{
+    m_coins.clear();
+
+    const int initialCoinCount = 5;
+    for (int i = 0; i < initialCoinCount; ++i)
+    {
+        m_coins.push_back(createRandomCoin());
+    }
 }
 
 void CharacterMovementDemo::handleEvents(float deltaTime)
@@ -147,7 +178,7 @@ void CharacterMovementDemo::handleEvents(float deltaTime)
 void CharacterMovementDemo::instantiatePlayer()
 {
     phys::Vector2 rectPosition = {-2, -3};
-    phys::Vector2 dimensions = {2, 4};
+    phys::Vector2 dimensions = {1, 3};
 
     // Create body using the collider
     phys::DynamicBody* playerBody = phys::createDynamicRectangle(rectPosition, dimensions);
@@ -185,22 +216,35 @@ void CharacterMovementDemo::update(float deltaTime)
     }
 }
 
-//TODO: make this loop through all coins and check for collision with player
 void CharacterMovementDemo::updateCoin()
 {
-    if (m_world.checkIfColliding(m_player, m_coin))
-    {
-        //Coin collected, delete coin
-        m_world.removeBody(m_coin);
-        m_coin = nullptr;
+    int collectedCount = 0;
 
-        std::cout << "Coin collected" << std::endl;
+    m_coins.erase(std::remove_if(m_coins.begin(),
+                      m_coins.end(),
+                      [this, &collectedCount](Coin& coin)
+                      {
+                          if (coin.body && m_world.checkIfColliding(m_player, coin.body))
+                          {
+                              m_world.removeBody(coin.body);
+                              std::cout << "Coin collected" << std::endl;
+                              ++collectedCount;
+                              return true;
+                          }
+                          return false;
+                      }),
+        m_coins.end());
+
+    // Create new coins
+    for (int i = 0; i < collectedCount; ++i)
+    {
+        createCoin();
     }
 }
 
 void CharacterMovementDemo::updatePlayerMovement(float deltaTime)
 {
-    const float moveSpeed = 4.0f;    // m/s
+    const float moveSpeed = 7.0f;     // m/s
     const float jumpStrength = 10.0f; // m/s
 
     phys::Vector2 velocity = m_player->getVelocity();
@@ -225,25 +269,6 @@ void CharacterMovementDemo::updatePlayerMovement(float deltaTime)
 
 bool CharacterMovementDemo::isPlayerTouchingGround() const
 {
-    //const float epsilon = 0.5f; // threshold
-
-    //for (phys::PhysicsBody* other : m_world.getBodies())
-    //{
-    //    if (other == m_player || other->getType() != phys::BodyType::StaticBody)
-    //        continue;
-
-        // todo ask for implementation of isCollidingWith and getContactNormal functions
-        // if (m_player->getCollider()->isCollidingWith(other->getCollider()))
-        // {
-        //     phys::Vector2 contactNormal = m_player->getCollider()->getContactNormal(other->getCollider());
-        //     if (contactNormal.y > 0.9f) // Mostly vertical collision
-        //         return true;
-        // }
-    //}
-    //return false;
-
-    //Returns true if player is on world floor or resting on platform
-    //For now just checking if y velocity is 0 until proper function is implemented
     return m_world.checkIfOnFloor(m_player) || m_player->getVelocity().y == 0;
 }
 
@@ -258,8 +283,13 @@ void CharacterMovementDemo::render()
         m_window.draw(*pair.second);
     }
 
-    if (m_coin != nullptr)
-        m_window.draw(m_coinVisual);
+    if (!m_coins.empty())
+    {
+        for (auto& m_coin : m_coins)
+        {
+            m_window.draw(m_coin.visual);
+        }
+    }
 
     m_window.display();
 }
