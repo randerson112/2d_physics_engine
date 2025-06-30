@@ -8,6 +8,43 @@ struct Collision;
 
 namespace phys
 {
+    bool CollisionDetection::shouldCollide(Collider* colliderA, Collider* colliderB)
+    {
+        //Get layers and masks
+        const std::vector<unsigned int>& aLayers = colliderA->getCollisionLayers();
+        const std::vector<unsigned int>& aMasks = colliderA->getCollisionMasks();
+
+        const std::vector<unsigned int>& bLayers = colliderB->getCollisionLayers();
+        const std::vector<unsigned int>& bMasks = colliderB->getCollisionMasks();
+
+        bool aWantsCollideB = false;
+
+        //Check if A wants to collide with B
+        for (unsigned int aMask : aMasks)
+        {
+            if (std::find(bLayers.begin(), bLayers.end(), aMask) != bLayers.end())
+            {
+                aWantsCollideB = true;
+                break;
+            }
+        }
+
+        //Return false if A does not mask one of B layers
+        if (!aWantsCollideB)
+            return false;
+
+        //Check if B wants to collide with A
+        for (unsigned int bMask : bMasks)
+        {
+            if (std::find(aLayers.begin(), aLayers.end(), bMask) != aLayers.end())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     //Checks if two AABBs are overlapping
     bool CollisionDetection::checkAABBvsAABB(const AABB& boxA, const AABB& boxB)
     {
@@ -255,8 +292,8 @@ namespace phys
         Collider* colliderA = bodyA->getCollider();
         Collider* colliderB = bodyB->getCollider();
 
-        //If on different collision layers, return early
-        if (colliderA->getCollisionLayer() != colliderB->getCollisionLayer())
+        //Check if they should collide based on layers and masks
+        if (!shouldCollide(colliderA, colliderB))
             return nullptr;
 
         //Get collider shapes
