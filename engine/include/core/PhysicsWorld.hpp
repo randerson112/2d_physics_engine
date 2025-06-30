@@ -40,6 +40,9 @@ namespace phys
         //Boolean to control whether collisions are detected
         bool m_processCollisions;
 
+        //Boolean to control whether rotational physics is active
+        bool m_rotationalPhysics;
+
         //List of all physics bodies in the world
         std::vector<PhysicsBody*> m_physicsBodies;
 
@@ -94,6 +97,10 @@ namespace phys
         //Enables or disables collision detection
         //Parameter: true to enable, false to disable
         void setCollisionProcess(bool processCollisions);
+
+        //Enables or disables rotational physics in the world
+        //Parameter: true to enable, false to disable
+        void setRotationalPhysics(bool rotationalPhysics);
 
         //Sets the gravity scale of the world
         //Parameter: a non-negative scale factor

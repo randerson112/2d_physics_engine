@@ -10,8 +10,11 @@ namespace phys
 {
     namespace CollisionResolution
     {
-        //Resolves a collision by sorting it into respective function based on bodies
-        void resolveCollision(const Collision& collision);
+        //Resolves a collision with no rotations by sorting it into respective function based on bodies
+        void resolveBasicCollision(const Collision& collision);
+        
+        //Resolves a collision with rotation by sorting it into respective function based on bodies
+        void resolveAdvancedCollision(const Collision& collision);
 
         //Resolve a collision between a dynamic body and a static body, no rotations
         void resolveBasicDynamicStaticCollision(
