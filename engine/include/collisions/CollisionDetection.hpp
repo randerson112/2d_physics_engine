@@ -24,6 +24,9 @@ namespace phys
 
     namespace CollisionDetection
     {
+        //Checks layers and masks of colliders to see if they should collide
+        bool shouldCollide(Collider* colliderA, Collider* colliderB);
+
         //Checks if two AABBs are overlapping
         bool checkAABBvsAABB(const AABB& boxA, const AABB& boxB);
 

@@ -9,6 +9,7 @@
 #include "physics/PhysicsBody.hpp"
 #include "core/Vector2.hpp"
 #include "collisions/AABB.hpp"
+#include <vector>
 
 namespace phys
 {
@@ -50,8 +51,11 @@ namespace phys
         //Bounding box for broad collision detection
         AABB m_boundingBox;
 
-        //Collision layer, only collides with colliders of same layer
-        unsigned int m_collisionLayer;
+        //Collision layers, what layers does this collider belong to
+        std::vector<unsigned int> m_collisionLayers;
+
+        //Collisions masks, what layers does this collider collide with
+        std::vector<unsigned int> m_collisionMasks;
 
         //Update AABB mins and maxes
         virtual void updateAABB() = 0;
@@ -73,7 +77,6 @@ namespace phys
         ColliderShape getShape() const;
         ColliderType getType() const;
         const AABB& getAABB() const;
-        unsigned int getCollisionLayer() const;
 
         //Setters for member variables
         void setPosition(const Vector2& newPosition);
@@ -81,9 +84,20 @@ namespace phys
         void setOffset(const Vector2& newOffest);
         void setParent(PhysicsBody* newParent);
         void setType(ColliderType newType);
-        void setCollisionLayer(unsigned int newLayer);
 
-        //Maybe a method to change the shape of the collider in the future
+        //Collision layers and masks
+        const std::vector<unsigned int>& getCollisionLayers() const;
+        const std::vector<unsigned int>& getCollisionMasks() const;
+        void setCollisionLayers(const std::vector<unsigned int>& newLayers);
+        void setCollisionMasks(const std::vector<unsigned int>& newMasks);
+
+        void addCollisionLayer(unsigned int newLayer);
+        void addCollisionMask(unsigned int newMask);
+        void removeCollisionLayer(unsigned int layer);
+        void removeCollisionMask(unsigned int mask);
+
+        bool isOnLayer(unsigned int layer);
+        bool collidesWithLayer(unsigned int layer);
     };
 }
 

@@ -12,7 +12,8 @@ namespace phys
         m_shape(colliderShape),
         m_type(colliderType),
         m_boundingBox(AABB()),
-        m_collisionLayer(0)
+        m_collisionLayers({0}),
+        m_collisionMasks({0})
     {
     }
 
@@ -60,11 +61,6 @@ namespace phys
         return m_boundingBox;
     }
 
-    unsigned int Collider::getCollisionLayer() const
-    {
-        return m_collisionLayer;
-    }
-
     //Setters for member variables
     void Collider::setPosition(const Vector2& newPosition)
     {
@@ -94,8 +90,60 @@ namespace phys
         m_type = newType;
     }
 
-    void Collider::setCollisionLayer(unsigned int newLayer)
+    //Collision layers and masks
+    const std::vector<unsigned int>& Collider::getCollisionLayers() const
     {
-        m_collisionLayer = newLayer;
+        return m_collisionLayers;
+    }
+
+    const std::vector<unsigned int>& Collider::getCollisionMasks() const
+    {
+        return m_collisionMasks;
+    }
+
+    void Collider::setCollisionLayers(const std::vector<unsigned int>& newLayers)
+    {
+        m_collisionLayers = newLayers;
+    }
+
+    void Collider::setCollisionMasks(const std::vector<unsigned int>& newMasks)
+    {
+        m_collisionMasks = newMasks;
+    }
+
+    void Collider::addCollisionLayer(unsigned int newLayer)
+    {
+        if (std::find(m_collisionLayers.begin(), m_collisionLayers.end(), newLayer) == m_collisionLayers.end())
+            m_collisionLayers.push_back(newLayer);
+    }
+
+    void Collider::addCollisionMask(unsigned int newMask)
+    {
+        if (std::find(m_collisionMasks.begin(), m_collisionMasks.end(), newMask) == m_collisionMasks.end())
+            m_collisionMasks.push_back(newMask);
+    }
+
+    void Collider::removeCollisionLayer(unsigned int layer)
+    {
+        auto it = std::find(m_collisionLayers.begin(), m_collisionLayers.end(), layer);
+        if (it != m_collisionLayers.end())
+            m_collisionLayers.erase(it);
+    }
+
+    void Collider::removeCollisionMask(unsigned int mask)
+    {
+        auto it = std::find(m_collisionMasks.begin(), m_collisionMasks.end(), mask);
+        if (it != m_collisionMasks.end())
+            m_collisionMasks.erase(it);
+    }
+
+    bool Collider::isOnLayer(unsigned int layer)
+    {
+        return std::find(m_collisionLayers.begin(), m_collisionLayers.end(), layer) != m_collisionLayers.end();
+    }
+
+    bool Collider::collidesWithLayer(unsigned int layer)
+    {
+        return std::find(m_collisionMasks.begin(), m_collisionMasks.end(), layer) != m_collisionMasks.end();
     }
 }
