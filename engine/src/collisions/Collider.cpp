@@ -11,7 +11,8 @@ namespace phys
         m_offset({0, 0}),
         m_shape(colliderShape),
         m_type(colliderType),
-        m_boundingBox(AABB())
+        m_boundingBox(AABB()),
+        m_collisionLayer(0)
     {
     }
 
@@ -59,6 +60,11 @@ namespace phys
         return m_boundingBox;
     }
 
+    unsigned int Collider::getCollisionLayer() const
+    {
+        return m_collisionLayer;
+    }
+
     //Setters for member variables
     void Collider::setPosition(const Vector2& newPosition)
     {
@@ -86,5 +92,10 @@ namespace phys
     void Collider::setType(ColliderType newType)
     {
         m_type = newType;
+    }
+
+    void Collider::setCollisionLayer(unsigned int newLayer)
+    {
+        m_collisionLayer = newLayer;
     }
 }

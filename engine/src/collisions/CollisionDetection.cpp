@@ -255,6 +255,10 @@ namespace phys
         Collider* colliderA = bodyA->getCollider();
         Collider* colliderB = bodyB->getCollider();
 
+        //If on different collision layers, return early
+        if (colliderA->getCollisionLayer() != colliderB->getCollisionLayer())
+            return nullptr;
+
         //Get collider shapes
         ColliderShape shapeA = colliderA->getShape();
         ColliderShape shapeB = colliderB->getShape();

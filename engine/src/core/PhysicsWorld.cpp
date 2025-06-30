@@ -121,6 +121,10 @@ namespace phys
                     Collider* colliderA = bodyA->getCollider();
                     Collider* colliderB = bodyB->getCollider();
 
+                    //If different collision layers, no need to check collision
+                    if (colliderA->getCollisionLayer() != colliderB->getCollisionLayer())
+                        continue;
+
                     //Get collider types
                     ColliderType colliderTypeA = colliderA->getType();
                     ColliderType colliderTypeB = colliderB->getType();

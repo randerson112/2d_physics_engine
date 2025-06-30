@@ -50,6 +50,9 @@ namespace phys
         //Bounding box for broad collision detection
         AABB m_boundingBox;
 
+        //Collision layer, only collides with colliders of same layer
+        unsigned int m_collisionLayer;
+
         //Update AABB mins and maxes
         virtual void updateAABB() = 0;
 
@@ -70,6 +73,7 @@ namespace phys
         ColliderShape getShape() const;
         ColliderType getType() const;
         const AABB& getAABB() const;
+        unsigned int getCollisionLayer() const;
 
         //Setters for member variables
         void setPosition(const Vector2& newPosition);
@@ -77,6 +81,7 @@ namespace phys
         void setOffset(const Vector2& newOffest);
         void setParent(PhysicsBody* newParent);
         void setType(ColliderType newType);
+        void setCollisionLayer(unsigned int newLayer);
 
         //Maybe a method to change the shape of the collider in the future
     };
