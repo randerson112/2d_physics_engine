@@ -4,8 +4,65 @@
 
 namespace phys
 {
-    //Sort collision to respective solver
-    void CollisionResolution::resolveCollision(const Collision& collision)
+    //Sort collision to respective solver for collisions without rotation
+    void CollisionResolution::resolveBasicCollision(const Collision& collision)
+    {
+        //Get body types
+        BodyType typeA = collision.bodyA->getType();
+        BodyType typeB = collision.bodyB->getType();
+
+        //If the first body is dynamic
+        if (typeA == BodyType::DynamicBody)
+        {
+            DynamicBody* dynamicBodyA = static_cast<DynamicBody*>(collision.bodyA);
+
+            //If the second body is also dynamic
+            if (typeB == BodyType::DynamicBody)
+            {
+                DynamicBody* dynamicBodyB = static_cast<DynamicBody*>(collision.bodyB);
+
+                //Resolve collision between two dynamic bodies
+                resolveBasicDynamicCollision(dynamicBodyA,
+                    dynamicBodyB,
+                    collision.normal,
+                    collision.penDepth);
+            }
+
+            //If second body is a static body
+            else if (typeB == BodyType::StaticBody)
+            {
+                StaticBody* staticBodyB = static_cast<StaticBody*>(collision.bodyB);
+
+                //Resolve collision between a dynamic body and a static body
+                resolveBasicDynamicStaticCollision(dynamicBodyA,
+                    staticBodyB,
+                    collision.normal,
+                    collision.penDepth);
+            }
+        }
+
+        //If the first body is a static body
+        else if (typeA == BodyType::StaticBody)
+        {
+            StaticBody* staticBodyA = static_cast<StaticBody*>(collision.bodyA);
+
+            //If the second body is a dynamic body
+            if (typeB == BodyType::DynamicBody)
+            {
+                DynamicBody* dynamicBodyB = static_cast<DynamicBody*>(collision.bodyB);
+
+                //Resolve collision between a dynamic body and a static body
+                //Flip the normal since we switched the order of bodies
+                resolveBasicDynamicStaticCollision(dynamicBodyB,
+                    staticBodyA,
+                    -collision.normal,
+                    collision.penDepth);
+            }
+        }
+    }
+
+    //Sort collision to respective solver for collisions with rotation
+    void CollisionResolution::resolveAdvancedCollision(const Collision& collision)
     {
         //Get body types
         BodyType typeA = collision.bodyA->getType();
