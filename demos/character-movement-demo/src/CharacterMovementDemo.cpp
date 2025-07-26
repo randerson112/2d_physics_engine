@@ -33,10 +33,20 @@ CharacterMovementDemo::CharacterMovementDemo() :
     m_world({DEFAULT_WINDOW_WIDTH / PIXELS_PER_METER, DEFAULT_WINDOW_HEIGHT / PIXELS_PER_METER}),
     m_window(sf::VideoMode({DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT}), "Physics Engine Character Movement Demo"),
     m_player(nullptr),
-    m_coins()
+    m_font("demos/character-movement-demo/assets/arial.ttf"),
+    m_coinCounter(m_font),
+    m_coins(),
+    m_collectedCoinCount(0)
 {
     m_world.setBoundaryType(phys::BoundaryType::Collidable);
     m_world.setRotationalPhysics(false);
+
+    m_coinCounter.setString("collected coins: ");
+    m_coinCounter.setCharacterSize(30);
+    m_coinCounter.setPosition({10, 30});
+    m_coinCounter.setOutlineThickness(1.0f);
+    m_coinCounter.setOutlineColor(sf::Color(255, 255, 255));
+
     instantiateStaticBodies();
     instantiateCoinsInitially();
     instantiatePlayer();
@@ -70,21 +80,18 @@ void CharacterMovementDemo::run()
 
 void CharacterMovementDemo::instantiateStaticBodies()
 {
-    std::vector<std::pair<phys::Vector2, phys::Vector2>> staticPlatforms = {
-        {{-2, -5}, {4, 1}},   // position, dimensions
+    std::vector<std::pair<phys::Vector2, phys::Vector2>> staticPlatforms = {{{-2, -5}, {4, 1}}, // position, dimensions
         {{3, -2}, {2, 1}},
         {{-4, 0}, {3, 1}},
-        {{0, 3}, {5, 1}}
-    };
+        {{0, 3}, {5, 1}}};
 
     for (const auto& [pos, size] : staticPlatforms)
     {
         phys::StaticBody* rectangle = phys::createStaticRectangle(pos, size);
         m_world.addBody(rectangle);
 
-        sf::RectangleShape* rectVisual = new sf::RectangleShape(
-            sf::Vector2f(size.x * PIXELS_PER_METER, size.y * PIXELS_PER_METER)
-        );
+        sf::RectangleShape* rectVisual =
+            new sf::RectangleShape(sf::Vector2f(size.x * PIXELS_PER_METER, size.y * PIXELS_PER_METER));
         rectVisual->setFillColor(sf::Color::White);
         rectVisual->setOrigin(sf::Vector2f(size.x * PIXELS_PER_METER / 2, size.y * PIXELS_PER_METER / 2));
         rectVisual->setPosition(getRenderPosition(pos, m_window.getSize()));
@@ -123,7 +130,7 @@ Coin CharacterMovementDemo::createRandomCoin()
     visual.setOrigin(sf::Vector2f(radiusPixels, radiusPixels));
     visual.setPosition(getRenderPosition(position, windowSize));
 
-    return { body, visual };
+    return {body, visual};
 }
 
 void CharacterMovementDemo::instantiateCoinsInitially()
@@ -178,7 +185,7 @@ void CharacterMovementDemo::handleEvents(float deltaTime)
 void CharacterMovementDemo::instantiatePlayer()
 {
     phys::Vector2 rectPosition = {-2, -3};
-    phys::Vector2 dimensions = {1, 3};
+    phys::Vector2 dimensions = {1, 2};
 
     // Create body using the collider
     phys::DynamicBody* playerBody = phys::createDynamicRectangle(rectPosition, dimensions);
@@ -218,25 +225,27 @@ void CharacterMovementDemo::update(float deltaTime)
 
 void CharacterMovementDemo::updateCoin()
 {
-    int collectedCount = 0;
+    int collectedCountThisFrame = 0;
 
     m_coins.erase(std::remove_if(m_coins.begin(),
                       m_coins.end(),
-                      [this, &collectedCount](Coin& coin)
+                      [this, &collectedCountThisFrame](Coin& coin)
                       {
                           if (coin.body && m_world.checkIfColliding(m_player, coin.body))
                           {
                               m_world.removeBody(coin.body);
-                              std::cout << "Coin collected" << std::endl;
-                              ++collectedCount;
+                              ++collectedCountThisFrame;
+                              ++m_collectedCoinCount;
+
                               return true;
                           }
                           return false;
                       }),
         m_coins.end());
 
+    m_coinCounter.setString("collected coins: " + std::to_string(m_collectedCoinCount));
     // Create new coins
-    for (int i = 0; i < collectedCount; ++i)
+    for (int i = 0; i < collectedCountThisFrame; ++i)
     {
         createCoin();
     }
@@ -291,5 +300,6 @@ void CharacterMovementDemo::render()
         }
     }
 
+    m_window.draw(m_coinCounter);
     m_window.display();
 }

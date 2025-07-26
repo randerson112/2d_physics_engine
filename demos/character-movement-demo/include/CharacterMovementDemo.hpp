@@ -3,7 +3,8 @@
 #include "Engine.hpp"
 #include <SFML/Graphics.hpp>
 
-struct Coin {
+struct Coin
+{
     phys::StaticBody* body;
     sf::CircleShape visual;
 };
@@ -24,6 +25,12 @@ class CharacterMovementDemo
     // Window instance
     sf::RenderWindow m_window;
 
+    // Text that will display the collected coins
+    sf::Text m_coinCounter;
+
+    // Used for displaying text
+    sf::Font m_font;
+
     // World instance
     phys::PhysicsWorld m_world;
 
@@ -33,6 +40,9 @@ class CharacterMovementDemo
 
     // Coin instance
     std::vector<Coin> m_coins;
+
+    // Tracks the total collected coin count
+    int m_collectedCoinCount ;
 
     //Jump button pressed this frame
     bool m_jumpPressed;
