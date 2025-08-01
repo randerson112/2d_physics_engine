@@ -9,7 +9,8 @@ namespace phys
         m_boundary(boundaryDimensions, BoundaryType::Delete),
         m_gravityScale(1.0f),
         m_processPhysics(true),
-        m_processCollisions(true)
+        m_processCollisions(true),
+        m_rotationalPhysics(true)
     {
     }
 
@@ -148,7 +149,10 @@ namespace phys
                     Collision* collision = CollisionDetection::checkCollision(bodyA, bodyB);
                     if (collision)
                     {
-                        CollisionResolution::resolveCollision(*collision); //Resolve collision
+                        if (m_rotationalPhysics)
+                            CollisionResolution::resolveAdvancedCollision(*collision);
+                        else
+                            CollisionResolution::resolveBasicCollision(*collision);
                     }
 
                     delete collision; //Delete collision data after resolution
@@ -189,6 +193,12 @@ namespace phys
     void PhysicsWorld::setCollisionProcess(bool processCollisions)
     {
         m_processCollisions = processCollisions;
+    }
+
+    //Enables or disables rotational physics in the world
+    void PhysicsWorld::setRotationalPhysics(bool rotationalPhysics)
+    {
+        m_rotationalPhysics = rotationalPhysics;
     }
 
     //Sets the gravity scale of the world
