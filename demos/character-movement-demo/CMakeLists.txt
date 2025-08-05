@@ -8,6 +8,15 @@ project(CharacterMovementDemo)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+#Set assets path
+set(ASSETS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/assets")
+
+#Generate Config.hpp
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in
+    ${CMAKE_CURRENT_BINARY_DIR}/config.hpp
+)
+
 #Include FetchContent module
 include(FetchContent)
 
@@ -27,7 +36,7 @@ file(GLOB_RECURSE DEMO_SOURCES src/*.cpp)
 target_sources(${PROJECT_NAME} PRIVATE ${DEMO_SOURCES})
 
 #Set include directory
-target_include_directories(${PROJECT_NAME} PRIVATE include)
+target_include_directories(${PROJECT_NAME} PRIVATE include ${CMAKE_CURRENT_BINARY_DIR})
 
 #Link the physics engine library
 target_link_libraries(${PROJECT_NAME} PRIVATE PhysicsEngineLibrary)

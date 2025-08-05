@@ -1,4 +1,5 @@
 #include "CharacterMovementDemo.hpp"
+#include "config.hpp"
 
 #include <iostream>
 
@@ -33,7 +34,7 @@ CharacterMovementDemo::CharacterMovementDemo() :
     m_world({DEFAULT_WINDOW_WIDTH / PIXELS_PER_METER, DEFAULT_WINDOW_HEIGHT / PIXELS_PER_METER}),
     m_window(sf::VideoMode({DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT}), "Physics Engine Character Movement Demo"),
     m_player(nullptr),
-    m_font("demos/character-movement-demo/assets/arial.ttf"),
+    m_font(std::string(ASSETS_PATH) + "/arial.ttf"),
     m_coinCounter(m_font),
     m_coins(),
     m_collectedCoinCount(0)
