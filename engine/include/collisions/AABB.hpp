@@ -20,6 +20,18 @@ namespace phys
 
         //Constructor to set mins and maxes
         AABB(const Vector2& min, const Vector2& max) : min(min), max(max) {}
+
+        // Checks if AABB is intersecting another
+        bool intersects(const AABB& other) const
+        {
+            return (max.x >= other.min.x && min.x <= other.max.x && max.y >= other.min.y && min.y <= other.max.y);
+        }
+
+        // Checks if another AABB is fully inside this AABB
+        bool contains(const AABB& other) const
+        {
+            return (min.x <= other.min.x && max.x >= other.max.x && min.y <= other.min.y && max.y >= other.max.y);
+        }
     };
 }
 
