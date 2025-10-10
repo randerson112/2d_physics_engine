@@ -13,6 +13,7 @@
 #include "collisions/CircleCollider.hpp"
 #include "collisions/CollisionDetection.hpp"
 #include "collisions/Collision.hpp"
+#include "collisions/QuadTree.hpp"
 #include "physics/PhysicsBody.hpp"
 #include "physics/StaticBody.hpp"
 #include "physics/DynamicBody.hpp"
@@ -45,6 +46,9 @@ namespace phys
 
         //List of all physics bodies in the world
         std::vector<PhysicsBody*> m_physicsBodies;
+
+        //Quadtree for broad phase collision detection of bodies
+        QuadTree m_quadtree;
 
       public:
         //Constructor to set world boundary dimensions

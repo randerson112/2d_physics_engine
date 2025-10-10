@@ -7,6 +7,7 @@ namespace phys
     //Constructor to set boundary dimensions and default world settings
     PhysicsWorld::PhysicsWorld(const Vector2& boundaryDimensions) :
         m_boundary(boundaryDimensions, BoundaryType::Delete),
+        m_quadtree(boundaryDimensions),
         m_gravityScale(1.0f),
         m_processPhysics(true),
         m_processCollisions(true),
@@ -104,59 +105,52 @@ namespace phys
         if (!m_processCollisions)
             return;
 
-        //Iterate many times to resolve deep interpenetration
-        const int ITERATIONS = 10;
+        // === Broad Phase ===
 
+        m_quadtree.clear();
+
+        // Insert all bodies into quadtree
+        for (auto body : m_physicsBodies)
+        {
+            m_quadtree.insert(body);
+        }
+
+        // Gather potentially colliding pairs
+        std::vector<std::pair<PhysicsBody*, PhysicsBody*>> potentialCollisions;
+        m_quadtree.gatherPairs(potentialCollisions);
+
+        // === Narrow Phase ===
+
+        const int ITERATIONS = 3;
         for (int i = 0; i < ITERATIONS; i++)
         {
-            //Nested for loop to check every body against every other body
-            for (size_t i = 0; i < m_physicsBodies.size(); i++)
+            for (auto [bodyA, bodyB] : potentialCollisions)
             {
-                PhysicsBody* bodyA = m_physicsBodies[i];
+                // Check for collision between AABB
+                if (!bodyA->getCollider()->getAABB().intersects(bodyB->getCollider()->getAABB()))
+                    continue;
 
-                for (size_t j = i + 1; j < m_physicsBodies.size(); j++)
+                // If both are static, no need to resolve collision
+                if (bodyA->getType() == BodyType::StaticBody && bodyB->getType() == BodyType::StaticBody)
+                    continue;
+
+                // If either one is a trigger, no need to resolve collision
+                if (bodyA->getCollider()->getType() == ColliderType::Trigger || bodyB->getCollider()->getType() == ColliderType::Trigger)
+                    continue;
+
+                // Check for collision between shapes
+                Collision* collision = CollisionDetection::checkCollision(bodyA, bodyB);
+                if (collision)
                 {
-                    PhysicsBody* bodyB = m_physicsBodies[j];
-
-                    //Get the colliders of the bodies
-                    Collider* colliderA = bodyA->getCollider();
-                    Collider* colliderB = bodyB->getCollider();
-
-                    //Get collider types
-                    ColliderType colliderTypeA = colliderA->getType();
-                    ColliderType colliderTypeB = colliderB->getType();
-
-                    //Get the body types
-                    BodyType typeA = bodyA->getType();
-                    BodyType typeB = bodyB->getType();
-
-                    //If both are static bodies, no need to check for a collision
-                    if (typeA == BodyType::StaticBody && typeB == BodyType::StaticBody)
-                        continue;
-
-                    //If one of the bodies has a trigger collider, no need to resolve collision
-                    if (colliderTypeA == ColliderType::Trigger || colliderTypeB == ColliderType::Trigger)
-                        continue;
-
-                    //First check if AABBs are intersecting (Broad phase)
-                    const AABB boundingBoxA = colliderA->getAABB();
-                    const AABB boundingBoxB = colliderB->getAABB();
-
-                    if (!CollisionDetection::checkAABBvsAABB(boundingBoxA, boundingBoxB))
-                        continue;
-
-                    //Check collision between colliders (Narrow phase)
-                    Collision* collision = CollisionDetection::checkCollision(bodyA, bodyB);
-                    if (collision)
-                    {
-                        if (m_rotationalPhysics)
-                            CollisionResolution::resolveAdvancedCollision(*collision);
-                        else
-                            CollisionResolution::resolveBasicCollision(*collision);
-                    }
-
-                    delete collision; //Delete collision data after resolution
+                    // Resolve collision
+                    if (m_rotationalPhysics)
+                        CollisionResolution::resolveAdvancedCollision(*collision);
+                    else
+                        CollisionResolution::resolveBasicCollision(*collision);
                 }
+
+                // Delete collision data
+                delete collision;
             }
         }
     }
