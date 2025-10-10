@@ -130,6 +130,14 @@ namespace phys
                 if (!bodyA->getCollider()->getAABB().intersects(bodyB->getCollider()->getAABB()))
                     continue;
 
+                // If both are static, no need to resolve collision
+                if (bodyA->getType() == BodyType::StaticBody && bodyB->getType() == BodyType::StaticBody)
+                    continue;
+
+                // If either one is a trigger, no need to resolve collision
+                if (bodyA->getCollider()->getType() == ColliderType::Trigger || bodyB->getCollider()->getType() == ColliderType::Trigger)
+                    continue;
+
                 // Check for collision between shapes
                 Collision* collision = CollisionDetection::checkCollision(bodyA, bodyB);
                 if (collision)
