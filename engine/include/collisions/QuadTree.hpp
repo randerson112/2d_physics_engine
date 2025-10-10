@@ -59,8 +59,15 @@ namespace phys
         // Divides a node into 4 child nodes, moving bodies into children
         void subdivideNode(QuadTreeNode* node);
 
-        // Clears bodies in a node and and deletes children
+        // Recursively clears bodies in a node and and deletes children
         void clearNode(QuadTreeNode* node);
+
+        // Recursively gathers all potentially colliding body pairs within a node and its children
+        void gatherPairsInNode(QuadTreeNode* node, std::vector<std::pair<PhysicsBody*, PhysicsBody*>>& pairs);
+
+        // Collects potential collision pairs between a single body and all bodies
+        // within a node (and its children) whose bounds intersect the body’s AABB
+        void gatherPairsBodyVsNode(PhysicsBody* body, QuadTreeNode* node, std::vector<std::pair<PhysicsBody*, PhysicsBody*>>& pairs);
 
     public:
         // Constructor sets the bounds of the tree
@@ -68,6 +75,9 @@ namespace phys
 
         // Inserts a body into the tree
         void insert(PhysicsBody* body);
+
+        // Gathers all potentially colliding body pairs in the entire tree
+        void gatherPairs(std::vector<std::pair<PhysicsBody*, PhysicsBody*>>& pairs);
 
         // Clears the tree and all children
         void clear();
