@@ -7,8 +7,8 @@ namespace phys
 {
     // === Public ===
 
-    QuadTree::QuadTree(const Vector2& min, const Vector2& max)
-        : m_root(min, max)
+    QuadTree::QuadTree(const Vector2& dimensions)
+        : m_root({0 - dimensions.x * 0.5f, 0 - dimensions.y * 0.5f}, {0 + dimensions.x * 0.5f, 0 + dimensions.y * 0.5f})
     {
     }
 

@@ -71,7 +71,7 @@ namespace phys
 
     public:
         // Constructor sets the bounds of the tree
-        QuadTree(const Vector2& min, const Vector2& max);
+        QuadTree(const Vector2& dimensions);
 
         // Inserts a body into the tree
         void insert(PhysicsBody* body);
