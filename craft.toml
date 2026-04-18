@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "engine",
+    "demos/core_demo",
+    "demos/character_movement_demo"
+]

@@ -1,7 +1,5 @@
 # build folders
 build/
-engine/build/
-demo/build/
 .idea
 
 # testing folder
@@ -13,3 +11,7 @@ tools/
 # IDE and OS files
 .vscode/
 .DS_Store
+
+# Craft generated
+.craft/
+CMakeLists.txt

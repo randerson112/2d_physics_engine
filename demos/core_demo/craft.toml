@@ -1,0 +1,14 @@
+[project]
+name = "core_demo"
+version = "0.1.0"
+language = "cpp"
+cpp_standard = 17
+
+[build]
+type = "executable"
+include_dirs = ["include"]
+source_dirs = ["src"]
+
+[dependencies]
+engine = { path = "../../engine" }
+SFML = { git = "https://github.com/SFML/SFML.git", links = ["SFML::Graphics", "SFML::Window", "SFML::System", "SFML::Audio"] }

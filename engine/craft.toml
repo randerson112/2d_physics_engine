@@ -1,0 +1,10 @@
+[project]
+name = "engine"
+version = "0.1.0"
+language = "cpp"
+cpp_standard = 17
+
+[build]
+type = "static-library"
+include_dirs = ["include"]
+source_dirs = ["src"]
